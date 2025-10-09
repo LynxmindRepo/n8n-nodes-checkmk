@@ -1,0 +1,153 @@
+{
+  "name": "Checkmk Problem Monitoring and Alert",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 5
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "Every 5 Minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "resource": "problem",
+        "operation": "getMany",
+        "returnAll": true
+      },
+      "id": "get-problems",
+      "name": "Get All Problems",
+      "type": "n8n-nodes-checkmk.checkmk",
+      "typeVersion": 1,
+      "position": [460, 300],
+      "credentials": {
+        "checkmkApi": {
+          "id": "1",
+          "name": "Checkmk API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{$json[\"extensions\"][\"state\"]}}",
+              "operation": "equal",
+              "value2": 2
+            }
+          ]
+        }
+      },
+      "id": "filter-critical",
+      "name": "Filter Critical Problems",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "const problems = $input.all();\nconst criticalProblems = problems.filter(p => p.json.extensions.state === 2);\n\nif (criticalProblems.length === 0) {\n  return [];\n}\n\nconst message = `🚨 Critical Alert: ${criticalProblems.length} critical problems detected!\\n\\n`;\nconst details = criticalProblems.map((p, i) => {\n  return `${i + 1}. Host: ${p.json.extensions.host_name}\\n   Service: ${p.json.extensions.description}\\n   Output: ${p.json.extensions.plugin_output}\\n`;\n}).join('\\n');\n\nreturn [{\n  json: {\n    message: message + details,\n    count: criticalProblems.length,\n    problems: criticalProblems\n  }\n}];"
+      },
+      "id": "format-alert",
+      "name": "Format Alert Message",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [900, 200]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook-url-here",
+        "options": {}
+      },
+      "id": "send-webhook",
+      "name": "Send to Slack/Discord",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [1120, 200]
+    },
+    {
+      "parameters": {
+        "resource": "service",
+        "operation": "acknowledge",
+        "hostName": "={{$json[\"extensions\"][\"host_name\"]}}",
+        "serviceDescription": "={{$json[\"extensions\"][\"description\"]}}",
+        "comment": "Automatically acknowledged by n8n workflow"
+      },
+      "id": "acknowledge-problem",
+      "name": "Acknowledge Problem",
+      "type": "n8n-nodes-checkmk.checkmk",
+      "typeVersion": 1,
+      "position": [900, 400],
+      "credentials": {
+        "checkmkApi": {
+          "id": "1",
+          "name": "Checkmk API"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Every 5 Minutes": {
+      "main": [
+        [
+          {
+            "node": "Get All Problems",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Problems": {
+      "main": [
+        [
+          {
+            "node": "Filter Critical Problems",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Critical Problems": {
+      "main": [
+        [
+          {
+            "node": "Format Alert Message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Acknowledge Problem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Alert Message": {
+      "main": [
+        [
+          {
+            "node": "Send to Slack/Discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {}
+}
+

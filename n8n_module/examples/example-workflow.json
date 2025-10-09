@@ -1,0 +1,170 @@
+{
+  "name": "Checkmk Example Workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "start-node",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "resource": "host",
+        "operation": "create",
+        "hostName": "example-server-01",
+        "folder": "/",
+        "attributes": {
+          "values": {
+            "ipaddress": "192.168.1.100",
+            "alias": "Example Server 01",
+            "tag_agent": "cmk-agent"
+          }
+        }
+      },
+      "id": "create-host",
+      "name": "Create Host",
+      "type": "n8n-nodes-checkmk.checkmk",
+      "typeVersion": 1,
+      "position": [460, 300],
+      "credentials": {
+        "checkmkApi": {
+          "id": "1",
+          "name": "Checkmk API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "host",
+        "operation": "get",
+        "hostName": "={{$node[\"Create Host\"].json[\"id\"]}}"
+      },
+      "id": "get-host",
+      "name": "Get Host",
+      "type": "n8n-nodes-checkmk.checkmk",
+      "typeVersion": 1,
+      "position": [680, 300],
+      "credentials": {
+        "checkmkApi": {
+          "id": "1",
+          "name": "Checkmk API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "downtime",
+        "operation": "create",
+        "downtimeType": "host",
+        "hostName": "={{$node[\"Create Host\"].json[\"id\"]}}",
+        "startTime": "={{$now.toISO()}}",
+        "endTime": "={{$now.plus({hours: 2}).toISO()}}",
+        "comment": "Scheduled maintenance for example server"
+      },
+      "id": "create-downtime",
+      "name": "Create Downtime",
+      "type": "n8n-nodes-checkmk.checkmk",
+      "typeVersion": 1,
+      "position": [900, 300],
+      "credentials": {
+        "checkmkApi": {
+          "id": "1",
+          "name": "Checkmk API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "service",
+        "operation": "getMany",
+        "hostName": "={{$node[\"Create Host\"].json[\"id\"]}}",
+        "returnAll": true
+      },
+      "id": "get-services",
+      "name": "Get Services",
+      "type": "n8n-nodes-checkmk.checkmk",
+      "typeVersion": 1,
+      "position": [1120, 300],
+      "credentials": {
+        "checkmkApi": {
+          "id": "1",
+          "name": "Checkmk API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "problem",
+        "operation": "getMany",
+        "returnAll": false,
+        "limit": 10
+      },
+      "id": "get-problems",
+      "name": "Get Problems",
+      "type": "n8n-nodes-checkmk.checkmk",
+      "typeVersion": 1,
+      "position": [460, 500],
+      "credentials": {
+        "checkmkApi": {
+          "id": "1",
+          "name": "Checkmk API"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Create Host",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Problems",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Host": {
+      "main": [
+        [
+          {
+            "node": "Get Host",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Host": {
+      "main": [
+        [
+          {
+            "node": "Create Downtime",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Downtime": {
+      "main": [
+        [
+          {
+            "node": "Get Services",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {}
+}
+

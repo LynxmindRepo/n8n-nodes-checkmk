@@ -36,177 +36,48 @@ export class Checkmk implements INodeType {
 				type: 'options',
 				noDataExpression: true,
 				options: [
-					// MONITORING RESOURCES
-					{
-						name: 'BI Aggregation',
-						value: 'biAggregation',
-					},
-					{
-						name: 'BI Pack',
-						value: 'biPack',
-					},
-					{
-						name: 'BI Rule',
-						value: 'biRule',
-					},
-					{
-						name: 'Comment',
-						value: 'comment',
-					},
-					{
-						name: 'Downtime',
-						value: 'downtime',
-					},
-					{
-						name: 'Event Console',
-						value: 'eventConsole',
-					},
-					{
-						name: 'Host Status',
-						value: 'hostStatus',
-					},
-					{
-						name: 'Metric',
-						value: 'metric',
-					},
-					{
-						name: 'Problem',
-						value: 'problem',
-					},
-					{
-						name: 'Service Status',
-						value: 'serviceStatus',
-					},
-					{
-						name: 'SLA',
-						value: 'sla',
-					},
-					// SETUP RESOURCES
-					{
-						name: 'Activate Changes',
-						value: 'activateChanges',
-					},
-					{
-						name: 'Agent',
-						value: 'agent',
-					},
-					{
-						name: 'Audit Log',
-						value: 'auditLog',
-					},
-					{
-						name: 'Aux Tag',
-						value: 'auxTag',
-					},
-					{
-						name: 'Contact Group',
-						value: 'contactGroup',
-					},
-					{
-						name: 'Discovery',
-						value: 'discovery',
-					},
-					{
-						name: 'Folder',
-						value: 'folder',
-					},
-					{
-						name: 'Host',
-						value: 'host',
-					},
-					{
-						name: 'Host Group',
-						value: 'hostGroup',
-					},
-					{
-						name: 'Host Tag Group',
-						value: 'hostTagGroup',
-					},
-					{
-						name: 'LDAP Connection',
-						value: 'ldapConnection',
-					},
-					{
-						name: 'Notification Rule',
-						value: 'notificationRule',
-					},
-					{
-						name: 'OpenTelemetry',
-						value: 'openTelemetry',
-					},
-					{
-						name: 'Parent Scan',
-						value: 'parentScan',
-					},
-					{
-						name: 'Password',
-						value: 'password',
-					},
-					{
-						name: 'Rule',
-						value: 'rule',
-					},
-					{
-						name: 'Ruleset',
-						value: 'ruleset',
-					},
-					{
-						name: 'SAML Connection',
-						value: 'samlConnection',
-					},
-					{
-						name: 'Service',
-						value: 'service',
-					},
-					{
-						name: 'Service Group',
-						value: 'serviceGroup',
-					},
-					{
-						name: 'Site',
-						value: 'site',
-					},
-					{
-						name: 'Time Period',
-						value: 'timePeriod',
-					},
-					{
-						name: 'User',
-						value: 'user',
-					},
-					{
-						name: 'User Role',
-						value: 'userRole',
-					},
-					// INTERNAL RESOURCES
-					{
-						name: 'Background Job',
-						value: 'backgroundJob',
-					},
-					{
-						name: 'Broker Connection',
-						value: 'brokerConnection',
-					},
-					{
-						name: 'Certificate',
-						value: 'certificate',
-					},
-					{
-						name: 'Configuration Entity',
-						value: 'configurationEntity',
-					},
-					{
-						name: 'DCD',
-						value: 'dcd',
-					},
-					{
-						name: 'License Usage',
-						value: 'licenseUsage',
-					},
-					{
-						name: 'Quick Setup',
-						value: 'quickSetup',
-					},
+					{ name: 'Activate Change', value: 'activateChanges' },
+					{ name: 'Agent', value: 'agent' },
+					{ name: 'Audit Log', value: 'auditLog' },
+					{ name: 'Aux Tag', value: 'auxTag' },
+					{ name: 'Background Job', value: 'backgroundJob' },
+					{ name: 'BI Aggregation', value: 'biAggregation' },
+					{ name: 'BI Pack', value: 'biPack' },
+					{ name: 'BI Rule', value: 'biRule' },
+					{ name: 'Broker Connection', value: 'brokerConnection' },
+					{ name: 'Certificate', value: 'certificate' },
+					{ name: 'Comment', value: 'comment' },
+					{ name: 'Configuration Entity', value: 'configurationEntity' },
+					{ name: 'Contact Group', value: 'contactGroup' },
+					{ name: 'DCD', value: 'dcd' },
+					{ name: 'Discovery', value: 'discovery' },
+					{ name: 'Downtime', value: 'downtime' },
+					{ name: 'Event Console', value: 'eventConsole' },
+					{ name: 'Folder', value: 'folder' },
+					{ name: 'Host', value: 'host' },
+					{ name: 'Host Group', value: 'hostGroup' },
+					{ name: 'Host Status', value: 'hostStatus' },
+					{ name: 'Host Tag Group', value: 'hostTagGroup' },
+					{ name: 'LDAP Connection', value: 'ldapConnection' },
+					{ name: 'License Usage', value: 'licenseUsage' },
+					{ name: 'Metric', value: 'metric' },
+					{ name: 'Notification Rule', value: 'notificationRule' },
+					{ name: 'OpenTelemetry', value: 'openTelemetry' },
+					{ name: 'Parent Scan', value: 'parentScan' },
+					{ name: 'Password', value: 'password' },
+					{ name: 'Problem', value: 'problem' },
+					{ name: 'Quick Setup', value: 'quickSetup' },
+					{ name: 'Rule', value: 'rule' },
+					{ name: 'Ruleset', value: 'ruleset' },
+					{ name: 'SAML Connection', value: 'samlConnection' },
+					{ name: 'Service', value: 'service' },
+					{ name: 'Service Group', value: 'serviceGroup' },
+					{ name: 'Service Status', value: 'serviceStatus' },
+					{ name: 'Site', value: 'site' },
+					{ name: 'SLA', value: 'sla' },
+					{ name: 'Time Period', value: 'timePeriod' },
+					{ name: 'User', value: 'user' },
+					{ name: 'User Role', value: 'userRole' },
 				],
 				default: 'host',
 			},
@@ -1183,25 +1054,25 @@ export class Checkmk implements INodeType {
 						name: 'Create',
 						value: 'create',
 						description: 'Create an OpenTelemetry collector',
-						action: 'Create an OpenTelemetry collector',
+						action: 'Create an open telemetry collector',
 					},
 					{
 						name: 'Get Many',
 						value: 'getMany',
 						description: 'Get many OpenTelemetry collectors',
-						action: 'Get many OpenTelemetry collectors',
+						action: 'Get many open telemetry collectors',
 					},
 					{
 						name: 'Update',
 						value: 'update',
 						description: 'Update an OpenTelemetry collector',
-						action: 'Update an OpenTelemetry collector',
+						action: 'Update an open telemetry collector',
 					},
 					{
 						name: 'Delete',
 						value: 'delete',
 						description: 'Delete an OpenTelemetry collector',
-						action: 'Delete an OpenTelemetry collector',
+						action: 'Delete an open telemetry collector',
 					},
 				],
 				default: 'getMany',
@@ -1628,7 +1499,6 @@ export class Checkmk implements INodeType {
 				},
 				typeOptions: {
 					minValue: 1,
-					maxValue: 500,
 				},
 				default: 50,
 				description: 'Max number of results to return',
@@ -1645,7 +1515,6 @@ export class Checkmk implements INodeType {
 						name: 'ipaddress',
 						type: 'string',
 						default: '',
-						description: 'IP address',
 					},
 					{
 						displayName: 'Labels',
@@ -1680,7 +1549,11 @@ export class Checkmk implements INodeType {
 					if (operation === 'create') {
 						const hostName = this.getNodeParameter('hostName', i) as string;
 						const folder = this.getNodeParameter('folder', i) as string;
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 
 						const body: IDataObject = {
 							host_name: hostName,
@@ -1730,7 +1603,11 @@ export class Checkmk implements INodeType {
 
 					if (operation === 'update') {
 						const hostName = this.getNodeParameter('hostName', i) as string;
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 
 						const body: IDataObject = {
 							attributes: additionalFields,
@@ -1770,7 +1647,11 @@ export class Checkmk implements INodeType {
 
 					if (operation === 'rename') {
 						const hostName = this.getNodeParameter('hostName', i) as string;
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const newName = additionalFields.newName as string;
 
 						const body: IDataObject = {
@@ -1938,7 +1819,11 @@ export class Checkmk implements INodeType {
 					const folder = this.getNodeParameter('folder', i, '/') as string;
 
 					if (operation === 'create') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 
 						const body: IDataObject = {
 							name: folder.split('/').pop(),
@@ -1956,7 +1841,11 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'get') {
-						const response = await checkmkApiRequest.call(this, 'GET', `/objects/folder_config/${folder}`);
+						const response = await checkmkApiRequest.call(
+							this,
+							'GET',
+							`/objects/folder_config/${folder}`,
+						);
 						returnData.push(response);
 					}
 
@@ -1982,7 +1871,11 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'update') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 
 						const response = await checkmkApiRequest.call(
 							this,
@@ -2004,7 +1897,11 @@ export class Checkmk implements INodeType {
 					const name = this.getNodeParameter('name', i, '') as string;
 
 					if (operation === 'create') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 
 						const body: IDataObject = {
 							username: name,
@@ -2021,7 +1918,11 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'get') {
-						const response = await checkmkApiRequest.call(this, 'GET', `/objects/user_config/${name}`);
+						const response = await checkmkApiRequest.call(
+							this,
+							'GET',
+							`/objects/user_config/${name}`,
+						);
 						returnData.push(response);
 					}
 
@@ -2047,7 +1948,11 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'update') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 
 						const response = await checkmkApiRequest.call(
 							this,
@@ -2143,7 +2048,11 @@ export class Checkmk implements INodeType {
 
 					if (operation === 'create') {
 						const alias = this.getNodeParameter('alias', i, '') as string;
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 
 						const body: IDataObject = {
 							name: name,
@@ -2161,7 +2070,11 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'get') {
-						const response = await checkmkApiRequest.call(this, 'GET', `/objects/time_period/${name}`);
+						const response = await checkmkApiRequest.call(
+							this,
+							'GET',
+							`/objects/time_period/${name}`,
+						);
 						returnData.push(response);
 					}
 
@@ -2187,7 +2100,11 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'update') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 
 						const response = await checkmkApiRequest.call(
 							this,
@@ -2207,7 +2124,11 @@ export class Checkmk implements INodeType {
 				// ==================== RULE OPERATIONS ====================
 				if (resource === 'rule') {
 					if (operation === 'get') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const ruleId = additionalFields.ruleId as string;
 
 						const response = await checkmkApiRequest.call(this, 'GET', `/objects/rule/${ruleId}`);
@@ -2269,10 +2190,14 @@ export class Checkmk implements INodeType {
 				if (resource === 'activateChanges') {
 					if (operation === 'activate') {
 						const sites = this.getNodeParameter('activateOnSites', i, '') as string;
-						const forceForeignChanges = this.getNodeParameter('forceForeignChanges', i, false) as boolean;
+						const forceForeignChanges = this.getNodeParameter(
+							'forceForeignChanges',
+							i,
+							false,
+						) as boolean;
 
 						const body: IDataObject = {
-							sites: sites ? sites.split(',').map(s => s.trim()) : [],
+							sites: sites ? sites.split(',').map((s) => s.trim()) : [],
 							force_foreign_changes: forceForeignChanges,
 						};
 
@@ -2286,12 +2211,20 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'getPending') {
-						const response = await checkmkApiRequest.call(this, 'GET', '/domain-types/activation_run/collections/pending_changes');
+						const response = await checkmkApiRequest.call(
+							this,
+							'GET',
+							'/domain-types/activation_run/collections/pending_changes',
+						);
 						returnData.push(response);
 					}
 
 					if (operation === 'getStatus') {
-						const response = await checkmkApiRequest.call(this, 'GET', '/domain-types/activation_run/collections/running');
+						const response = await checkmkApiRequest.call(
+							this,
+							'GET',
+							'/domain-types/activation_run/collections/running',
+						);
 						returnData.push(response);
 					}
 				}
@@ -2305,7 +2238,11 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'getMany') {
-						const response = await checkmkApiRequest.call(this, 'GET', '/domain-types/site/collections/all');
+						const response = await checkmkApiRequest.call(
+							this,
+							'GET',
+							'/domain-types/site/collections/all',
+						);
 						returnData.push(...(response.value || []));
 					}
 
@@ -2337,7 +2274,11 @@ export class Checkmk implements INodeType {
 					const hostName = this.getNodeParameter('hostName', i) as string;
 
 					if (operation === 'get') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const serviceDescription = additionalFields.serviceDescription as string;
 
 						const response = await checkmkApiRequest.call(
@@ -2378,9 +2319,13 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'acknowledge') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const serviceDescription = additionalFields.serviceDescription as string;
-						const comment = additionalFields.comment as string || 'Acknowledged via n8n';
+						const comment = (additionalFields.comment as string) || 'Acknowledged via n8n';
 
 						const body: IDataObject = {
 							acknowledge_type: 'service',
@@ -2405,7 +2350,11 @@ export class Checkmk implements INodeType {
 				// ==================== DOWNTIME OPERATIONS ====================
 				if (resource === 'downtime') {
 					if (operation === 'create') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 
 						const body: IDataObject = {
 							downtime_type: additionalFields.downtimeType || 'host',
@@ -2436,10 +2385,18 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'get') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const downtimeId = additionalFields.downtimeId as string;
 
-						const response = await checkmkApiRequest.call(this, 'GET', `/objects/downtime/${downtimeId}`);
+						const response = await checkmkApiRequest.call(
+							this,
+							'GET',
+							`/objects/downtime/${downtimeId}`,
+						);
 						returnData.push(response);
 					}
 
@@ -2466,7 +2423,11 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'delete') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const downtimeId = additionalFields.downtimeId as string;
 
 						await checkmkApiRequest.call(this, 'DELETE', `/objects/downtime/${downtimeId}`);
@@ -2506,7 +2467,11 @@ export class Checkmk implements INodeType {
 				// ==================== BI AGGREGATION OPERATIONS ====================
 				if (resource === 'biAggregation') {
 					if (operation === 'getState') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const filterNames = additionalFields.filterNames as string[];
 						const filterGroups = additionalFields.filterGroups as string[];
 
@@ -2552,10 +2517,14 @@ export class Checkmk implements INodeType {
 				// ==================== COMMENT OPERATIONS ====================
 				if (resource === 'comment') {
 					if (operation === 'create') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const hostName = additionalFields.hostName as string;
 						const comment = additionalFields.comment as string;
-						const persistent = additionalFields.persistent as boolean || false;
+						const persistent = (additionalFields.persistent as boolean) || false;
 
 						const body: IDataObject = {
 							comment,
@@ -2581,14 +2550,14 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'delete') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const commentId = additionalFields.commentId as string;
 
-						await checkmkApiRequest.call(
-							this,
-							'DELETE',
-							`/objects/comment/${commentId}`,
-						);
+						await checkmkApiRequest.call(this, 'DELETE', `/objects/comment/${commentId}`);
 						returnData.push({ success: true, message: 'Comment deleted' });
 					}
 				}
@@ -2609,7 +2578,11 @@ export class Checkmk implements INodeType {
 				if (resource === 'hostStatus') {
 					if (operation === 'getMany') {
 						const returnAll = this.getNodeParameter('returnAll', i);
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const hostName = additionalFields.hostName as string;
 
 						const qs: IDataObject = {};
@@ -2655,7 +2628,11 @@ export class Checkmk implements INodeType {
 				if (resource === 'serviceStatus') {
 					if (operation === 'getMany') {
 						const returnAll = this.getNodeParameter('returnAll', i);
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const hostName = additionalFields.hostName as string;
 
 						const qs: IDataObject = {};
@@ -2688,7 +2665,11 @@ export class Checkmk implements INodeType {
 				// ==================== SLA OPERATIONS ====================
 				if (resource === 'sla') {
 					if (operation === 'compute') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const slaConfiguration = additionalFields.slaConfiguration as string;
 						const timeRange = additionalFields.timeRange as string;
 
@@ -2723,7 +2704,11 @@ export class Checkmk implements INodeType {
 				if (resource === 'auditLog') {
 					if (operation === 'getMany') {
 						const returnAll = this.getNodeParameter('returnAll', i);
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const userId = additionalFields.userId as string;
 						const objectType = additionalFields.objectType as string;
 
@@ -2758,7 +2743,11 @@ export class Checkmk implements INodeType {
 				// ==================== AUX TAG OPERATIONS ====================
 				if (resource === 'auxTag') {
 					if (operation === 'create') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const tagId = additionalFields.tagId as string;
 						const title = additionalFields.title as string;
 						const topic = additionalFields.topic as string;
@@ -2790,7 +2779,11 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'update') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const tagId = additionalFields.tagId as string;
 						const title = additionalFields.title as string;
 						const topic = additionalFields.topic as string;
@@ -2812,14 +2805,14 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'delete') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const tagId = additionalFields.tagId as string;
 
-						await checkmkApiRequest.call(
-							this,
-							'DELETE',
-							`/objects/aux_tag/${tagId}`,
-						);
+						await checkmkApiRequest.call(this, 'DELETE', `/objects/aux_tag/${tagId}`);
 						returnData.push({ success: true, message: 'Aux tag deleted' });
 					}
 				}
@@ -2827,7 +2820,11 @@ export class Checkmk implements INodeType {
 				// ==================== HOST TAG GROUP OPERATIONS ====================
 				if (resource === 'hostTagGroup') {
 					if (operation === 'create') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const tagGroupId = additionalFields.tagGroupId as string;
 						const title = additionalFields.title as string;
 						const topic = additionalFields.topic as string;
@@ -2859,7 +2856,11 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'update') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const tagGroupId = additionalFields.tagGroupId as string;
 						const title = additionalFields.title as string;
 						const topic = additionalFields.topic as string;
@@ -2881,22 +2882,29 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'delete') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const tagGroupId = additionalFields.tagGroupId as string;
 
-						await checkmkApiRequest.call(
-							this,
-							'DELETE',
-							`/objects/host_tag_group/${tagGroupId}`,
-						);
-						returnData.push({ success: true, message: 'Host tag group deleted' });
+						await checkmkApiRequest.call(this, 'DELETE', `/objects/host_tag_group/${tagGroupId}`);
+						returnData.push({
+							success: true,
+							message: 'Host tag group deleted',
+						});
 					}
 				}
 
 				// ==================== LDAP CONNECTION OPERATIONS ====================
 				if (resource === 'ldapConnection') {
 					if (operation === 'create') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const connectionId = additionalFields.connectionId as string;
 						const serverUrl = additionalFields.serverUrl as string;
 						const bindDn = additionalFields.bindDn as string;
@@ -2928,7 +2936,11 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'update') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const connectionId = additionalFields.connectionId as string;
 						const serverUrl = additionalFields.serverUrl as string;
 						const bindDn = additionalFields.bindDn as string;
@@ -2950,7 +2962,11 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'delete') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const connectionId = additionalFields.connectionId as string;
 
 						await checkmkApiRequest.call(
@@ -2958,7 +2974,10 @@ export class Checkmk implements INodeType {
 							'DELETE',
 							`/objects/ldap_connection/${connectionId}`,
 						);
-						returnData.push({ success: true, message: 'LDAP connection deleted' });
+						returnData.push({
+							success: true,
+							message: 'LDAP connection deleted',
+						});
 					}
 				}
 
@@ -2977,7 +2996,11 @@ export class Checkmk implements INodeType {
 				// ==================== OPENTELEMETRY OPERATIONS ====================
 				if (resource === 'openTelemetry') {
 					if (operation === 'create') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const collectorId = additionalFields.collectorId as string;
 						const name = additionalFields.name as string;
 						const port = additionalFields.port as number;
@@ -3007,7 +3030,11 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'update') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const collectorId = additionalFields.collectorId as string;
 						const name = additionalFields.name as string;
 						const port = additionalFields.port as number;
@@ -3027,7 +3054,11 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'delete') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const collectorId = additionalFields.collectorId as string;
 
 						await checkmkApiRequest.call(
@@ -3035,14 +3066,21 @@ export class Checkmk implements INodeType {
 							'DELETE',
 							`/objects/open_telemetry_collector/${collectorId}`,
 						);
-						returnData.push({ success: true, message: 'OpenTelemetry collector deleted' });
+						returnData.push({
+							success: true,
+							message: 'OpenTelemetry collector deleted',
+						});
 					}
 				}
 
 				// ==================== PARENT SCAN OPERATIONS ====================
 				if (resource === 'parentScan') {
 					if (operation === 'run') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const hostName = additionalFields.hostName as string;
 
 						const body: IDataObject = {
@@ -3086,7 +3124,11 @@ export class Checkmk implements INodeType {
 				// ==================== SAML CONNECTION OPERATIONS ====================
 				if (resource === 'samlConnection') {
 					if (operation === 'create') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const connectionId = additionalFields.connectionId as string;
 						const identityProviderMetadata = additionalFields.identityProviderMetadata as string;
 
@@ -3114,7 +3156,11 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'update') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const connectionId = additionalFields.connectionId as string;
 						const identityProviderMetadata = additionalFields.identityProviderMetadata as string;
 
@@ -3132,7 +3178,11 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'delete') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const connectionId = additionalFields.connectionId as string;
 
 						await checkmkApiRequest.call(
@@ -3140,14 +3190,21 @@ export class Checkmk implements INodeType {
 							'DELETE',
 							`/objects/saml_connection/${connectionId}`,
 						);
-						returnData.push({ success: true, message: 'SAML connection deleted' });
+						returnData.push({
+							success: true,
+							message: 'SAML connection deleted',
+						});
 					}
 				}
 
 				// ==================== USER ROLE OPERATIONS ====================
 				if (resource === 'userRole') {
 					if (operation === 'create') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const roleId = additionalFields.roleId as string;
 						const alias = additionalFields.alias as string;
 						const permissions = additionalFields.permissions as string[];
@@ -3177,7 +3234,11 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'update') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const roleId = additionalFields.roleId as string;
 						const alias = additionalFields.alias as string;
 						const permissions = additionalFields.permissions as string[];
@@ -3197,14 +3258,14 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'delete') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const roleId = additionalFields.roleId as string;
 
-						await checkmkApiRequest.call(
-							this,
-							'DELETE',
-							`/objects/user_role/${roleId}`,
-						);
+						await checkmkApiRequest.call(this, 'DELETE', `/objects/user_role/${roleId}`);
 						returnData.push({ success: true, message: 'User role deleted' });
 					}
 				}
@@ -3304,4 +3365,3 @@ export class Checkmk implements INodeType {
 		return [this.helpers.returnJsonArray(returnData)];
 	}
 }
-

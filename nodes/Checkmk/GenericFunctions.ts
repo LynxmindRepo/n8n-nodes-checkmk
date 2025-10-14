@@ -3,9 +3,9 @@ import {
 	IHookFunctions,
 	ILoadOptionsFunctions,
 	IHttpRequestMethods,
-	IRequestOptions,
 	JsonObject,
 	NodeApiError,
+	IHttpRequestOptions,
 } from 'n8n-workflow';
 
 export async function checkmkApiRequest(
@@ -17,7 +17,7 @@ export async function checkmkApiRequest(
 ): Promise<any> {
 	const credentials = await this.getCredentials('checkmkApi');
 
-	const options: IRequestOptions = {
+	const options: IHttpRequestOptions = {
 		method,
 		body,
 		qs,
@@ -49,7 +49,7 @@ export async function checkmkApiRequestAllItems(
 
 	do {
 		responseData = await checkmkApiRequest.call(this, method, endpoint, body, qs);
-		
+
 		if (responseData.value) {
 			returnData.push(...responseData.value);
 		} else if (Array.isArray(responseData)) {
@@ -68,4 +68,3 @@ export async function checkmkApiRequestAllItems(
 
 	return returnData;
 }
-

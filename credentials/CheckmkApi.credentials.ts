@@ -66,4 +66,3 @@ export class CheckmkApi implements ICredentialType {
 		},
 	};
 }
-

@@ -1,5 +1,5 @@
 {
-	"name": "@lynxmindrepo/n8n-nodes-checkmk",
+	"name": "n8n-nodes-checkmk",
 	"version": "1.0.0",
 	"description": "Complete n8n node for Checkmk monitoring system with 100% API coverage - 38 resources, 100+ operations",
 	"keywords": [

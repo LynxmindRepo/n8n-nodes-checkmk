@@ -1,6 +1,6 @@
 {
 	"name": "@LynxmindRepo/n8n-nodes-checkmk",
-	"version": "0.2.0",
+	"version": "1.0.0",
 	"description": "Complete n8n node for Checkmk monitoring system with 100% API coverage - 38 resources, 100+ operations",
 	"keywords": [
 		"n8n-community-node-package",

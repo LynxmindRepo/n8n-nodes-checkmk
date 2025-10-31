@@ -3,22 +3,22 @@ import {
 	IHookFunctions,
 	ILoadOptionsFunctions,
 	IHttpRequestMethods,
-	IRequestOptions,
 	JsonObject,
 	NodeApiError,
+	IHttpRequestOptions,
 } from 'n8n-workflow';
 
 export async function checkmkApiRequest(
 	this: IExecuteFunctions | ILoadOptionsFunctions | IHookFunctions,
 	method: IHttpRequestMethods,
 	endpoint: string,
-	body: any = {},
+	body: Record<string, unknown> = {},
 	qs: any = {},
-	customHeaders: any = {},
+	customHeaders?: any,
 ): Promise<any> {
 	const credentials = await this.getCredentials('checkmkApi');
 
-	const options: IRequestOptions = {
+	const options: IHttpRequestOptions = {
 		method,
 		body,
 		qs,
@@ -33,7 +33,7 @@ export async function checkmkApiRequest(
 	};
 
 	try {
-		return await this.helpers.request(options);
+		return await this.helpers.httpRequest(options);
 	} catch (error) {
 		throw new NodeApiError(this.getNode(), error as JsonObject);
 	}
@@ -43,15 +43,16 @@ export async function checkmkApiRequestAllItems(
 	this: IExecuteFunctions | ILoadOptionsFunctions | IHookFunctions,
 	method: IHttpRequestMethods,
 	endpoint: string,
-	body: any = {},
+	body: Record<string, unknown> = {},
 	qs: any = {},
 ): Promise<any> {
 	const returnData: any[] = [];
-	let responseData;
+	let nextCall: string | undefined = endpoint;
 
-	do {
-		responseData = await checkmkApiRequest.call(this, method, endpoint, body, qs);
-		
+	while (nextCall) {
+		const responseData: { value?: any; links: { next: string | undefined } } =
+			await checkmkApiRequest.call(this, method, nextCall, body, qs);
+
 		if (responseData.value) {
 			returnData.push(...responseData.value);
 		} else if (Array.isArray(responseData)) {
@@ -60,13 +61,8 @@ export async function checkmkApiRequestAllItems(
 			returnData.push(responseData);
 		}
 
-		// Check if there's a next page
-		if (responseData.links && responseData.links.next) {
-			endpoint = responseData.links.next;
-		} else {
-			break;
-		}
-	} while (true);
+		nextCall = responseData.links.next ?? undefined;
+	}
 
 	return returnData;
 }
@@ -75,12 +71,12 @@ export async function checkmkApiRequestWithETag(
 	this: IExecuteFunctions | ILoadOptionsFunctions | IHookFunctions,
 	method: IHttpRequestMethods,
 	endpoint: string,
-	body: any = {},
+	body: Record<string, unknown> = {},
 	qs: any = {},
 ): Promise<{ data: any; etag: string }> {
 	const credentials = await this.getCredentials('checkmkApi');
 
-	const options: IRequestOptions = {
+	const options: IHttpRequestOptions = {
 		method,
 		body,
 		qs,
@@ -91,18 +87,17 @@ export async function checkmkApiRequestWithETag(
 			Authorization: `Bearer ${credentials.username} ${credentials.password}`,
 		},
 		json: true,
-		resolveWithFullResponse: true,
+		returnFullResponse: true,
 	};
 
 	try {
-		const response = await this.helpers.request(options);
+		const response = await this.helpers.httpRequest(options);
 		const etag = response.headers.etag || response.headers['etag'];
 		return {
 			data: response.body,
-			etag: etag ? etag.replace(/"/g, '') : '', // Remove quotes from ETag
+			etag: etag ? etag.replace(/"/g, '') : '',
 		};
 	} catch (error) {
 		throw new NodeApiError(this.getNode(), error as JsonObject);
 	}
 }
-

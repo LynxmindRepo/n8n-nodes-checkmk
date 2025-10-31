@@ -4,9 +4,14 @@ import {
 	INodeType,
 	INodeTypeDescription,
 	IDataObject,
+	NodeOperationError,
 } from 'n8n-workflow';
 
-import { checkmkApiRequest, checkmkApiRequestAllItems, checkmkApiRequestWithETag } from './GenericFunctions';
+import {
+	checkmkApiRequest,
+	checkmkApiRequestAllItems,
+	checkmkApiRequestWithETag,
+} from './GenericFunctions';
 
 export class Checkmk implements INodeType {
 	description: INodeTypeDescription = {
@@ -36,177 +41,48 @@ export class Checkmk implements INodeType {
 				type: 'options',
 				noDataExpression: true,
 				options: [
-					// MONITORING RESOURCES
-					{
-						name: 'BI Aggregation',
-						value: 'biAggregation',
-					},
-					{
-						name: 'BI Pack',
-						value: 'biPack',
-					},
-					{
-						name: 'BI Rule',
-						value: 'biRule',
-					},
-					{
-						name: 'Comment',
-						value: 'comment',
-					},
-					{
-						name: 'Downtime',
-						value: 'downtime',
-					},
-					{
-						name: 'Event Console',
-						value: 'eventConsole',
-					},
-					{
-						name: 'Host Status',
-						value: 'hostStatus',
-					},
-					{
-						name: 'Metric',
-						value: 'metric',
-					},
-					{
-						name: 'Problem',
-						value: 'problem',
-					},
-					{
-						name: 'Service Status',
-						value: 'serviceStatus',
-					},
-					{
-						name: 'SLA',
-						value: 'sla',
-					},
-					// SETUP RESOURCES
-					{
-						name: 'Activate Changes',
-						value: 'activateChanges',
-					},
-					{
-						name: 'Agent',
-						value: 'agent',
-					},
-					{
-						name: 'Audit Log',
-						value: 'auditLog',
-					},
-					{
-						name: 'Aux Tag',
-						value: 'auxTag',
-					},
-					{
-						name: 'Contact Group',
-						value: 'contactGroup',
-					},
-					{
-						name: 'Discovery',
-						value: 'discovery',
-					},
-					{
-						name: 'Folder',
-						value: 'folder',
-					},
-					{
-						name: 'Host',
-						value: 'host',
-					},
-					{
-						name: 'Host Group',
-						value: 'hostGroup',
-					},
-					{
-						name: 'Host Tag Group',
-						value: 'hostTagGroup',
-					},
-					{
-						name: 'LDAP Connection',
-						value: 'ldapConnection',
-					},
-					{
-						name: 'Notification Rule',
-						value: 'notificationRule',
-					},
-					{
-						name: 'OpenTelemetry',
-						value: 'openTelemetry',
-					},
-					{
-						name: 'Parent Scan',
-						value: 'parentScan',
-					},
-					{
-						name: 'Password',
-						value: 'password',
-					},
-					{
-						name: 'Rule',
-						value: 'rule',
-					},
-					{
-						name: 'Ruleset',
-						value: 'ruleset',
-					},
-					{
-						name: 'SAML Connection',
-						value: 'samlConnection',
-					},
-					{
-						name: 'Service',
-						value: 'service',
-					},
-					{
-						name: 'Service Group',
-						value: 'serviceGroup',
-					},
-					{
-						name: 'Site',
-						value: 'site',
-					},
-					{
-						name: 'Time Period',
-						value: 'timePeriod',
-					},
-					{
-						name: 'User',
-						value: 'user',
-					},
-					{
-						name: 'User Role',
-						value: 'userRole',
-					},
-					// INTERNAL RESOURCES
-					{
-						name: 'Background Job',
-						value: 'backgroundJob',
-					},
-					{
-						name: 'Broker Connection',
-						value: 'brokerConnection',
-					},
-					{
-						name: 'Certificate',
-						value: 'certificate',
-					},
-					{
-						name: 'Configuration Entity',
-						value: 'configurationEntity',
-					},
-					{
-						name: 'DCD',
-						value: 'dcd',
-					},
-					{
-						name: 'License Usage',
-						value: 'licenseUsage',
-					},
-					{
-						name: 'Quick Setup',
-						value: 'quickSetup',
-					},
+					{ name: 'Activate Change', value: 'activateChanges' },
+					{ name: 'Agent', value: 'agent' },
+					{ name: 'Audit Log', value: 'auditLog' },
+					{ name: 'Aux Tag', value: 'auxTag' },
+					{ name: 'Background Job', value: 'backgroundJob' },
+					{ name: 'BI Aggregation', value: 'biAggregation' },
+					{ name: 'BI Pack', value: 'biPack' },
+					{ name: 'BI Rule', value: 'biRule' },
+					{ name: 'Broker Connection', value: 'brokerConnection' },
+					{ name: 'Certificate', value: 'certificate' },
+					{ name: 'Comment', value: 'comment' },
+					{ name: 'Configuration Entity', value: 'configurationEntity' },
+					{ name: 'Contact Group', value: 'contactGroup' },
+					{ name: 'DCD', value: 'dcd' },
+					{ name: 'Discovery', value: 'discovery' },
+					{ name: 'Downtime', value: 'downtime' },
+					{ name: 'Event Console', value: 'eventConsole' },
+					{ name: 'Folder', value: 'folder' },
+					{ name: 'Host', value: 'host' },
+					{ name: 'Host Group', value: 'hostGroup' },
+					{ name: 'Host Status', value: 'hostStatus' },
+					{ name: 'Host Tag Group', value: 'hostTagGroup' },
+					{ name: 'LDAP Connection', value: 'ldapConnection' },
+					{ name: 'License Usage', value: 'licenseUsage' },
+					{ name: 'Metric', value: 'metric' },
+					{ name: 'Notification Rule', value: 'notificationRule' },
+					{ name: 'OpenTelemetry', value: 'openTelemetry' },
+					{ name: 'Parent Scan', value: 'parentScan' },
+					{ name: 'Password', value: 'password' },
+					{ name: 'Problem', value: 'problem' },
+					{ name: 'Quick Setup', value: 'quickSetup' },
+					{ name: 'Rule', value: 'rule' },
+					{ name: 'Ruleset', value: 'ruleset' },
+					{ name: 'SAML Connection', value: 'samlConnection' },
+					{ name: 'Service', value: 'service' },
+					{ name: 'Service Group', value: 'serviceGroup' },
+					{ name: 'Service Status', value: 'serviceStatus' },
+					{ name: 'Site', value: 'site' },
+					{ name: 'SLA', value: 'sla' },
+					{ name: 'Time Period', value: 'timePeriod' },
+					{ name: 'User', value: 'user' },
+					{ name: 'User Role', value: 'userRole' },
 				],
 				default: 'host',
 			},
@@ -1183,25 +1059,25 @@ export class Checkmk implements INodeType {
 						name: 'Create',
 						value: 'create',
 						description: 'Create an OpenTelemetry collector',
-						action: 'Create an OpenTelemetry collector',
+						action: 'Create an open telemetry collector',
 					},
 					{
 						name: 'Get Many',
 						value: 'getMany',
 						description: 'Get many OpenTelemetry collectors',
-						action: 'Get many OpenTelemetry collectors',
+						action: 'Get many open telemetry collectors',
 					},
 					{
 						name: 'Update',
 						value: 'update',
 						description: 'Update an OpenTelemetry collector',
-						action: 'Update an OpenTelemetry collector',
+						action: 'Update an open telemetry collector',
 					},
 					{
 						name: 'Delete',
 						value: 'delete',
 						description: 'Delete an OpenTelemetry collector',
-						action: 'Delete an OpenTelemetry collector',
+						action: 'Delete an open telemetry collector',
 					},
 				],
 				default: 'getMany',
@@ -1554,7 +1430,6 @@ export class Checkmk implements INodeType {
 				displayName: 'Host Name',
 				name: 'hostName',
 				type: 'string',
-				required: false,
 				displayOptions: {
 					show: {
 						resource: ['host', 'service'],
@@ -1659,7 +1534,6 @@ export class Checkmk implements INodeType {
 				},
 				typeOptions: {
 					minValue: 1,
-					maxValue: 500,
 				},
 				default: 50,
 				description: 'Max number of results to return',
@@ -1881,7 +1755,6 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: '',
-				description: 'Bind password',
 			},
 			// ==================== SAML CONNECTION FIELDS ====================
 			{
@@ -2017,7 +1890,6 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: '',
-				description: 'The comment text',
 			},
 			{
 				displayName: 'Persistent',
@@ -2152,7 +2024,6 @@ export class Checkmk implements INodeType {
 						name: 'ipaddress',
 						type: 'string',
 						default: '',
-						description: 'IP address',
 					},
 					{
 						displayName: 'Labels',
@@ -2236,7 +2107,11 @@ export class Checkmk implements INodeType {
 					if (operation === 'create') {
 						const hostName = this.getNodeParameter('hostName', i) as string;
 						const folder = this.getNodeParameter('folder', i) as string;
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 
 						const body: IDataObject = {
 							host_name: hostName,
@@ -2286,7 +2161,11 @@ export class Checkmk implements INodeType {
 
 					if (operation === 'update') {
 						const hostName = this.getNodeParameter('hostName', i) as string;
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 
 						const body: IDataObject = {
 							attributes: additionalFields,
@@ -2326,7 +2205,11 @@ export class Checkmk implements INodeType {
 
 					if (operation === 'rename') {
 						const hostName = this.getNodeParameter('hostName', i) as string;
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const newName = additionalFields.newName as string;
 
 						const body: IDataObject = {
@@ -2495,7 +2378,11 @@ export class Checkmk implements INodeType {
 
 					if (operation === 'create') {
 						const folderName = this.getNodeParameter('folderName', i) as string;
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 
 						const body: IDataObject = {
 							title: folderName,
@@ -2513,7 +2400,11 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'get') {
-						const response = await checkmkApiRequest.call(this, 'GET', `/objects/folder_config/${folder}`);
+						const response = await checkmkApiRequest.call(
+							this,
+							'GET',
+							`/objects/folder_config/${folder}`,
+						);
 						returnData.push(response);
 					}
 
@@ -2539,7 +2430,11 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'update') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 
 						const response = await checkmkApiRequest.call(
 							this,
@@ -2561,7 +2456,11 @@ export class Checkmk implements INodeType {
 					const name = this.getNodeParameter('name', i, '') as string;
 
 					if (operation === 'create') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 
 						const body: IDataObject = {
 							username: name,
@@ -2578,7 +2477,11 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'get') {
-						const response = await checkmkApiRequest.call(this, 'GET', `/objects/user_config/${name}`);
+						const response = await checkmkApiRequest.call(
+							this,
+							'GET',
+							`/objects/user_config/${name}`,
+						);
 						returnData.push(response);
 					}
 
@@ -2604,7 +2507,11 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'update') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 
 						const response = await checkmkApiRequest.call(
 							this,
@@ -2700,7 +2607,11 @@ export class Checkmk implements INodeType {
 
 					if (operation === 'create') {
 						const alias = this.getNodeParameter('alias', i, '') as string;
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 
 						const body: IDataObject = {
 							name: name,
@@ -2718,7 +2629,11 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'get') {
-						const response = await checkmkApiRequest.call(this, 'GET', `/objects/time_period/${name}`);
+						const response = await checkmkApiRequest.call(
+							this,
+							'GET',
+							`/objects/time_period/${name}`,
+						);
 						returnData.push(response);
 					}
 
@@ -2744,7 +2659,11 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'update') {
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 
 						const response = await checkmkApiRequest.call(
 							this,
@@ -2825,7 +2744,11 @@ export class Checkmk implements INodeType {
 				if (resource === 'activateChanges') {
 					if (operation === 'activate') {
 						const sites = this.getNodeParameter('activateOnSites', i, '') as string;
-						const forceForeignChanges = this.getNodeParameter('forceForeignChanges', i, false) as boolean;
+						const forceForeignChanges = this.getNodeParameter(
+							'forceForeignChanges',
+							i,
+							false,
+						) as boolean;
 
 						// First, get the ETag from pending changes
 						const etagResponse = await checkmkApiRequestWithETag.call(
@@ -2835,11 +2758,14 @@ export class Checkmk implements INodeType {
 						);
 
 						if (!etagResponse.etag) {
-							throw new Error('No ETag received from pending changes endpoint. Cannot activate changes.');
+							throw new NodeOperationError(
+								this.getNode(),
+								'No ETag received from pending changes endpoint. Cannot activate changes.',
+							);
 						}
 
 						const body: IDataObject = {
-							sites: sites ? sites.split(',').map(s => s.trim()) : [],
+							sites: sites ? sites.split(',').map((s) => s.trim()) : [],
 							force_foreign_changes: forceForeignChanges,
 						};
 
@@ -2860,12 +2786,20 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'getPending') {
-						const response = await checkmkApiRequest.call(this, 'GET', '/domain-types/activation_run/collections/pending_changes');
+						const response = await checkmkApiRequest.call(
+							this,
+							'GET',
+							'/domain-types/activation_run/collections/pending_changes',
+						);
 						returnData.push(response);
 					}
 
 					if (operation === 'getStatus') {
-						const response = await checkmkApiRequest.call(this, 'GET', '/domain-types/activation_run/collections/running');
+						const response = await checkmkApiRequest.call(
+							this,
+							'GET',
+							'/domain-types/activation_run/collections/running',
+						);
 						returnData.push(response);
 					}
 				}
@@ -2879,7 +2813,11 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'getMany') {
-						const response = await checkmkApiRequest.call(this, 'GET', '/domain-types/site/collections/all');
+						const response = await checkmkApiRequest.call(
+							this,
+							'GET',
+							'/domain-types/site/collections/all',
+						);
 						returnData.push(...(response.value || []));
 					}
 
@@ -2926,7 +2864,7 @@ export class Checkmk implements INodeType {
 						const returnAll = this.getNodeParameter('returnAll', i);
 						const hostName = this.getNodeParameter('hostName', i, '') as string;
 						const qs: IDataObject = {};
-						
+
 						if (hostName) {
 							qs.host_name = hostName;
 						}
@@ -2957,8 +2895,12 @@ export class Checkmk implements INodeType {
 					if (operation === 'acknowledge') {
 						const hostName = this.getNodeParameter('hostName', i) as string;
 						const serviceDescription = this.getNodeParameter('serviceDescription', i) as string;
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
-						const comment = additionalFields.comment as string || 'Acknowledged via n8n';
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
+						const comment = (additionalFields.comment as string) || 'Acknowledged via n8n';
 
 						const body: IDataObject = {
 							acknowledge_type: 'service',
@@ -2986,14 +2928,24 @@ export class Checkmk implements INodeType {
 						const downtimeType = this.getNodeParameter('downtimeType', i) as string;
 						const startTime = this.getNodeParameter('startTime', i, '') as string;
 						const endTime = this.getNodeParameter('endTime', i, '') as string;
-						const comment = this.getNodeParameter('comment', i, 'Scheduled downtime via n8n') as string;
+						const comment = this.getNodeParameter(
+							'comment',
+							i,
+							'Scheduled downtime via n8n',
+						) as string;
 						const hostName = this.getNodeParameter('hostName', i, '') as string;
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 
 						const body: IDataObject = {
 							downtime_type: downtimeType,
 							start_time: startTime ? new Date(startTime).toISOString() : new Date().toISOString(),
-							end_time: endTime ? new Date(endTime).toISOString() : new Date(Date.now() + 3600000).toISOString(),
+							end_time: endTime
+								? new Date(endTime).toISOString()
+								: new Date(Date.now() + 3600000).toISOString(),
 							comment: comment,
 						};
 
@@ -3017,7 +2969,11 @@ export class Checkmk implements INodeType {
 					if (operation === 'get') {
 						const downtimeId = this.getNodeParameter('downtimeId', i) as string;
 
-						const response = await checkmkApiRequest.call(this, 'GET', `/objects/downtime/${downtimeId}`);
+						const response = await checkmkApiRequest.call(
+							this,
+							'GET',
+							`/objects/downtime/${downtimeId}`,
+						);
 						returnData.push(response);
 					}
 
@@ -3158,11 +3114,7 @@ export class Checkmk implements INodeType {
 					if (operation === 'delete') {
 						const commentId = this.getNodeParameter('commentId', i) as string;
 
-						await checkmkApiRequest.call(
-							this,
-							'DELETE',
-							`/objects/comment/${commentId}`,
-						);
+						await checkmkApiRequest.call(this, 'DELETE', `/objects/comment/${commentId}`);
 						returnData.push({ success: true, message: 'Comment deleted' });
 					}
 				}
@@ -3188,20 +3140,20 @@ export class Checkmk implements INodeType {
 
 						// Build query object according to Checkmk API documentation
 						const queryConditions: any[] = [];
-						
+
 						if (hostname) {
 							queryConditions.push({
-								"op": "=",
-								"left": "name",
-								"right": hostname
+								op: '=',
+								left: 'name',
+								right: hostname,
 							});
 						}
-						
+
 						if (state) {
 							queryConditions.push({
-								"op": "=",
-								"left": "state",
-								"right": state
+								op: '=',
+								left: 'state',
+								right: state,
 							});
 						}
 
@@ -3212,15 +3164,15 @@ export class Checkmk implements INodeType {
 								query = queryConditions[0];
 							} else {
 								query = {
-									"op": "and",
-									"expr": queryConditions
+									op: 'and',
+									expr: queryConditions,
 								};
 							}
 						}
 
 						const qs: IDataObject = {
 							query: JSON.stringify(query),
-							columns: ['name', 'state']
+							columns: ['name', 'state'],
 						};
 
 						if (returnAll) {
@@ -3263,7 +3215,11 @@ export class Checkmk implements INodeType {
 				if (resource === 'serviceStatus') {
 					if (operation === 'getMany') {
 						const returnAll = this.getNodeParameter('returnAll', i);
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const hostName = additionalFields.hostName as string;
 
 						const qs: IDataObject = {};
@@ -3330,7 +3286,11 @@ export class Checkmk implements INodeType {
 				if (resource === 'auditLog') {
 					if (operation === 'getMany') {
 						const returnAll = this.getNodeParameter('returnAll', i);
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const userId = additionalFields.userId as string;
 						const objectType = additionalFields.objectType as string;
 
@@ -3419,11 +3379,7 @@ export class Checkmk implements INodeType {
 					if (operation === 'delete') {
 						const tagId = this.getNodeParameter('tagId', i) as string;
 
-						await checkmkApiRequest.call(
-							this,
-							'DELETE',
-							`/objects/aux_tag/${tagId}`,
-						);
+						await checkmkApiRequest.call(this, 'DELETE', `/objects/aux_tag/${tagId}`);
 						returnData.push({ success: true, message: 'Aux tag deleted' });
 					}
 				}
@@ -3485,11 +3441,7 @@ export class Checkmk implements INodeType {
 					if (operation === 'delete') {
 						const tagGroupId = this.getNodeParameter('tagGroupId', i) as string;
 
-						await checkmkApiRequest.call(
-							this,
-							'DELETE',
-							`/objects/host_tag_group/${tagGroupId}`,
-						);
+						await checkmkApiRequest.call(this, 'DELETE', `/objects/host_tag_group/${tagGroupId}`);
 						returnData.push({ success: true, message: 'Host tag group deleted' });
 					}
 				}
@@ -3681,7 +3633,10 @@ export class Checkmk implements INodeType {
 				if (resource === 'samlConnection') {
 					if (operation === 'create') {
 						const samlConnectionId = this.getNodeParameter('samlConnectionId', i) as string;
-						const identityProviderMetadata = this.getNodeParameter('identityProviderMetadata', i) as string;
+						const identityProviderMetadata = this.getNodeParameter(
+							'identityProviderMetadata',
+							i,
+						) as string;
 
 						const body: IDataObject = {
 							connection_id: samlConnectionId,
@@ -3708,7 +3663,10 @@ export class Checkmk implements INodeType {
 
 					if (operation === 'update') {
 						const samlConnectionId = this.getNodeParameter('samlConnectionId', i) as string;
-						const identityProviderMetadata = this.getNodeParameter('identityProviderMetadata', i) as string;
+						const identityProviderMetadata = this.getNodeParameter(
+							'identityProviderMetadata',
+							i,
+						) as string;
 
 						const body: IDataObject = {
 							identity_provider_metadata: identityProviderMetadata,
@@ -3745,7 +3703,7 @@ export class Checkmk implements INodeType {
 						const body: IDataObject = {
 							role_id: roleId,
 							alias: roleAlias,
-							permissions: permissions ? permissions.split(',').map(p => p.trim()) : [],
+							permissions: permissions ? permissions.split(',').map((p) => p.trim()) : [],
 						};
 
 						const response = await checkmkApiRequest.call(
@@ -3773,7 +3731,7 @@ export class Checkmk implements INodeType {
 
 						const body: IDataObject = {
 							alias: roleAlias,
-							permissions: permissions ? permissions.split(',').map(p => p.trim()) : [],
+							permissions: permissions ? permissions.split(',').map((p) => p.trim()) : [],
 						};
 
 						const response = await checkmkApiRequest.call(
@@ -3788,11 +3746,7 @@ export class Checkmk implements INodeType {
 					if (operation === 'delete') {
 						const roleId = this.getNodeParameter('roleId', i) as string;
 
-						await checkmkApiRequest.call(
-							this,
-							'DELETE',
-							`/objects/user_role/${roleId}`,
-						);
+						await checkmkApiRequest.call(this, 'DELETE', `/objects/user_role/${roleId}`);
 						returnData.push({ success: true, message: 'User role deleted' });
 					}
 				}
@@ -3892,4 +3846,3 @@ export class Checkmk implements INodeType {
 		return [this.helpers.returnJsonArray(returnData)];
 	}
 }
-

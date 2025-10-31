@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-checkmk",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"description": "Complete n8n node for Checkmk monitoring system with 100% API coverage - 38 resources, 100+ operations",
 	"keywords": [
 		"n8n-community-node-package",

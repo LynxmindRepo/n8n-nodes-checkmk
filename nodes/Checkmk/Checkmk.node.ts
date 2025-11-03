@@ -1521,17 +1521,17 @@ export class Checkmk implements INodeType {
 						type: 'options',
 						options: [
 							{
-								name: 'New (Monitor undecided services)',
+								name: 'New (Monitor Undecided Services)',
 								value: 'new',
 								description: 'Monitor undecided services',
 							},
 							{
-								name: 'Remove (Remove vanished services)',
+								name: 'Remove (Remove Vanished Services)',
 								value: 'remove',
 								description: 'Remove vanished services',
 							},
 							{
-								name: 'Fix All (Accept all)',
+								name: 'Fix All (Accept All)',
 								value: 'fix_all',
 								description: 'Accept all changes',
 							},
@@ -1541,7 +1541,7 @@ export class Checkmk implements INodeType {
 								description: 'Rescan - starts a background job',
 							},
 							{
-								name: 'Tabula Rasa (Remove all and find new)',
+								name: 'Tabula Rasa (Remove All and Find New)',
 								value: 'tabula_rasa',
 								description: 'Remove all and find new - starts a background job',
 							},

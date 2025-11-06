@@ -6,7 +6,12 @@ import {
 	IDataObject,
 } from 'n8n-workflow';
 
-import { checkmkApiRequest, checkmkApiRequestAllItems } from './GenericFunctions';
+import {
+	checkmkApiRequest,
+	checkmkApiRequestAllItems,
+	checkmkApiRequestWithIfMatch,
+	checkmkApiRequestWithETag,
+} from './GenericFunctions';
 
 export class Checkmk implements INodeType {
 	description: INodeTypeDescription = {
@@ -1662,10 +1667,10 @@ export class Checkmk implements INodeType {
 							attributes: additionalFields,
 						};
 
-						const response = await checkmkApiRequest.call(
+						const response = await checkmkApiRequestWithIfMatch.call(
 							this,
 							'PUT',
-							`/objects/host_config/${hostName}`,
+							`/objects/host_config/${encodeURIComponent(hostName)}`,
 							body,
 						);
 						returnData.push(response);
@@ -1673,7 +1678,11 @@ export class Checkmk implements INodeType {
 
 					if (operation === 'delete') {
 						const hostName = this.getNodeParameter('hostName', i) as string;
-						await checkmkApiRequest.call(this, 'DELETE', `/objects/host_config/${hostName}`);
+						await checkmkApiRequestWithIfMatch.call(
+							this,
+							'DELETE',
+							`/objects/host_config/${encodeURIComponent(hostName)}`,
+						);
 						returnData.push({ success: true, hostName });
 					}
 
@@ -1685,10 +1694,11 @@ export class Checkmk implements INodeType {
 							target_folder: folder,
 						};
 
-						const response = await checkmkApiRequest.call(
+						// Move operation requires If-Match header
+						const response = await checkmkApiRequestWithIfMatch.call(
 							this,
 							'POST',
-							`/objects/host_config/${hostName}/actions/move/invoke`,
+							`/objects/host_config/${encodeURIComponent(hostName)}/actions/move/invoke`,
 							body,
 						);
 						returnData.push(response);
@@ -1707,10 +1717,10 @@ export class Checkmk implements INodeType {
 							new_name: newName,
 						};
 
-						const response = await checkmkApiRequest.call(
+						const response = await checkmkApiRequestWithIfMatch.call(
 							this,
 							'PUT',
-							`/objects/host_config/${hostName}/actions/rename/invoke`,
+							`/objects/host_config/${encodeURIComponent(hostName)}/actions/rename/invoke`,
 							body,
 						);
 						returnData.push(response);
@@ -1775,17 +1785,21 @@ export class Checkmk implements INodeType {
 							alias: alias,
 						};
 
-						const response = await checkmkApiRequest.call(
+						const response = await checkmkApiRequestWithIfMatch.call(
 							this,
 							'PUT',
-							`/objects/host_group_config/${name}`,
+							`/objects/host_group_config/${encodeURIComponent(name)}`,
 							body,
 						);
 						returnData.push(response);
 					}
 
 					if (operation === 'delete') {
-						await checkmkApiRequest.call(this, 'DELETE', `/objects/host_group_config/${name}`);
+						await checkmkApiRequestWithIfMatch.call(
+							this,
+							'DELETE',
+							`/objects/host_group_config/${encodeURIComponent(name)}`,
+						);
 						returnData.push({ success: true, name });
 					}
 				}
@@ -1848,24 +1862,63 @@ export class Checkmk implements INodeType {
 							alias: alias,
 						};
 
-						const response = await checkmkApiRequest.call(
+						const response = await checkmkApiRequestWithIfMatch.call(
 							this,
 							'PUT',
-							`/objects/service_group_config/${name}`,
+							`/objects/service_group_config/${encodeURIComponent(name)}`,
 							body,
 						);
 						returnData.push(response);
 					}
 
 					if (operation === 'delete') {
-						await checkmkApiRequest.call(this, 'DELETE', `/objects/service_group_config/${name}`);
+						await checkmkApiRequestWithIfMatch.call(
+							this,
+							'DELETE',
+							`/objects/service_group_config/${encodeURIComponent(name)}`,
+						);
 						returnData.push({ success: true, name });
 					}
 				}
 
 				// ==================== FOLDER OPERATIONS ====================
 				if (resource === 'folder') {
-					const folder = this.getNodeParameter('folder', i, '/') as string;
+					let folder = this.getNodeParameter('folder', i, '/') as string;
+					
+					// Helper function to convert folder path to Checkmk API ID format
+					// Checkmk uses ~ prefix for folders (e.g., /hahaha -> ~hahaha)
+					const normalizeFolderId = (folderPath: string): string => {
+						if (!folderPath || folderPath === '/' || folderPath === '') {
+							return '~';
+						}
+						
+						// If already in ~ format, return as is (but normalize)
+						if (folderPath.startsWith('~')) {
+							// Remove any leading slashes and normalize
+							const normalized = folderPath.replace(/^\/+/, '').replace(/\/+$/, '');
+							return normalized;
+						}
+						
+						// Remove leading/trailing slashes and normalize
+						let cleanPath = folderPath.replace(/^\/+|\/+$/g, '');
+						
+						// If empty after cleaning, return root
+						if (cleanPath === '') {
+							return '~';
+						}
+						
+						// Split by slashes, filter empty segments, and join with ~
+						// /hahaha -> ~hahaha
+						// /parent/child -> ~parent~child
+						// hahaha -> ~hahaha (handles paths without leading slash)
+						const segments = cleanPath.split('/').filter(s => s !== '' && s !== null && s !== undefined);
+						
+						if (segments.length === 0) {
+							return '~';
+						}
+						
+						return '~' + segments.join('~');
+					};
 
 					if (operation === 'create') {
 						const additionalFields = this.getNodeParameter(
@@ -1874,10 +1927,23 @@ export class Checkmk implements INodeType {
 							{},
 						) as IDataObject;
 
+						const folderName = folder.split('/').pop() || '';
+						const parentPath = folder.split('/').slice(0, -1).join('/') || '/';
+						
+						// Title is required by Checkmk API - use provided title or fallback to folder name
+						const providedTitle = additionalFields.title as string;
+						const title = (providedTitle && providedTitle.trim() !== '') 
+							? providedTitle.trim() 
+							: folderName;
+
+						// Remove title from additionalFields to avoid duplication, then add it explicitly
+						const { title: _, ...restAdditionalFields } = additionalFields;
+
 						const body: IDataObject = {
-							name: folder.split('/').pop(),
-							parent: folder.split('/').slice(0, -1).join('/') || '/',
-							...additionalFields,
+							name: folderName,
+							parent: parentPath,
+							title: title,
+							...restAdditionalFields,
 						};
 
 						const response = await checkmkApiRequest.call(
@@ -1890,10 +1956,11 @@ export class Checkmk implements INodeType {
 					}
 
 					if (operation === 'get') {
+						const folderId = normalizeFolderId(folder);
 						const response = await checkmkApiRequest.call(
 							this,
 							'GET',
-							`/objects/folder_config/${folder}`,
+							`/objects/folder_config/${encodeURIComponent(folderId)}`,
 						);
 						returnData.push(response);
 					}
@@ -1926,17 +1993,23 @@ export class Checkmk implements INodeType {
 							{},
 						) as IDataObject;
 
-						const response = await checkmkApiRequest.call(
+						const folderId = normalizeFolderId(folder);
+						const response = await checkmkApiRequestWithIfMatch.call(
 							this,
 							'PUT',
-							`/objects/folder_config/${folder}`,
+							`/objects/folder_config/${encodeURIComponent(folderId)}`,
 							additionalFields,
 						);
 						returnData.push(response);
 					}
 
 					if (operation === 'delete') {
-						await checkmkApiRequest.call(this, 'DELETE', `/objects/folder_config/${folder}`);
+						const folderId = normalizeFolderId(folder);
+						await checkmkApiRequestWithIfMatch.call(
+							this,
+							'DELETE',
+							`/objects/folder_config/${encodeURIComponent(folderId)}`,
+						);
 						returnData.push({ success: true, folder });
 					}
 				}
@@ -2003,17 +2076,21 @@ export class Checkmk implements INodeType {
 							{},
 						) as IDataObject;
 
-						const response = await checkmkApiRequest.call(
+						const response = await checkmkApiRequestWithIfMatch.call(
 							this,
 							'PUT',
-							`/objects/user_config/${name}`,
+							`/objects/user_config/${encodeURIComponent(name)}`,
 							additionalFields,
 						);
 						returnData.push(response);
 					}
 
 					if (operation === 'delete') {
-						await checkmkApiRequest.call(this, 'DELETE', `/objects/user_config/${name}`);
+						await checkmkApiRequestWithIfMatch.call(
+							this,
+							'DELETE',
+							`/objects/user_config/${encodeURIComponent(name)}`,
+						);
 						returnData.push({ success: true, name });
 					}
 				}
@@ -2076,17 +2153,21 @@ export class Checkmk implements INodeType {
 							alias: alias,
 						};
 
-						const response = await checkmkApiRequest.call(
+						const response = await checkmkApiRequestWithIfMatch.call(
 							this,
 							'PUT',
-							`/objects/contact_group_config/${name}`,
+							`/objects/contact_group_config/${encodeURIComponent(name)}`,
 							body,
 						);
 						returnData.push(response);
 					}
 
 					if (operation === 'delete') {
-						await checkmkApiRequest.call(this, 'DELETE', `/objects/contact_group_config/${name}`);
+						await checkmkApiRequestWithIfMatch.call(
+							this,
+							'DELETE',
+							`/objects/contact_group_config/${encodeURIComponent(name)}`,
+						);
 						returnData.push({ success: true, name });
 					}
 				}
@@ -2155,17 +2236,21 @@ export class Checkmk implements INodeType {
 							{},
 						) as IDataObject;
 
-						const response = await checkmkApiRequest.call(
+						const response = await checkmkApiRequestWithIfMatch.call(
 							this,
 							'PUT',
-							`/objects/time_period/${name}`,
+							`/objects/time_period/${encodeURIComponent(name)}`,
 							additionalFields,
 						);
 						returnData.push(response);
 					}
 
 					if (operation === 'delete') {
-						await checkmkApiRequest.call(this, 'DELETE', `/objects/time_period/${name}`);
+						await checkmkApiRequestWithIfMatch.call(
+							this,
+							'DELETE',
+							`/objects/time_period/${encodeURIComponent(name)}`,
+						);
 						returnData.push({ success: true, name });
 					}
 				}
@@ -2262,11 +2347,32 @@ export class Checkmk implements INodeType {
 							force_foreign_changes: forceForeignChanges,
 						};
 
+						// Activate changes requires If-Match header with ETag from pending changes
+						// Get ETag from pending changes collection
+						let etag = '';
+						try {
+							const pendingResult = await checkmkApiRequestWithETag.call(
+								this,
+								'GET',
+								'/domain-types/activation_run/collections/pending_changes',
+							);
+							etag = pendingResult.etag || '';
+						} catch (error: any) {
+							// If we can't get ETag from pending changes, try to use "*" as fallback
+							etag = '*';
+						}
+
+						const ifMatchValue = etag && etag !== '*' ? `"${etag}"` : '"*"';
+
 						const response = await checkmkApiRequest.call(
 							this,
 							'POST',
 							'/domain-types/activation_run/actions/activate-changes/invoke',
 							body,
+							{},
+							{
+								'If-Match': ifMatchValue,
+							},
 						);
 						returnData.push(response);
 					}
@@ -2491,7 +2597,11 @@ export class Checkmk implements INodeType {
 						) as IDataObject;
 						const downtimeId = additionalFields.downtimeId as string;
 
-						await checkmkApiRequest.call(this, 'DELETE', `/objects/downtime/${downtimeId}`);
+						await checkmkApiRequestWithIfMatch.call(
+							this,
+							'DELETE',
+							`/objects/downtime/${encodeURIComponent(downtimeId)}`,
+						);
 						returnData.push({ success: true, downtimeId });
 					}
 				}
@@ -2592,10 +2702,11 @@ export class Checkmk implements INodeType {
 							persistent,
 						};
 
-						const response = await checkmkApiRequest.call(
+						// Add comment operation requires If-Match header
+						const response = await checkmkApiRequestWithIfMatch.call(
 							this,
 							'POST',
-							`/objects/host/${hostName}/actions/add_comment/invoke`,
+							`/objects/host/${encodeURIComponent(hostName)}/actions/add_comment/invoke`,
 							body,
 						);
 						returnData.push(response);
@@ -2618,7 +2729,11 @@ export class Checkmk implements INodeType {
 						) as IDataObject;
 						const commentId = additionalFields.commentId as string;
 
-						await checkmkApiRequest.call(this, 'DELETE', `/objects/comment/${commentId}`);
+						await checkmkApiRequestWithIfMatch.call(
+							this,
+							'DELETE',
+							`/objects/comment/${encodeURIComponent(commentId)}`,
+						);
 						returnData.push({ success: true, message: 'Comment deleted' });
 					}
 				}
@@ -2810,16 +2925,33 @@ export class Checkmk implements INodeType {
 							{},
 						) as IDataObject;
 						const tagId = additionalFields.tagId as string;
-						const title = additionalFields.title as string;
-						const topic = additionalFields.topic as string;
-						const help = additionalFields.help as string;
+						const title = additionalFields.title;
+						const topic = additionalFields.topic;
+						const help = additionalFields.help;
 
+						// Validate and normalize title - it's required
+						let validTitle: string;
+						if (title === undefined || title === null) {
+							throw new Error('Title is required for aux tag creation');
+						}
+						validTitle = String(title).trim();
+						if (validTitle === '') {
+							throw new Error('Title cannot be empty');
+						}
+
+						// Build body with required fields
 						const body: IDataObject = {
 							tag_id: tagId,
-							title,
-							topic,
-							help,
+							title: validTitle,
 						};
+
+						// Add optional fields only if they have values
+						if (topic !== undefined && topic !== null && String(topic).trim() !== '') {
+							body.topic = String(topic).trim();
+						}
+						if (help !== undefined && help !== null && String(help).trim() !== '') {
+							body.help = String(help).trim();
+						}
 
 						const response = await checkmkApiRequest.call(
 							this,
@@ -2846,20 +2978,37 @@ export class Checkmk implements INodeType {
 							{},
 						) as IDataObject;
 						const tagId = additionalFields.tagId as string;
-						const title = additionalFields.title as string;
-						const topic = additionalFields.topic as string;
-						const help = additionalFields.help as string;
+						const title = additionalFields.title;
+						const topic = additionalFields.topic;
+						const help = additionalFields.help;
 
+						// Validate and normalize title - it's required
+						let validTitle: string;
+						if (title === undefined || title === null) {
+							throw new Error('Title is required for aux tag update');
+						}
+						validTitle = String(title).trim();
+						if (validTitle === '') {
+							throw new Error('Title cannot be empty');
+						}
+
+						// Build body with required fields
 						const body: IDataObject = {
-							title,
-							topic,
-							help,
+							title: validTitle,
 						};
 
-						const response = await checkmkApiRequest.call(
+						// Add optional fields only if they have values
+						if (topic !== undefined && topic !== null && String(topic).trim() !== '') {
+							body.topic = String(topic).trim();
+						}
+						if (help !== undefined && help !== null && String(help).trim() !== '') {
+							body.help = String(help).trim();
+						}
+
+						const response = await checkmkApiRequestWithIfMatch.call(
 							this,
 							'PUT',
-							`/objects/aux_tag/${tagId}`,
+							`/objects/aux_tag/${encodeURIComponent(tagId)}`,
 							body,
 						);
 						returnData.push(response);
@@ -2873,7 +3022,11 @@ export class Checkmk implements INodeType {
 						) as IDataObject;
 						const tagId = additionalFields.tagId as string;
 
-						await checkmkApiRequest.call(this, 'DELETE', `/objects/aux_tag/${tagId}`);
+						await checkmkApiRequestWithIfMatch.call(
+							this,
+							'DELETE',
+							`/objects/aux_tag/${encodeURIComponent(tagId)}`,
+						);
 						returnData.push({ success: true, message: 'Aux tag deleted' });
 					}
 				}
@@ -2887,16 +3040,33 @@ export class Checkmk implements INodeType {
 							{},
 						) as IDataObject;
 						const tagGroupId = additionalFields.tagGroupId as string;
-						const title = additionalFields.title as string;
-						const topic = additionalFields.topic as string;
-						const help = additionalFields.help as string;
+						const title = additionalFields.title;
+						const topic = additionalFields.topic;
+						const help = additionalFields.help;
 
+						// Validate and normalize title - it's required
+						let validTitle: string;
+						if (title === undefined || title === null) {
+							throw new Error('Title is required for host tag group creation');
+						}
+						validTitle = String(title).trim();
+						if (validTitle === '') {
+							throw new Error('Title cannot be empty');
+						}
+
+						// Build body with required fields
 						const body: IDataObject = {
 							tag_group_id: tagGroupId,
-							title,
-							topic,
-							help,
+							title: validTitle,
 						};
+
+						// Add optional fields only if they have values
+						if (topic !== undefined && topic !== null && String(topic).trim() !== '') {
+							body.topic = String(topic).trim();
+						}
+						if (help !== undefined && help !== null && String(help).trim() !== '') {
+							body.help = String(help).trim();
+						}
 
 						const response = await checkmkApiRequest.call(
 							this,
@@ -2923,20 +3093,37 @@ export class Checkmk implements INodeType {
 							{},
 						) as IDataObject;
 						const tagGroupId = additionalFields.tagGroupId as string;
-						const title = additionalFields.title as string;
-						const topic = additionalFields.topic as string;
-						const help = additionalFields.help as string;
+						const title = additionalFields.title;
+						const topic = additionalFields.topic;
+						const help = additionalFields.help;
 
+						// Validate and normalize title - it's required
+						let validTitle: string;
+						if (title === undefined || title === null) {
+							throw new Error('Title is required for host tag group update');
+						}
+						validTitle = String(title).trim();
+						if (validTitle === '') {
+							throw new Error('Title cannot be empty');
+						}
+
+						// Build body with required fields
 						const body: IDataObject = {
-							title,
-							topic,
-							help,
+							title: validTitle,
 						};
 
-						const response = await checkmkApiRequest.call(
+						// Add optional fields only if they have values
+						if (topic !== undefined && topic !== null && String(topic).trim() !== '') {
+							body.topic = String(topic).trim();
+						}
+						if (help !== undefined && help !== null && String(help).trim() !== '') {
+							body.help = String(help).trim();
+						}
+
+						const response = await checkmkApiRequestWithIfMatch.call(
 							this,
 							'PUT',
-							`/objects/host_tag_group/${tagGroupId}`,
+							`/objects/host_tag_group/${encodeURIComponent(tagGroupId)}`,
 							body,
 						);
 						returnData.push(response);
@@ -2950,7 +3137,11 @@ export class Checkmk implements INodeType {
 						) as IDataObject;
 						const tagGroupId = additionalFields.tagGroupId as string;
 
-						await checkmkApiRequest.call(this, 'DELETE', `/objects/host_tag_group/${tagGroupId}`);
+						await checkmkApiRequestWithIfMatch.call(
+							this,
+							'DELETE',
+							`/objects/host_tag_group/${encodeURIComponent(tagGroupId)}`,
+						);
 						returnData.push({
 							success: true,
 							message: 'Host tag group deleted',
@@ -3013,10 +3204,10 @@ export class Checkmk implements INodeType {
 							bind_password: bindPassword,
 						};
 
-						const response = await checkmkApiRequest.call(
+						const response = await checkmkApiRequestWithIfMatch.call(
 							this,
 							'PUT',
-							`/objects/ldap_connection/${connectionId}`,
+							`/objects/ldap_connection/${encodeURIComponent(connectionId)}`,
 							body,
 						);
 						returnData.push(response);
@@ -3105,10 +3296,10 @@ export class Checkmk implements INodeType {
 							port,
 						};
 
-						const response = await checkmkApiRequest.call(
+						const response = await checkmkApiRequestWithIfMatch.call(
 							this,
 							'PUT',
-							`/objects/open_telemetry_collector/${collectorId}`,
+							`/objects/open_telemetry_collector/${encodeURIComponent(collectorId)}`,
 							body,
 						);
 						returnData.push(response);
@@ -3229,10 +3420,10 @@ export class Checkmk implements INodeType {
 							identity_provider_metadata: identityProviderMetadata,
 						};
 
-						const response = await checkmkApiRequest.call(
+						const response = await checkmkApiRequestWithIfMatch.call(
 							this,
 							'PUT',
-							`/objects/saml_connection/${connectionId}`,
+							`/objects/saml_connection/${encodeURIComponent(connectionId)}`,
 							body,
 						);
 						returnData.push(response);
@@ -3309,10 +3500,10 @@ export class Checkmk implements INodeType {
 							permissions,
 						};
 
-						const response = await checkmkApiRequest.call(
+						const response = await checkmkApiRequestWithIfMatch.call(
 							this,
 							'PUT',
-							`/objects/user_role/${roleId}`,
+							`/objects/user_role/${encodeURIComponent(roleId)}`,
 							body,
 						);
 						returnData.push(response);
@@ -3326,7 +3517,11 @@ export class Checkmk implements INodeType {
 						) as IDataObject;
 						const roleId = additionalFields.roleId as string;
 
-						await checkmkApiRequest.call(this, 'DELETE', `/objects/user_role/${roleId}`);
+						await checkmkApiRequestWithIfMatch.call(
+							this,
+							'DELETE',
+							`/objects/user_role/${encodeURIComponent(roleId)}`,
+						);
 						returnData.push({ success: true, message: 'User role deleted' });
 					}
 				}

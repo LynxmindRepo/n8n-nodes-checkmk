@@ -1431,12 +1431,66 @@ export class Checkmk implements INodeType {
 				type: 'string',
 				displayOptions: {
 					show: {
-						resource: ['host', 'folder'],
+						resource: ['host'],
 						operation: ['create', 'get', 'update', 'delete', 'move'],
 					},
 				},
 				default: '/',
 				description: 'Folder path',
+			},
+			{
+				displayName: 'Folder',
+				name: 'folder',
+				type: 'string',
+				displayOptions: {
+					show: {
+						resource: ['folder'],
+						operation: ['get', 'update', 'delete'],
+					},
+				},
+				default: '/',
+				description: 'Folder path',
+			},
+			{
+				displayName: 'Title',
+				name: 'title',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['folder'],
+						operation: ['create'],
+					},
+				},
+				default: '',
+				description: 'Title of the folder (required)',
+			},
+			{
+				displayName: 'Parent',
+				name: 'parent',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['folder'],
+						operation: ['create'],
+					},
+				},
+				default: '/',
+				description: 'Parent folder path (e.g., /testfolder)',
+			},
+			{
+				displayName: 'Name',
+				name: 'name',
+				type: 'string',
+				displayOptions: {
+					show: {
+						resource: ['folder'],
+						operation: ['create'],
+					},
+				},
+				default: '',
+				description: 'Name of the folder (optional, if not provided, title will be used)',
 			},
 			{
 				displayName: 'Site Name',
@@ -1587,6 +1641,28 @@ export class Checkmk implements INodeType {
 					},
 				],
 			},
+			{
+				displayName: 'Additional Fields',
+				name: 'additionalFields',
+				type: 'collection',
+				placeholder: 'Add Field',
+				default: {},
+				displayOptions: {
+					show: {
+						resource: ['folder'],
+						operation: ['create', 'update'],
+					},
+				},
+				options: [
+					{
+						displayName: 'Attributes',
+						name: 'attributes',
+						type: 'json',
+						default: '{}',
+						description: 'Additional folder attributes as JSON object (e.g., {"tag_criticality": "prod", "tag_networking": "wan"})',
+					},
+				],
+			},
 		],
 	};
 
@@ -1609,10 +1685,52 @@ export class Checkmk implements INodeType {
 							{},
 						) as IDataObject;
 
+						// Build attributes object
+						const attributes: IDataObject = {};
+
+						// Add IP address if provided
+						if (additionalFields.ipaddress) {
+							attributes.ipaddress = additionalFields.ipaddress;
+						}
+
+						// Process labels if provided
+						if (additionalFields.labels) {
+							const labelsString = additionalFields.labels as string;
+							if (labelsString.trim() !== '') {
+								const labelsObj: IDataObject = {};
+								const labelPairs = labelsString.split(',').map(l => l.trim());
+								for (const pair of labelPairs) {
+									const [key, value] = pair.split(':').map(s => s.trim());
+									if (key && value) {
+										labelsObj[key] = value;
+									}
+								}
+								if (Object.keys(labelsObj).length > 0) {
+									attributes.labels = labelsObj;
+								}
+							}
+						}
+
+						// Parse and merge custom attributes if provided
+						if (additionalFields.customAttributes) {
+							let customAttrs: IDataObject = {};
+							try {
+								if (typeof additionalFields.customAttributes === 'string') {
+									customAttrs = JSON.parse(additionalFields.customAttributes);
+								} else {
+									customAttrs = additionalFields.customAttributes as IDataObject;
+								}
+								// Merge custom attributes into attributes
+								Object.assign(attributes, customAttrs);
+							} catch (error) {
+								throw new Error(`Invalid JSON in customAttributes field: ${error}`);
+							}
+						}
+
 						const body: IDataObject = {
 							host_name: hostName,
 							folder: folder,
-							attributes: additionalFields,
+							attributes: attributes,
 						};
 
 						const response = await checkmkApiRequest.call(
@@ -1921,30 +2039,43 @@ export class Checkmk implements INodeType {
 					};
 
 					if (operation === 'create') {
+						const title = this.getNodeParameter('title', i) as string;
+						const parent = this.getNodeParameter('parent', i) as string;
+						const name = this.getNodeParameter('name', i, '') as string;
 						const additionalFields = this.getNodeParameter(
 							'additionalFields',
 							i,
 							{},
 						) as IDataObject;
 
-						const folderName = folder.split('/').pop() || '';
-						const parentPath = folder.split('/').slice(0, -1).join('/') || '/';
-						
-						// Title is required by Checkmk API - use provided title or fallback to folder name
-						const providedTitle = additionalFields.title as string;
-						const title = (providedTitle && providedTitle.trim() !== '') 
-							? providedTitle.trim() 
-							: folderName;
-
-						// Remove title from additionalFields to avoid duplication, then add it explicitly
-						const { title: _, ...restAdditionalFields } = additionalFields;
-
+						// Build the body with required fields
 						const body: IDataObject = {
-							name: folderName,
-							parent: parentPath,
 							title: title,
-							...restAdditionalFields,
+							parent: parent,
 						};
+
+						// Add name if provided (optional field)
+						if (name && name.trim() !== '') {
+							body.name = name.trim();
+						}
+
+						// Add additional attributes if provided
+						if (additionalFields.attributes) {
+							let attributes: IDataObject = {};
+							try {
+								if (typeof additionalFields.attributes === 'string') {
+									attributes = JSON.parse(additionalFields.attributes);
+								} else {
+									attributes = additionalFields.attributes as IDataObject;
+								}
+								// Add attributes as a nested object (as per Checkmk API specification)
+								if (Object.keys(attributes).length > 0) {
+									body.attributes = attributes;
+								}
+							} catch (error) {
+								throw new Error(`Invalid JSON in attributes field: ${error}`);
+							}
+						}
 
 						const response = await checkmkApiRequest.call(
 							this,

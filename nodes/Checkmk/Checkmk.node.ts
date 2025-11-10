@@ -4,6 +4,7 @@ import {
 	INodeType,
 	INodeTypeDescription,
 	IDataObject,
+	NodeOperationError,
 } from 'n8n-workflow';
 
 import {
@@ -1562,6 +1563,7 @@ export class Checkmk implements INodeType {
 				default: 50,
 				description: 'Max number of results to return',
 			},
+			// Additional Fields for Host Create
 			{
 				displayName: 'Additional Fields',
 				name: 'additionalFields',
@@ -1570,7 +1572,165 @@ export class Checkmk implements INodeType {
 				default: {},
 				displayOptions: {
 					show: {
-						resource: ['host', 'service', 'discovery'],
+						resource: ['host'],
+						operation: ['create'],
+					},
+				},
+				options: [
+					{
+						displayName: 'Bake Agent',
+						name: 'bake_agent',
+						type: 'boolean',
+						default: false,
+						description: 'Tries to bake the agents for the just created hosts (Enterprise Editions only)',
+					},
+					{
+						displayName: 'IP Address',
+						name: 'ipaddress',
+				type: 'string',
+				default: '',
+			},
+			{
+						displayName: 'Labels',
+						name: 'labels',
+				type: 'string',
+				default: '',
+						placeholder: 'label1:value1,label2:value2',
+						description: 'Comma-separated labels',
+					},
+					{
+						displayName: 'Custom Attributes',
+						name: 'customAttributes',
+						type: 'json',
+						default: '{}',
+						description: 'Custom attributes as JSON object',
+					},
+				],
+			},
+			// Additional Fields for Host Get
+			{
+				displayName: 'Additional Fields',
+				name: 'additionalFields',
+				type: 'collection',
+				placeholder: 'Add Field',
+				default: {},
+				displayOptions: {
+					show: {
+						resource: ['host'],
+						operation: ['get'],
+					},
+				},
+				options: [
+					{
+						displayName: 'Effective Attributes',
+						name: 'effective_attributes',
+						type: 'boolean',
+						default: false,
+						description: 'Show all effective attributes on hosts, not just the attributes which were set on this host specifically',
+					},
+				],
+			},
+			// Additional Fields for Host Get Many
+			{
+				displayName: 'Additional Fields',
+				name: 'additionalFields',
+				type: 'collection',
+				placeholder: 'Add Field',
+				default: {},
+				displayOptions: {
+					show: {
+						resource: ['host'],
+						operation: ['getMany'],
+					},
+				},
+				options: [
+					{
+						displayName: 'Effective Attributes',
+						name: 'effective_attributes',
+						type: 'boolean',
+						default: false,
+						description: 'Show all effective attributes on hosts, not just the attributes which were set on this host specifically',
+					},
+					{
+						displayName: 'Include Links',
+						name: 'include_links',
+						type: 'boolean',
+						default: false,
+						description: 'Flag which toggles whether the links field of the individual hosts should be populated',
+					},
+					{
+						displayName: 'Fields',
+						name: 'fields',
+				type: 'string',
+				default: '',
+						placeholder: '!(links)',
+						description: 'The fields to include/exclude (e.g., !(links) or (ipaddress,ipv6address))',
+			},
+			{
+						displayName: 'Hostnames',
+						name: 'hostnames',
+				type: 'string',
+				default: '',
+						placeholder: 'host1,host2',
+						description: 'Comma-separated list of host names to filter the result',
+			},
+			{
+						displayName: 'Site',
+						name: 'site',
+				type: 'string',
+				default: '',
+						description: 'Filter the result by a specific site',
+					},
+				],
+			},
+			// Additional Fields for Host Update
+			{
+				displayName: 'Additional Fields',
+				name: 'additionalFields',
+				type: 'collection',
+				placeholder: 'Add Field',
+				default: {},
+				displayOptions: {
+					show: {
+						resource: ['host'],
+						operation: ['update'],
+					},
+				},
+				options: [
+					{
+						displayName: 'Attributes',
+						name: 'attributes',
+						type: 'json',
+						default: '{}',
+						description: 'Replace all currently set attributes on the host (removes attributes not specified here)',
+					},
+					{
+						displayName: 'Update Attributes',
+						name: 'update_attributes',
+						type: 'json',
+						default: '{}',
+						description: 'Just update the hosts attributes (keeps existing attributes)',
+					},
+					{
+						displayName: 'Remove Attributes',
+						name: 'remove_attributes',
+				type: 'string',
+				default: '',
+						placeholder: 'tag_foobar,tag_criticality',
+						description: 'Comma-separated list of attributes to remove',
+					},
+				],
+			},
+			// Additional Fields for Service and Discovery
+			{
+				displayName: 'Additional Fields',
+				name: 'additionalFields',
+				type: 'collection',
+				placeholder: 'Add Field',
+				default: {},
+				displayOptions: {
+					show: {
+						resource: ['service', 'discovery'],
 					},
 				},
 				options: [
@@ -1618,35 +1778,14 @@ export class Checkmk implements INodeType {
 						default: 'new',
 						description: 'The mode of the discovery action (only used for Run operation)',
 					},
-					{
-						displayName: 'IP Address',
-						name: 'ipaddress',
-						type: 'string',
-						default: '',
-					},
-					{
-						displayName: 'Labels',
-						name: 'labels',
-						type: 'string',
-						default: '',
-						placeholder: 'label1:value1,label2:value2',
-						description: 'Comma-separated labels',
-					},
-					{
-						displayName: 'Custom Attributes',
-						name: 'customAttributes',
-						type: 'json',
-						default: '{}',
-						description: 'Custom attributes as JSON object',
-					},
 				],
 			},
-			{
-				displayName: 'Additional Fields',
-				name: 'additionalFields',
-				type: 'collection',
-				placeholder: 'Add Field',
-				default: {},
+				{
+					displayName: 'Additional Fields',
+					name: 'additionalFields',
+					type: 'collection',
+					placeholder: 'Add Field',
+					default: {},
 				displayOptions: {
 					show: {
 						resource: ['folder'],
@@ -1657,12 +1796,12 @@ export class Checkmk implements INodeType {
 					{
 						displayName: 'Attributes',
 						name: 'attributes',
-						type: 'json',
-						default: '{}',
+							type: 'json',
+							default: '{}',
 						description: 'Additional folder attributes as JSON object (e.g., {"tag_criticality": "prod", "tag_networking": "wan"})',
-					},
-				],
-			},
+						},
+					],
+				},
 		],
 	};
 
@@ -1723,7 +1862,7 @@ export class Checkmk implements INodeType {
 								// Merge custom attributes into attributes
 								Object.assign(attributes, customAttrs);
 							} catch (error) {
-								throw new Error(`Invalid JSON in customAttributes field: ${error}`);
+								throw new NodeOperationError(this.getNode(), `Invalid JSON in customAttributes field: ${error}`);
 							}
 						}
 
@@ -1733,32 +1872,82 @@ export class Checkmk implements INodeType {
 							attributes: attributes,
 						};
 
+						// Build query parameters
+						const qs: IDataObject = {};
+						if (additionalFields.bake_agent !== undefined) {
+							qs.bake_agent = additionalFields.bake_agent;
+						}
+
 						const response = await checkmkApiRequest.call(
 							this,
 							'POST',
 							'/domain-types/host_config/collections/all',
 							body,
+							qs,
 						);
 						returnData.push(response);
 					}
 
 					if (operation === 'get') {
 						const hostName = this.getNodeParameter('hostName', i) as string;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
+
+						// Build query parameters
+						const qs: IDataObject = {};
+						if (additionalFields.effective_attributes !== undefined) {
+							qs.effective_attributes = additionalFields.effective_attributes;
+						}
+
 						const response = await checkmkApiRequest.call(
 							this,
 							'GET',
 							`/objects/host_config/${hostName}`,
+							{},
+							qs,
 						);
 						returnData.push(response);
 					}
 
 					if (operation === 'getMany') {
 						const returnAll = this.getNodeParameter('returnAll', i);
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
+
+						// Build query parameters
+						const qs: IDataObject = {};
+						if (additionalFields.effective_attributes !== undefined) {
+							qs.effective_attributes = additionalFields.effective_attributes;
+						}
+						if (additionalFields.include_links !== undefined) {
+							qs.include_links = additionalFields.include_links;
+						}
+						if (additionalFields.fields) {
+							qs.fields = additionalFields.fields;
+						}
+						if (additionalFields.hostnames) {
+							const hostnamesString = additionalFields.hostnames as string;
+							if (hostnamesString.trim() !== '') {
+								qs.hostnames = hostnamesString.split(',').map(h => h.trim());
+							}
+						}
+						if (additionalFields.site) {
+							qs.site = additionalFields.site;
+						}
+
 						if (returnAll) {
 							const response = await checkmkApiRequestAllItems.call(
 								this,
 								'GET',
 								'/domain-types/host_config/collections/all',
+								{},
+								qs,
 							);
 							returnData.push(...response);
 						} else {
@@ -1767,6 +1956,8 @@ export class Checkmk implements INodeType {
 								this,
 								'GET',
 								'/domain-types/host_config/collections/all',
+								{},
+								qs,
 							);
 							const hosts = response.value || [];
 							returnData.push(...hosts.slice(0, limit));
@@ -1781,9 +1972,39 @@ export class Checkmk implements INodeType {
 							{},
 						) as IDataObject;
 
-						const body: IDataObject = {
-							attributes: additionalFields,
-						};
+						const body: IDataObject = {};
+
+						// Check which update method to use (only one can be used at a time)
+						if (additionalFields.attributes) {
+							let attributes: IDataObject = {};
+							try {
+								if (typeof additionalFields.attributes === 'string') {
+									attributes = JSON.parse(additionalFields.attributes);
+								} else {
+									attributes = additionalFields.attributes as IDataObject;
+								}
+								body.attributes = attributes;
+							} catch (error) {
+								throw new NodeOperationError(this.getNode(), `Invalid JSON in attributes field: ${error}`);
+							}
+						} else if (additionalFields.update_attributes) {
+							let updateAttrs: IDataObject = {};
+							try {
+								if (typeof additionalFields.update_attributes === 'string') {
+									updateAttrs = JSON.parse(additionalFields.update_attributes);
+								} else {
+									updateAttrs = additionalFields.update_attributes as IDataObject;
+								}
+								body.update_attributes = updateAttrs;
+							} catch (error) {
+								throw new NodeOperationError(this.getNode(), `Invalid JSON in update_attributes field: ${error}`);
+							}
+						} else if (additionalFields.remove_attributes) {
+							const removeAttrsString = additionalFields.remove_attributes as string;
+							if (removeAttrsString.trim() !== '') {
+								body.remove_attributes = removeAttrsString.split(',').map(a => a.trim());
+							}
+						}
 
 						const response = await checkmkApiRequestWithIfMatch.call(
 							this,
@@ -2073,7 +2294,7 @@ export class Checkmk implements INodeType {
 									body.attributes = attributes;
 								}
 							} catch (error) {
-								throw new Error(`Invalid JSON in attributes field: ${error}`);
+								throw new NodeOperationError(this.getNode(), `Invalid JSON in attributes field: ${error}`);
 							}
 						}
 
@@ -2569,7 +2790,7 @@ export class Checkmk implements INodeType {
 
 				// ==================== SERVICE OPERATIONS ====================
 				if (resource === 'service') {
-					const hostName = this.getNodeParameter('hostName', i) as string;
+						const hostName = this.getNodeParameter('hostName', i) as string;
 
 					if (operation === 'get') {
 						const additionalFields = this.getNodeParameter(
@@ -3063,11 +3284,11 @@ export class Checkmk implements INodeType {
 						// Validate and normalize title - it's required
 						let validTitle: string;
 						if (title === undefined || title === null) {
-							throw new Error('Title is required for aux tag creation');
+							throw new NodeOperationError(this.getNode(), 'Title is required for aux tag creation');
 						}
 						validTitle = String(title).trim();
 						if (validTitle === '') {
-							throw new Error('Title cannot be empty');
+							throw new NodeOperationError(this.getNode(), 'Title cannot be empty');
 						}
 
 						// Build body with required fields
@@ -3116,11 +3337,11 @@ export class Checkmk implements INodeType {
 						// Validate and normalize title - it's required
 						let validTitle: string;
 						if (title === undefined || title === null) {
-							throw new Error('Title is required for aux tag update');
+							throw new NodeOperationError(this.getNode(), 'Title is required for aux tag update');
 						}
 						validTitle = String(title).trim();
 						if (validTitle === '') {
-							throw new Error('Title cannot be empty');
+							throw new NodeOperationError(this.getNode(), 'Title cannot be empty');
 						}
 
 						// Build body with required fields
@@ -3178,11 +3399,11 @@ export class Checkmk implements INodeType {
 						// Validate and normalize title - it's required
 						let validTitle: string;
 						if (title === undefined || title === null) {
-							throw new Error('Title is required for host tag group creation');
+							throw new NodeOperationError(this.getNode(), 'Title is required for host tag group creation');
 						}
 						validTitle = String(title).trim();
 						if (validTitle === '') {
-							throw new Error('Title cannot be empty');
+							throw new NodeOperationError(this.getNode(), 'Title cannot be empty');
 						}
 
 						// Build body with required fields
@@ -3231,11 +3452,11 @@ export class Checkmk implements INodeType {
 						// Validate and normalize title - it's required
 						let validTitle: string;
 						if (title === undefined || title === null) {
-							throw new Error('Title is required for host tag group update');
+							throw new NodeOperationError(this.getNode(), 'Title is required for host tag group update');
 						}
 						validTitle = String(title).trim();
 						if (validTitle === '') {
-							throw new Error('Title cannot be empty');
+							throw new NodeOperationError(this.getNode(), 'Title cannot be empty');
 						}
 
 						// Build body with required fields

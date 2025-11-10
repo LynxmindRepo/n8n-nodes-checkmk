@@ -1582,7 +1582,7 @@ export class Checkmk implements INodeType {
 						name: 'bake_agent',
 						type: 'boolean',
 						default: false,
-						description: 'Tries to bake the agents for the just created hosts (Enterprise Editions only)',
+						description: 'Whether to bake the agents for the just created hosts (Enterprise Editions only)',
 					},
 					{
 						displayName: 'IP Address',
@@ -1626,7 +1626,7 @@ export class Checkmk implements INodeType {
 						name: 'effective_attributes',
 						type: 'boolean',
 						default: false,
-						description: 'Show all effective attributes on hosts, not just the attributes which were set on this host specifically',
+						description: 'Whether to show all effective attributes on hosts, not just the attributes which were set on this host specifically',
 					},
 				],
 			},
@@ -1649,14 +1649,7 @@ export class Checkmk implements INodeType {
 						name: 'effective_attributes',
 						type: 'boolean',
 						default: false,
-						description: 'Show all effective attributes on hosts, not just the attributes which were set on this host specifically',
-					},
-					{
-						displayName: 'Include Links',
-						name: 'include_links',
-						type: 'boolean',
-						default: false,
-						description: 'Flag which toggles whether the links field of the individual hosts should be populated',
+						description: 'Whether to show all effective attributes on hosts, not just the attributes which were set on this host specifically',
 					},
 					{
 						displayName: 'Fields',
@@ -1674,6 +1667,13 @@ export class Checkmk implements INodeType {
 						placeholder: 'host1,host2',
 						description: 'Comma-separated list of host names to filter the result',
 			},
+			{
+						displayName: 'Include Links',
+						name: 'include_links',
+						type: 'boolean',
+						default: false,
+						description: 'Whether the links field of the individual hosts should be populated',
+					},
 			{
 						displayName: 'Site',
 						name: 'site',

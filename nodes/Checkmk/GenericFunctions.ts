@@ -5,7 +5,6 @@ import {
 	IHttpRequestMethods,
 	JsonObject,
 	NodeApiError,
-	NodeOperationError,
 	IHttpRequestOptions,
 } from 'n8n-workflow';
 
@@ -365,5 +364,5 @@ export async function checkmkApiRequestWithIfMatch(
 	}
 	
 	// This should never be reached, but TypeScript needs it
-	throw new NodeOperationError(this.getNode(), 'Unexpected error in checkmkApiRequestWithIfMatch');
+	throw new Error('Unexpected error in checkmkApiRequestWithIfMatch');
 }

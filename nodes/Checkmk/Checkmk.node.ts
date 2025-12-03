@@ -1383,9 +1383,9 @@ export class Checkmk implements INodeType {
 				],
 				default: 'getMany',
 			},
-
+			// ==================== END OF OPERATIONS ====================
 			// ==================== FIELDS SECTION ====================
-			// Common fields used across multiple resources
+			// Common fields used across multiple resources 
 			{
 				displayName: 'Name',
 				name: 'name',
@@ -1393,7 +1393,7 @@ export class Checkmk implements INodeType {
 				required: true,
 				displayOptions: {
 					show: {
-						resource: ['hostGroup', 'serviceGroup', 'contactGroup', 'timePeriod', 'user'],
+						resource: ['hostGroup', 'serviceGroup', 'contactGroup', 'timePeriod', 'user', 'hostTagGroup'],
 						operation: ['create', 'get', 'update', 'delete'],
 					},
 				},
@@ -1426,6 +1426,7 @@ export class Checkmk implements INodeType {
 				default: '',
 				description: 'Name of the host',
 			},
+			// Host specific fields
 			{
 				displayName: 'Folder',
 				name: 'folder',
@@ -1439,6 +1440,7 @@ export class Checkmk implements INodeType {
 				default: '/',
 				description: 'Folder path',
 			},
+			// Folder specific fields
 			{
 				displayName: 'Folder',
 				name: 'folder',
@@ -1451,6 +1453,19 @@ export class Checkmk implements INodeType {
 				},
 				default: '/',
 				description: 'Folder path',
+			},
+			{
+				displayName: 'Name',
+				name: 'name',
+				type: 'string',
+				displayOptions: {
+					show: {
+						resource: ['folder'],
+						operation: ['create'],
+					},
+				},
+				default: '',
+				description: 'Name of the folder (optional, if not provided, title will be used)',
 			},
 			{
 				displayName: 'Title',
@@ -1480,19 +1495,49 @@ export class Checkmk implements INodeType {
 				default: '/',
 				description: 'Parent folder path (e.g., /testfolder)',
 			},
+			// User specific fields
 			{
-				displayName: 'Name',
-				name: 'name',
+				displayName: 'Username',
+				name: 'username',
 				type: 'string',
+				required: true,
 				displayOptions: {
 					show: {
-						resource: ['folder'],
+						resource: ['user'],
 						operation: ['create'],
 					},
 				},
 				default: '',
-				description: 'Name of the folder (optional, if not provided, title will be used)',
+				description: 'An unique username for the user',
 			},
+			{
+				displayName: 'Fullname',
+				name: 'fullname',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['user'],
+						operation: ['create'],
+					},
+				},
+				default: '',
+				description: 'The alias or full name of the user',
+			},
+			{
+				displayName: 'Customer',
+				name: 'customer',
+				type: 'string',
+				displayOptions: {
+					show: {
+						resource: ['user'],
+						operation: ['create'],
+					},
+				},
+				default: '',
+				description: 'By specifying a customer, you configure on which sites the user object will be available. global will make the object available on all sites.',
+			},
+			// Site specific fields
 			{
 				displayName: 'Site Name',
 				name: 'siteName',
@@ -1506,6 +1551,7 @@ export class Checkmk implements INodeType {
 				default: '',
 				description: 'Name of the site',
 			},
+			// ActivateChanges specific fields
 			{
 				displayName: 'Activate On Sites',
 				name: 'activateOnSites',
@@ -1533,7 +1579,6 @@ export class Checkmk implements INodeType {
 				default: false,
 				description: 'Whether to activate changes made by other users',
 			},
-
 			// Additional options
 			{
 				displayName: 'Return All',
@@ -1582,19 +1627,19 @@ export class Checkmk implements INodeType {
 						name: 'bake_agent',
 						type: 'boolean',
 						default: false,
-						description: 'Whether to bake the agents for the just created hosts (Enterprise Editions only)',
+						description: 'Tries to bake the agents for the just created hosts (Enterprise Editions only)',
 					},
 					{
 						displayName: 'IP Address',
 						name: 'ipaddress',
-				type: 'string',
-				default: '',
-			},
-			{
+						type: 'string',
+						default: '',
+					},
+					{
 						displayName: 'Labels',
 						name: 'labels',
-				type: 'string',
-				default: '',
+						type: 'string',
+						default: '',
 						placeholder: 'label1:value1,label2:value2',
 						description: 'Comma-separated labels',
 					},
@@ -1626,7 +1671,7 @@ export class Checkmk implements INodeType {
 						name: 'effective_attributes',
 						type: 'boolean',
 						default: false,
-						description: 'Whether to show all effective attributes on hosts, not just the attributes which were set on this host specifically',
+						description: 'Show all effective attributes on hosts, not just the attributes which were set on this host specifically',
 					},
 				],
 			},
@@ -1649,36 +1694,36 @@ export class Checkmk implements INodeType {
 						name: 'effective_attributes',
 						type: 'boolean',
 						default: false,
-						description: 'Whether to show all effective attributes on hosts, not just the attributes which were set on this host specifically',
+						description: 'Show all effective attributes on hosts, not just the attributes which were set on this host specifically',
 					},
 					{
-						displayName: 'Fields',
-						name: 'fields',
-				type: 'string',
-				default: '',
-						placeholder: '!(links)',
-						description: 'The fields to include/exclude (e.g., !(links) or (ipaddress,ipv6address))',
-			},
-			{
-						displayName: 'Hostnames',
-						name: 'hostnames',
-				type: 'string',
-				default: '',
-						placeholder: 'host1,host2',
-						description: 'Comma-separated list of host names to filter the result',
-			},
-			{
 						displayName: 'Include Links',
 						name: 'include_links',
 						type: 'boolean',
 						default: false,
-						description: 'Whether the links field of the individual hosts should be populated',
+						description: 'Flag which toggles whether the links field of the individual hosts should be populated',
 					},
-			{
+					{
+						displayName: 'Fields',
+						name: 'fields',
+						type: 'string',
+						default: '',
+						placeholder: '!(links)',
+						description: 'The fields to include/exclude (e.g., !(links) or (ipaddress,ipv6address))',
+					},
+					{
+						displayName: 'Hostnames',
+						name: 'hostnames',
+						type: 'string',
+						default: '',
+						placeholder: 'host1,host2',
+						description: 'Comma-separated list of host names to filter the result',
+					},
+					{
 						displayName: 'Site',
 						name: 'site',
-				type: 'string',
-				default: '',
+						type: 'string',
+						default: '',
 						description: 'Filter the result by a specific site',
 					},
 				],
@@ -1714,8 +1759,8 @@ export class Checkmk implements INodeType {
 					{
 						displayName: 'Remove Attributes',
 						name: 'remove_attributes',
-				type: 'string',
-				default: '',
+						type: 'string',
+						default: '',
 						placeholder: 'tag_foobar,tag_criticality',
 						description: 'Comma-separated list of attributes to remove',
 					},
@@ -1780,12 +1825,13 @@ export class Checkmk implements INodeType {
 					},
 				],
 			},
-				{
-					displayName: 'Additional Fields',
-					name: 'additionalFields',
-					type: 'collection',
-					placeholder: 'Add Field',
-					default: {},
+			// Additional Fields for Folder Create and Update
+			{
+				displayName: 'Additional Fields',
+				name: 'additionalFields',
+				type: 'collection',
+				placeholder: 'Add Field',
+				default: {},
 				displayOptions: {
 					show: {
 						resource: ['folder'],
@@ -1794,14 +1840,87 @@ export class Checkmk implements INodeType {
 				},
 				options: [
 					{
+						displayName: 'Title',
+						name: 'title',
+						type: 'string',
+						default: '',
+						description: 'New title/name for the folder (for update operation)',
+					},
+					{
 						displayName: 'Attributes',
 						name: 'attributes',
-							type: 'json',
-							default: '{}',
+						type: 'json',
+						default: '{}',
 						description: 'Additional folder attributes as JSON object (e.g., {"tag_criticality": "prod", "tag_networking": "wan"})',
-						},
-					],
+					},
+				],
+			},
+			//Authentication option for User Create
+			{
+				displayName: 'Authentication Type',
+				name: 'authType',
+				type: 'options',
+				displayOptions: {
+					show: {
+						resource: ['user'],
+						operation: ['create'],
+					},
 				},
+				options: [
+					{
+						name: '',
+						value: '',
+						description: '',
+					},
+					{
+						name: 'Password',
+						value: 'password',
+						description: 'The password for login',
+					},
+					{
+						name: 'Automation',
+						value: 'automation',
+						description: 'For accounts used by automation processes (such as fetching data from views for further procession). This is the automation secret',
+					},
+				],
+				default: '',
+				description: 'The authentication type',
+			},
+			{
+				displayName: 'Password',
+				name: 'Password',
+				type: 'string',
+				typeOptions:{
+					password:true,
+				},
+				displayOptions: {
+					show: {
+						resource: ['user'],
+						operation: ['create'],
+						authType: ['password'],
+					},
+				},
+				default: '',
+				description: 'The password for login',
+			},
+			{
+				displayName: 'Secret',
+				name: 'Automation',
+				type: 'string',
+				typeOptions:{
+					password:true,
+				},
+				displayOptions: {
+					show: {
+						resource: ['user'],
+						operation: ['create'],
+						authType: ['automation'],
+					},
+				},
+				default: '',
+				description: 'For accounts used by automation processes (such as fetching data from views for further procession). This is the automation secret',
+			}
+			
 		],
 	};
 
@@ -2223,39 +2342,39 @@ export class Checkmk implements INodeType {
 				// ==================== FOLDER OPERATIONS ====================
 				if (resource === 'folder') {
 					let folder = this.getNodeParameter('folder', i, '/') as string;
-					
+
 					// Helper function to convert folder path to Checkmk API ID format
 					// Checkmk uses ~ prefix for folders (e.g., /hahaha -> ~hahaha)
 					const normalizeFolderId = (folderPath: string): string => {
 						if (!folderPath || folderPath === '/' || folderPath === '') {
 							return '~';
 						}
-						
+
 						// If already in ~ format, return as is (but normalize)
 						if (folderPath.startsWith('~')) {
 							// Remove any leading slashes and normalize
 							const normalized = folderPath.replace(/^\/+/, '').replace(/\/+$/, '');
 							return normalized;
 						}
-						
+
 						// Remove leading/trailing slashes and normalize
 						let cleanPath = folderPath.replace(/^\/+|\/+$/g, '');
-						
+
 						// If empty after cleaning, return root
 						if (cleanPath === '') {
 							return '~';
 						}
-						
+
 						// Split by slashes, filter empty segments, and join with ~
 						// /hahaha -> ~hahaha
 						// /parent/child -> ~parent~child
 						// hahaha -> ~hahaha (handles paths without leading slash)
 						const segments = cleanPath.split('/').filter(s => s !== '' && s !== null && s !== undefined);
-						
+
 						if (segments.length === 0) {
 							return '~';
 						}
-						
+
 						return '~' + segments.join('~');
 					};
 
@@ -2263,11 +2382,7 @@ export class Checkmk implements INodeType {
 						const title = this.getNodeParameter('title', i) as string;
 						const parent = this.getNodeParameter('parent', i) as string;
 						const name = this.getNodeParameter('name', i, '') as string;
-						const additionalFields = this.getNodeParameter(
-							'additionalFields',
-							i,
-							{},
-						) as IDataObject;
+						const additionalFields = this.getNodeParameter('additionalFields', i, {},) as IDataObject;
 
 						// Build the body with required fields
 						const body: IDataObject = {
@@ -2371,16 +2486,37 @@ export class Checkmk implements INodeType {
 					const name = this.getNodeParameter('name', i, '') as string;
 
 					if (operation === 'create') {
-						const additionalFields = this.getNodeParameter(
-							'additionalFields',
-							i,
-							{},
-						) as IDataObject;
-
+						const username = this.getNodeParameter('username', i, '') as string;
+						const fullname = this.getNodeParameter('fullname', i, '') as string;
+						const customer = this.getNodeParameter('customer', i, '') as string;
+						const authType = this.getNodeParameter('authType', i, '') as string;
+						// Build the body with required fields
 						const body: IDataObject = {
-							username: name,
-							...additionalFields,
+							username: username,
+							fullname: fullname
 						};
+
+						// Add optional fields if provided
+						if (customer && customer.trim() !== '') {
+							body.customer = customer.trim();
+						}
+
+						// Handle authentication fields
+						if (authType === 'password') {
+							const password = this.getNodeParameter('Password', i, '') as string;
+							if (password && password.trim() !== '') {
+								body.password = password.trim();
+							} else {
+								throw new NodeOperationError(this.getNode(), 'Password must be provided for password authentication type');
+							}
+						} else if (authType === 'automation') {
+							const secret = this.getNodeParameter('Automation', i, '') as string;
+							if (secret && secret.trim() !== '') {
+								body.automation_secret = secret.trim();
+							} else {
+								throw new NodeOperationError(this.getNode(), 'Secret must be provided for automation authentication type');
+							}
+						}
 
 						const response = await checkmkApiRequest.call(
 							this,
@@ -2389,6 +2525,7 @@ export class Checkmk implements INodeType {
 							body,
 						);
 						returnData.push(response);
+					
 					}
 
 					if (operation === 'get') {
@@ -2790,7 +2927,7 @@ export class Checkmk implements INodeType {
 
 				// ==================== SERVICE OPERATIONS ====================
 				if (resource === 'service') {
-						const hostName = this.getNodeParameter('hostName', i) as string;
+					const hostName = this.getNodeParameter('hostName', i) as string;
 
 					if (operation === 'get') {
 						const additionalFields = this.getNodeParameter(

@@ -25,7 +25,8 @@
     "format": "prettier nodes credentials --write",
     "lint": "eslint \"nodes/**/*.ts\" \"credentials/**/*.ts\" package.json",
     "lintfix": "eslint \"nodes/**/*.ts\" \"credentials/**/*.ts\" package.json --fix",
-    "prepublishOnly": "npm run build && eslint -c .eslintrc.prepublish.js \"nodes/**/*.ts\" \"credentials/**/*.ts\" package.json"
+    "prepublishOnly": "npm run build && eslint -c .eslintrc.prepublish.js \"nodes/**/*.ts\" \"credentials/**/*.ts\" package.json",
+    "start:n8n": "npm run build && npx n8n"
   },
   "files": [
     "dist"

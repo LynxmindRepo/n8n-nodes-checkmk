@@ -1393,7 +1393,7 @@ export class Checkmk implements INodeType {
 				required: true,
 				displayOptions: {
 					show: {
-						resource: ['hostGroup', 'serviceGroup', 'contactGroup', 'timePeriod', 'user', 'hostTagGroup'],
+						resource: ['hostGroup', 'serviceGroup', 'contactGroup', 'timePeriod', 'user'],
 						operation: ['create', 'get', 'update', 'delete'],
 					},
 				},
@@ -1439,6 +1439,136 @@ export class Checkmk implements INodeType {
 				},
 				default: '/',
 				description: 'Folder path',
+			},
+			// Additional Fields for Host Create
+			{
+				displayName: 'Additional Fields',
+				name: 'additionalFields',
+				type: 'collection',
+				placeholder: 'Add Field',
+				default: {},
+				displayOptions: {
+					show: {
+						resource: ['host'],
+						operation: ['create'],
+					},
+				},
+				options: [
+					{
+						displayName: 'Bake Agent',
+						name: 'bake_agent',
+						type: 'boolean',
+						default: false,
+						description: 'Tries to bake the agents for the just created hosts (Enterprise Editions only)',
+					},
+					{
+						displayName: 'IP Address',
+						name: 'ipaddress',
+						type: 'string',
+						default: '',
+					},
+					{
+						displayName: 'Labels',
+						name: 'labels',
+						type: 'string',
+						default: '',
+						placeholder: 'label1:value1,label2:value2',
+						description: 'Comma-separated labels',
+					},
+					{
+						displayName: 'Custom Attributes',
+						name: 'customAttributes',
+						type: 'json',
+						default: '{}',
+						description: 'Custom attributes as JSON object',
+					},
+				],
+			},
+			// Host Tag Groups specific fields
+			{
+				displayName: 'Tag groupID',
+				name: 'tagGroupid',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['hostTagGroup'],
+						operation: ['create'],
+					},
+				},
+				default: '',
+				description: 'An id for the host tag group',
+			},
+			{
+				displayName: 'Title',
+				name: 'title',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['hostTagGroup'],
+						operation: ['create'],
+					},
+				},
+				default: '',
+				description: 'A title for the host tag',
+			},
+			{
+				displayName: 'Topic',
+				name: 'topic',
+				type: 'string',
+				displayOptions: {
+					show: {
+						resource: ['hostTagGroup'],
+						operation: ['create'],
+					},
+				},
+				default: 'Tags',
+				description: 'Different tags can be grouped in a topic',
+			},
+			{
+				displayName: 'Help',
+				name: 'help',
+				type: 'string',
+				displayOptions: {
+					show: {
+						resource: ['hostTagGroup'],
+						operation: ['create'],
+					},
+				},
+				default: '""',
+				description: 'A help description for the tag group',
+			},
+			{
+				displayName: 'Tag Choices',
+				name: 'tags',
+				type: 'collection',
+				placeholder: 'Select Tags',
+				default: {},
+				description: 'A list of host tags belonging to the host tag group',
+				displayOptions: {
+					show: {
+						resource: ['hostTagGroup'],
+						operation: ['create'],
+					},
+				},
+				options: [
+					{
+						displayName: 'Tag Id',
+						name: 'tagId',
+						type: 'string',
+						default: null,
+						description: 'An unique id for the tag',
+					},
+					{
+						displayName: 'Title',
+						name: 'title',
+						type: 'string',
+						required: true,
+						default: '',
+						description: 'The title of the tag',
+					},					
+				],
 			},
 			// Folder specific fields
 			{
@@ -1607,50 +1737,6 @@ export class Checkmk implements INodeType {
 				},
 				default: 50,
 				description: 'Max number of results to return',
-			},
-			// Additional Fields for Host Create
-			{
-				displayName: 'Additional Fields',
-				name: 'additionalFields',
-				type: 'collection',
-				placeholder: 'Add Field',
-				default: {},
-				displayOptions: {
-					show: {
-						resource: ['host'],
-						operation: ['create'],
-					},
-				},
-				options: [
-					{
-						displayName: 'Bake Agent',
-						name: 'bake_agent',
-						type: 'boolean',
-						default: false,
-						description: 'Tries to bake the agents for the just created hosts (Enterprise Editions only)',
-					},
-					{
-						displayName: 'IP Address',
-						name: 'ipaddress',
-						type: 'string',
-						default: '',
-					},
-					{
-						displayName: 'Labels',
-						name: 'labels',
-						type: 'string',
-						default: '',
-						placeholder: 'label1:value1,label2:value2',
-						description: 'Comma-separated labels',
-					},
-					{
-						displayName: 'Custom Attributes',
-						name: 'customAttributes',
-						type: 'json',
-						default: '{}',
-						description: 'Custom attributes as JSON object',
-					},
-				],
 			},
 			// Additional Fields for Host Get
 			{
@@ -1937,11 +2023,7 @@ export class Checkmk implements INodeType {
 					if (operation === 'create') {
 						const hostName = this.getNodeParameter('hostName', i) as string;
 						const folder = this.getNodeParameter('folder', i) as string;
-						const additionalFields = this.getNodeParameter(
-							'additionalFields',
-							i,
-							{},
-						) as IDataObject;
+						const additionalFields = this.getNodeParameter('additionalFields',	i, {},) as IDataObject;
 
 						// Build attributes object
 						const attributes: IDataObject = {};
@@ -3523,46 +3605,43 @@ export class Checkmk implements INodeType {
 				// ==================== HOST TAG GROUP OPERATIONS ====================
 				if (resource === 'hostTagGroup') {
 					if (operation === 'create') {
-						const additionalFields = this.getNodeParameter(
-							'additionalFields',
-							i,
-							{},
-						) as IDataObject;
-						const tagGroupId = additionalFields.tagGroupId as string;
-						const title = additionalFields.title;
-						const topic = additionalFields.topic;
-						const help = additionalFields.help;
-
-						// Validate and normalize title - it's required
-						let validTitle: string;
-						if (title === undefined || title === null) {
-							throw new NodeOperationError(this.getNode(), 'Title is required for host tag group creation');
-						}
-						validTitle = String(title).trim();
-						if (validTitle === '') {
-							throw new NodeOperationError(this.getNode(), 'Title cannot be empty');
-						}
-
-						// Build body with required fields
+						const id = this.getNodeParameter('tagGroupid',i,'') as string;
+						const title =  this.getNodeParameter('title',i,'') as string;
+						const topic = this.getNodeParameter('topic',i,'') as string;
+						const help = this.getNodeParameter('help',i,'') as string;
+						const tagsCollection = this.getNodeParameter('tags', i, [],) as Array<IDataObject>;
+						
+						const tagsArray = Array.isArray(tagsCollection) ? tagsCollection : [tagsCollection];
+						// Build tags for API
+						const apiTags = tagsArray.map(tagItem => {
+							const tagBody : IDataObject = {
+								title: tagItem.title as string,
+							}
+							if (tagItem.tagId && String(tagItem.tagId).trim() !== '') {
+								tagBody.id = String(tagItem.tagId).trim();
+							}
+							return tagBody;
+						});
 						const body: IDataObject = {
-							tag_group_id: tagGroupId,
-							title: validTitle,
+							id: id,
+							title: title,
+							tags: apiTags,
 						};
-
-						// Add optional fields only if they have values
-						if (topic !== undefined && topic !== null && String(topic).trim() !== '') {
+						
+						if (topic && String(topic).trim() !== '') {
 							body.topic = String(topic).trim();
 						}
-						if (help !== undefined && help !== null && String(help).trim() !== '') {
+						if (help && String(help).trim() !== '') {
 							body.help = String(help).trim();
 						}
-
+						
 						const response = await checkmkApiRequest.call(
 							this,
 							'POST',
 							'/domain-types/host_tag_group/collections/all',
 							body,
 						);
+						
 						returnData.push(response);
 					}
 

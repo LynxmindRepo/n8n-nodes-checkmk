@@ -4166,6 +4166,7 @@ export class Checkmk implements INodeType {
 					}
 				}
 
+				
 				// ==================== QUICK SETUP OPERATIONS ====================
 				if (resource === 'quickSetup') {
 					if (operation === 'getMany') {

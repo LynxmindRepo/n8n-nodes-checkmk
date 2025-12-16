@@ -1564,10 +1564,10 @@ export class Checkmk implements INodeType {
 						displayName: 'Title',
 						name: 'title',
 						type: 'string',
-						required: true,
 						default: '',
 						description: 'The title of the tag',
-					},					
+					},
+										
 				],
 			},
 			// Folder specific fields
@@ -2005,6 +2005,96 @@ export class Checkmk implements INodeType {
 				},
 				default: '',
 				description: 'For accounts used by automation processes (such as fetching data from views for further procession). This is the automation secret',
+			},
+			// Downtime specific fields
+			{
+				displayName: 'Start Time',
+				name: 'start_time',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['downtime'],
+						operation: ['create'],
+					},
+				},
+				default: '',
+				description: 'The start datetime of the new downtime. The format has to conform to the ISO 8601 profile',
+			},
+			{
+				displayName: 'End Time',
+				name: 'end_time',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['downtime'],
+						operation: ['create'],
+					},
+				},
+				default: '',
+				description: 'The end datetime of the new downtime. The format has to conform to the ISO 8601 profile',
+			},
+			{
+				displayName: 'Downtime Type',
+				name: 'downtimeType',
+				type: 'options',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['downtime'],
+						operation: ['create'],
+					},
+				},
+				options: [
+					{
+						name: '',
+						value: '',
+						description: '',
+					},
+					{
+						name: 'Host',
+						value: 'host',
+						description: 'Schedule downtimes for a host identified by host name or IP address',
+					},
+					{
+						name: 'Hostgroup',
+						value: 'hostgroup',
+						description: 'Schedule downtimes for all hosts belonging to the specified hostgroup',
+					},
+				],
+				default: '',
+				description: 'The type of downtime to create. Valid values are "host", "hostgroup" and "host_by_query"',
+			},
+			{
+				displayName: 'Host_Name',
+				name: 'host_name',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['downtime'],
+						operation: ['create'],
+						downtimeType: ['host'],
+					},
+				},
+				default: '',
+				description: 'The host name or IP address itself.',
+			},
+			{
+				displayName: 'Hostgroup_Name',
+				name: 'hostgroup_name',
+				type: 'string',
+				required: true,
+				displayOptions: {
+					show: {
+						resource: ['downtime'],
+						operation: ['create'],
+						downtimeType: ['hostgroup'],
+					},
+				},
+				default: '',
+				description: 'The name of the host group. A downtime will be scheduled for all hosts in this host group.',
 			}
 			
 		],
@@ -3088,35 +3178,37 @@ export class Checkmk implements INodeType {
 				// ==================== DOWNTIME OPERATIONS ====================
 				if (resource === 'downtime') {
 					if (operation === 'create') {
+
+						const downtimeType = this.getNodeParameter('downtimeType', i) as string;
+						const startTime = this.getNodeParameter('start_time', i) as string;
+						const endTime = this.getNodeParameter('end_time', i) as string;
+
 						const additionalFields = this.getNodeParameter(
 							'additionalFields',
 							i,
 							{},
 						) as IDataObject;
+						const comment = additionalFields.comment || 'Scheduled downtime via n8n';
 
 						const body: IDataObject = {
-							downtime_type: additionalFields.downtimeType || 'host',
-							start_time: additionalFields.startTime
-								? new Date(additionalFields.startTime as string).toISOString()
-								: new Date().toISOString(),
-							end_time: additionalFields.endTime
-								? new Date(additionalFields.endTime as string).toISOString()
-								: new Date(Date.now() + 3600000).toISOString(),
-							comment: additionalFields.comment || 'Scheduled downtime via n8n',
+							start_time: startTime,
+							end_time: endTime,
+							comment: comment,
+							downtime_type: downtimeType,
 						};
 
-						if (additionalFields.hostName) {
-							body.host_name = additionalFields.hostName;
-						}
-
-						if (additionalFields.serviceDescription) {
-							body.service_description = additionalFields.serviceDescription;
+						if (downtimeType === 'host') {
+							const hostName = this.getNodeParameter('host_name', i) as string;
+							body.host_name = hostName;
+						} else if (downtimeType === 'hostgroup') {
+							const hostgroupName = this.getNodeParameter('hostgroup_name', i) as string;
+							body.hostgroup_name = hostgroupName;
 						}
 
 						const response = await checkmkApiRequest.call(
 							this,
 							'POST',
-							'/domain-types/downtime/collections/all',
+							'/domain-types/downtime/collections/host',
 							body,
 						);
 						returnData.push(response);
@@ -4166,7 +4258,6 @@ export class Checkmk implements INodeType {
 					}
 				}
 
-				
 				// ==================== QUICK SETUP OPERATIONS ====================
 				if (resource === 'quickSetup') {
 					if (operation === 'getMany') {
@@ -4187,6 +4278,11 @@ export class Checkmk implements INodeType {
 			}
 		}
 
-		return [this.helpers.returnJsonArray(returnData)];
+		const executionData: INodeExecutionData[] = [];
+		for (let i = 0; i < returnData.length; i++) {
+			executionData.push({ json: returnData[i], pairedItem: { item: i } });
+		}
+
+		return [executionData];
 	}
 }

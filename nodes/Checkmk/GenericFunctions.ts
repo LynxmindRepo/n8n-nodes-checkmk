@@ -27,14 +27,17 @@ export async function checkmkApiRequest(
 		headers: {
 			'Content-Type': 'application/json',
 			Accept: 'application/json',
-			Authorization: `Bearer ${credentials.username} ${credentials.password}`,
 			...customHeaders,
 		},
 		json: true,
 	};
 
 	try {
-		return await this.helpers.httpRequest(options);
+		return await this.helpers.httpRequestWithAuthentication.call(
+			this,
+			'checkmkApi',
+			options,
+		);
 	} catch (error) {
 		throw new NodeApiError(this.getNode(), error as JsonObject);
 	}
@@ -85,14 +88,17 @@ export async function checkmkApiRequestWithETag(
 		headers: {
 			'Content-Type': 'application/json',
 			Accept: 'application/json',
-			Authorization: `Bearer ${credentials.username} ${credentials.password}`,
 		},
 		json: true,
 		returnFullResponse: true,
 	};
 
 	try {
-		const response = await this.helpers.httpRequest(options);
+		const response = await this.helpers.httpRequestWithAuthentication.call(
+			this,
+			'checkmkApi',
+			options,
+		);
 		
 		// Try different possible header names for ETag (case-insensitive search)
 		const headers = response.headers || {};
@@ -353,7 +359,7 @@ export async function checkmkApiRequestWithIfMatch(
 								throw retryError;
 							}
 						}
-					} catch (etagError: any) {
+					} catch {
 						// If we can't get fresh ETag, throw original error
 						throw error;
 					}

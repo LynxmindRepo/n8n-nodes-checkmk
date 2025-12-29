@@ -25,8 +25,7 @@
     "format": "prettier nodes credentials --write",
     "lint": "eslint \"nodes/**/*.ts\" \"credentials/**/*.ts\" package.json",
     "lintfix": "eslint \"nodes/**/*.ts\" \"credentials/**/*.ts\" package.json --fix",
-    "prepublishOnly": "npm run build && eslint -c .eslintrc.prepublish.js \"nodes/**/*.ts\" \"credentials/**/*.ts\" package.json",
-    "start:n8n": "npm run build && npx n8n"
+    "prepublishOnly": "npm run build && eslint -c .eslintrc.prepublish.js \"nodes/**/*.ts\" \"credentials/**/*.ts\" package.json"
   },
   "files": [
     "dist"
@@ -52,7 +51,7 @@
   "peerDependencies": {
     "n8n-workflow": "*"
   },
-  "overrides": {
-    "form-data": "^4.0.4"
+  "dependencies": {
+    "axios": "^1.13.1"
   }
 }

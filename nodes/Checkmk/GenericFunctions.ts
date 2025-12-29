@@ -5,6 +5,7 @@ import {
 	IHttpRequestMethods,
 	JsonObject,
 	NodeApiError,
+	NodeOperationError,
 	IHttpRequestOptions,
 } from 'n8n-workflow';
 
@@ -26,17 +27,14 @@ export async function checkmkApiRequest(
 		headers: {
 			'Content-Type': 'application/json',
 			Accept: 'application/json',
+			Authorization: `Bearer ${credentials.username} ${credentials.password}`,
 			...customHeaders,
 		},
 		json: true,
 	};
 
 	try {
-		return await this.helpers.httpRequestWithAuthentication.call(
-			this,
-			'checkmkApi',
-			options,
-		);
+		return await this.helpers.httpRequest(options);
 	} catch (error) {
 		throw new NodeApiError(this.getNode(), error as JsonObject);
 	}
@@ -87,17 +85,14 @@ export async function checkmkApiRequestWithETag(
 		headers: {
 			'Content-Type': 'application/json',
 			Accept: 'application/json',
+			Authorization: `Bearer ${credentials.username} ${credentials.password}`,
 		},
 		json: true,
 		returnFullResponse: true,
 	};
 
 	try {
-		const response = await this.helpers.httpRequestWithAuthentication.call(
-			this,
-			'checkmkApi',
-			options,
-		);
+		const response = await this.helpers.httpRequest(options);
 		
 		// Try different possible header names for ETag (case-insensitive search)
 		const headers = response.headers || {};
@@ -370,5 +365,5 @@ export async function checkmkApiRequestWithIfMatch(
 	}
 	
 	// This should never be reached, but TypeScript needs it
-	throw new Error('Unexpected error in checkmkApiRequestWithIfMatch');
+	throw new NodeOperationError(this.getNode(), 'Unexpected error in checkmkApiRequestWithIfMatch');
 }

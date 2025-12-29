@@ -359,7 +359,7 @@ export async function checkmkApiRequestWithIfMatch(
 								throw retryError;
 							}
 						}
-					} catch (etagError: any) {
+					} catch {
 						// If we can't get fresh ETag, throw original error
 						throw error;
 					}

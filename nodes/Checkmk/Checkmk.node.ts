@@ -1385,7 +1385,7 @@ export class Checkmk implements INodeType {
 			},
 			// ==================== END OF OPERATIONS ====================
 			// ==================== FIELDS SECTION ====================
-			// Common fields used across multiple resources 
+			// Common fields used across multiple resources
 			{
 				displayName: 'Name',
 				name: 'name',
@@ -1459,7 +1459,8 @@ export class Checkmk implements INodeType {
 						name: 'bake_agent',
 						type: 'boolean',
 						default: false,
-						description: 'Tries to bake the agents for the just created hosts (Enterprise Editions only)',
+						description:
+							'Whether tries to bake the agents for the just created hosts (Enterprise Editions only)',
 					},
 					{
 						displayName: 'IP Address',
@@ -1497,7 +1498,7 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: '',
-				description: 'An id for the host tag group',
+				description: 'An ID for the host tag group',
 			},
 			{
 				displayName: 'Title',
@@ -1554,11 +1555,11 @@ export class Checkmk implements INodeType {
 				},
 				options: [
 					{
-						displayName: 'Tag Id',
+						displayName: 'Tag ID',
 						name: 'tagId',
 						type: 'string',
-						default: null,
-						description: 'An unique id for the tag',
+						default: '',
+						description: 'An unique ID for the tag',
 					},
 					{
 						displayName: 'Title',
@@ -1567,7 +1568,6 @@ export class Checkmk implements INodeType {
 						default: '',
 						description: 'The title of the tag',
 					},
-										
 				],
 			},
 			// Folder specific fields
@@ -1665,7 +1665,8 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: '',
-				description: 'By specifying a customer, you configure on which sites the user object will be available. global will make the object available on all sites.',
+				description:
+					'By specifying a customer, you configure on which sites the user object will be available. global will make the object available on all sites.',
 			},
 			// Site specific fields
 			{
@@ -1757,7 +1758,8 @@ export class Checkmk implements INodeType {
 						name: 'effective_attributes',
 						type: 'boolean',
 						default: false,
-						description: 'Show all effective attributes on hosts, not just the attributes which were set on this host specifically',
+						description:
+							'Whether to show all effective attributes on hosts or just the attributes which were set on this host specifically',
 					},
 				],
 			},
@@ -1780,14 +1782,8 @@ export class Checkmk implements INodeType {
 						name: 'effective_attributes',
 						type: 'boolean',
 						default: false,
-						description: 'Show all effective attributes on hosts, not just the attributes which were set on this host specifically',
-					},
-					{
-						displayName: 'Include Links',
-						name: 'include_links',
-						type: 'boolean',
-						default: false,
-						description: 'Flag which toggles whether the links field of the individual hosts should be populated',
+						description:
+							'Whether to show all effective attributes on hosts or just the attributes which were set on this host specifically',
 					},
 					{
 						displayName: 'Fields',
@@ -1795,7 +1791,8 @@ export class Checkmk implements INodeType {
 						type: 'string',
 						default: '',
 						placeholder: '!(links)',
-						description: 'The fields to include/exclude (e.g., !(links) or (ipaddress,ipv6address))',
+						description:
+							'The fields to include/exclude (e.g., !(links) or (ipaddress,ipv6address))',
 					},
 					{
 						displayName: 'Hostnames',
@@ -1804,6 +1801,13 @@ export class Checkmk implements INodeType {
 						default: '',
 						placeholder: 'host1,host2',
 						description: 'Comma-separated list of host names to filter the result',
+					},
+					{
+						displayName: 'Include Links',
+						name: 'include_links',
+						type: 'boolean',
+						default: false,
+						description: 'Whether to include the links field in the response for each host',
 					},
 					{
 						displayName: 'Site',
@@ -1833,7 +1837,8 @@ export class Checkmk implements INodeType {
 						name: 'attributes',
 						type: 'json',
 						default: '{}',
-						description: 'Replace all currently set attributes on the host (removes attributes not specified here)',
+						description:
+							'Replace all currently set attributes on the host (removes attributes not specified here)',
 					},
 					{
 						displayName: 'Update Attributes',
@@ -1937,7 +1942,8 @@ export class Checkmk implements INodeType {
 						name: 'attributes',
 						type: 'json',
 						default: '{}',
-						description: 'Additional folder attributes as JSON object (e.g., {"tag_criticality": "prod", "tag_networking": "wan"})',
+						description:
+							'Additional folder attributes as JSON object (e.g., {"tag_criticality": "prod", "tag_networking": "wan"})',
 					},
 				],
 			},
@@ -1956,7 +1962,6 @@ export class Checkmk implements INodeType {
 					{
 						name: '',
 						value: '',
-						description: '',
 					},
 					{
 						name: 'Password',
@@ -1966,18 +1971,18 @@ export class Checkmk implements INodeType {
 					{
 						name: 'Automation',
 						value: 'automation',
-						description: 'For accounts used by automation processes (such as fetching data from views for further procession). This is the automation secret',
+						description:
+							'For accounts used by automation processes (such as fetching data from views for further procession). This is the automation secret.',
 					},
 				],
 				default: '',
-				description: 'The authentication type',
 			},
 			{
 				displayName: 'Password',
 				name: 'Password',
 				type: 'string',
-				typeOptions:{
-					password:true,
+				typeOptions: {
+					password: true,
 				},
 				displayOptions: {
 					show: {
@@ -1993,8 +1998,8 @@ export class Checkmk implements INodeType {
 				displayName: 'Secret',
 				name: 'Automation',
 				type: 'string',
-				typeOptions:{
-					password:true,
+				typeOptions: {
+					password: true,
 				},
 				displayOptions: {
 					show: {
@@ -2004,7 +2009,8 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: '',
-				description: 'For accounts used by automation processes (such as fetching data from views for further procession). This is the automation secret',
+				description:
+					'For accounts used by automation processes (such as fetching data from views for further procession). This is the automation secret.',
 			},
 			// Downtime specific fields
 			{
@@ -2019,7 +2025,8 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: '',
-				description: 'The start datetime of the new downtime. The format has to conform to the ISO 8601 profile',
+				description:
+					'The start datetime of the new downtime. The format has to conform to the ISO 8601 profile.',
 			},
 			{
 				displayName: 'End Time',
@@ -2033,7 +2040,8 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: '',
-				description: 'The end datetime of the new downtime. The format has to conform to the ISO 8601 profile',
+				description:
+					'The end datetime of the new downtime. The format has to conform to the ISO 8601 profile.',
 			},
 			{
 				displayName: 'Downtime Type',
@@ -2050,7 +2058,6 @@ export class Checkmk implements INodeType {
 					{
 						name: '',
 						value: '',
-						description: '',
 					},
 					{
 						name: 'Host',
@@ -2064,7 +2071,8 @@ export class Checkmk implements INodeType {
 					},
 				],
 				default: '',
-				description: 'The type of downtime to create. Valid values are "host", "hostgroup" and "host_by_query"',
+				description:
+					'The type of downtime to create. Valid values are "host", "hostgroup" and "host_by_query".',
 			},
 			{
 				displayName: 'Host_Name',
@@ -2079,7 +2087,7 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: '',
-				description: 'The host name or IP address itself.',
+				description: 'The host name or IP address itself',
 			},
 			{
 				displayName: 'Hostgroup_Name',
@@ -2094,9 +2102,9 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: '',
-				description: 'The name of the host group. A downtime will be scheduled for all hosts in this host group.',
-			}
-			
+				description:
+					'The name of the host group. A downtime will be scheduled for all hosts in this host group.',
+			},
 		],
 	};
 
@@ -2113,7 +2121,11 @@ export class Checkmk implements INodeType {
 					if (operation === 'create') {
 						const hostName = this.getNodeParameter('hostName', i) as string;
 						const folder = this.getNodeParameter('folder', i) as string;
-						const additionalFields = this.getNodeParameter('additionalFields',	i, {},) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 
 						// Build attributes object
 						const attributes: IDataObject = {};
@@ -2128,9 +2140,9 @@ export class Checkmk implements INodeType {
 							const labelsString = additionalFields.labels as string;
 							if (labelsString.trim() !== '') {
 								const labelsObj: IDataObject = {};
-								const labelPairs = labelsString.split(',').map(l => l.trim());
+								const labelPairs = labelsString.split(',').map((l) => l.trim());
 								for (const pair of labelPairs) {
-									const [key, value] = pair.split(':').map(s => s.trim());
+									const [key, value] = pair.split(':').map((s) => s.trim());
 									if (key && value) {
 										labelsObj[key] = value;
 									}
@@ -2153,7 +2165,10 @@ export class Checkmk implements INodeType {
 								// Merge custom attributes into attributes
 								Object.assign(attributes, customAttrs);
 							} catch (error) {
-								throw new NodeOperationError(this.getNode(), `Invalid JSON in customAttributes field: ${error}`);
+								throw new NodeOperationError(
+									this.getNode(),
+									`Invalid JSON in customAttributes field: ${error}`,
+								);
 							}
 						}
 
@@ -2225,7 +2240,7 @@ export class Checkmk implements INodeType {
 						if (additionalFields.hostnames) {
 							const hostnamesString = additionalFields.hostnames as string;
 							if (hostnamesString.trim() !== '') {
-								qs.hostnames = hostnamesString.split(',').map(h => h.trim());
+								qs.hostnames = hostnamesString.split(',').map((h) => h.trim());
 							}
 						}
 						if (additionalFields.site) {
@@ -2276,7 +2291,10 @@ export class Checkmk implements INodeType {
 								}
 								body.attributes = attributes;
 							} catch (error) {
-								throw new NodeOperationError(this.getNode(), `Invalid JSON in attributes field: ${error}`);
+								throw new NodeOperationError(
+									this.getNode(),
+									`Invalid JSON in attributes field: ${error}`,
+								);
 							}
 						} else if (additionalFields.update_attributes) {
 							let updateAttrs: IDataObject = {};
@@ -2288,12 +2306,15 @@ export class Checkmk implements INodeType {
 								}
 								body.update_attributes = updateAttrs;
 							} catch (error) {
-								throw new NodeOperationError(this.getNode(), `Invalid JSON in update_attributes field: ${error}`);
+								throw new NodeOperationError(
+									this.getNode(),
+									`Invalid JSON in update_attributes field: ${error}`,
+								);
 							}
 						} else if (additionalFields.remove_attributes) {
 							const removeAttrsString = additionalFields.remove_attributes as string;
 							if (removeAttrsString.trim() !== '') {
-								body.remove_attributes = removeAttrsString.split(',').map(a => a.trim());
+								body.remove_attributes = removeAttrsString.split(',').map((a) => a.trim());
 							}
 						}
 
@@ -2541,7 +2562,9 @@ export class Checkmk implements INodeType {
 						// /hahaha -> ~hahaha
 						// /parent/child -> ~parent~child
 						// hahaha -> ~hahaha (handles paths without leading slash)
-						const segments = cleanPath.split('/').filter(s => s !== '' && s !== null && s !== undefined);
+						const segments = cleanPath
+							.split('/')
+							.filter((s) => s !== '' && s !== null && s !== undefined);
 
 						if (segments.length === 0) {
 							return '~';
@@ -2554,7 +2577,11 @@ export class Checkmk implements INodeType {
 						const title = this.getNodeParameter('title', i) as string;
 						const parent = this.getNodeParameter('parent', i) as string;
 						const name = this.getNodeParameter('name', i, '') as string;
-						const additionalFields = this.getNodeParameter('additionalFields', i, {},) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 
 						// Build the body with required fields
 						const body: IDataObject = {
@@ -2581,7 +2608,10 @@ export class Checkmk implements INodeType {
 									body.attributes = attributes;
 								}
 							} catch (error) {
-								throw new NodeOperationError(this.getNode(), `Invalid JSON in attributes field: ${error}`);
+								throw new NodeOperationError(
+									this.getNode(),
+									`Invalid JSON in attributes field: ${error}`,
+								);
 							}
 						}
 
@@ -2665,7 +2695,7 @@ export class Checkmk implements INodeType {
 						// Build the body with required fields
 						const body: IDataObject = {
 							username: username,
-							fullname: fullname
+							fullname: fullname,
 						};
 
 						// Add optional fields if provided
@@ -2679,14 +2709,20 @@ export class Checkmk implements INodeType {
 							if (password && password.trim() !== '') {
 								body.password = password.trim();
 							} else {
-								throw new NodeOperationError(this.getNode(), 'Password must be provided for password authentication type');
+								throw new NodeOperationError(
+									this.getNode(),
+									'Password must be provided for password authentication type',
+								);
 							}
 						} else if (authType === 'automation') {
 							const secret = this.getNodeParameter('Automation', i, '') as string;
 							if (secret && secret.trim() !== '') {
 								body.automation_secret = secret.trim();
 							} else {
-								throw new NodeOperationError(this.getNode(), 'Secret must be provided for automation authentication type');
+								throw new NodeOperationError(
+									this.getNode(),
+									'Secret must be provided for automation authentication type',
+								);
 							}
 						}
 
@@ -2697,7 +2733,6 @@ export class Checkmk implements INodeType {
 							body,
 						);
 						returnData.push(response);
-					
 					}
 
 					if (operation === 'get') {
@@ -2955,11 +2990,7 @@ export class Checkmk implements INodeType {
 				// ==================== DISCOVERY OPERATIONS ====================
 				if (resource === 'discovery') {
 					const hostName = this.getNodeParameter('hostName', i) as string;
-					const additionalFields = this.getNodeParameter(
-						'additionalFields',
-						i,
-						{},
-					) as IDataObject;
+					const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
 
 					if (operation === 'run') {
 						// Use the correct Checkmk API endpoint for service discovery
@@ -3178,7 +3209,6 @@ export class Checkmk implements INodeType {
 				// ==================== DOWNTIME OPERATIONS ====================
 				if (resource === 'downtime') {
 					if (operation === 'create') {
-
 						const downtimeType = this.getNodeParameter('downtimeType', i) as string;
 						const startTime = this.getNodeParameter('start_time', i) as string;
 						const endTime = this.getNodeParameter('end_time', i) as string;
@@ -3595,7 +3625,10 @@ export class Checkmk implements INodeType {
 						// Validate and normalize title - it's required
 						let validTitle: string;
 						if (title === undefined || title === null) {
-							throw new NodeOperationError(this.getNode(), 'Title is required for aux tag creation');
+							throw new NodeOperationError(
+								this.getNode(),
+								'Title is required for aux tag creation',
+							);
 						}
 						validTitle = String(title).trim();
 						if (validTitle === '') {
@@ -3697,18 +3730,18 @@ export class Checkmk implements INodeType {
 				// ==================== HOST TAG GROUP OPERATIONS ====================
 				if (resource === 'hostTagGroup') {
 					if (operation === 'create') {
-						const id = this.getNodeParameter('tagGroupid',i,'') as string;
-						const title =  this.getNodeParameter('title',i,'') as string;
-						const topic = this.getNodeParameter('topic',i,'') as string;
-						const help = this.getNodeParameter('help',i,'') as string;
-						const tagsCollection = this.getNodeParameter('tags', i, [],) as Array<IDataObject>;
-						
+						const id = this.getNodeParameter('tagGroupid', i, '') as string;
+						const title = this.getNodeParameter('title', i, '') as string;
+						const topic = this.getNodeParameter('topic', i, '') as string;
+						const help = this.getNodeParameter('help', i, '') as string;
+						const tagsCollection = this.getNodeParameter('tags', i, []) as Array<IDataObject>;
+
 						const tagsArray = Array.isArray(tagsCollection) ? tagsCollection : [tagsCollection];
 						// Build tags for API
-						const apiTags = tagsArray.map(tagItem => {
-							const tagBody : IDataObject = {
+						const apiTags = tagsArray.map((tagItem) => {
+							const tagBody: IDataObject = {
 								title: tagItem.title as string,
-							}
+							};
 							if (tagItem.tagId && String(tagItem.tagId).trim() !== '') {
 								tagBody.id = String(tagItem.tagId).trim();
 							}
@@ -3719,21 +3752,21 @@ export class Checkmk implements INodeType {
 							title: title,
 							tags: apiTags,
 						};
-						
+
 						if (topic && String(topic).trim() !== '') {
 							body.topic = String(topic).trim();
 						}
 						if (help && String(help).trim() !== '') {
 							body.help = String(help).trim();
 						}
-						
+
 						const response = await checkmkApiRequest.call(
 							this,
 							'POST',
 							'/domain-types/host_tag_group/collections/all',
 							body,
 						);
-						
+
 						returnData.push(response);
 					}
 
@@ -3760,7 +3793,10 @@ export class Checkmk implements INodeType {
 						// Validate and normalize title - it's required
 						let validTitle: string;
 						if (title === undefined || title === null) {
-							throw new NodeOperationError(this.getNode(), 'Title is required for host tag group update');
+							throw new NodeOperationError(
+								this.getNode(),
+								'Title is required for host tag group update',
+							);
 						}
 						validTitle = String(title).trim();
 						if (validTitle === '') {

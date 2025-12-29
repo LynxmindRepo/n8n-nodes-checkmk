@@ -1,57 +1,58 @@
 {
-  "name": "n8n-nodes-checkmk",
-  "version": "0.2.0",
-  "description": "Complete n8n node for Checkmk monitoring system with 100% API coverage - 38 resources, 100+ operations",
-  "keywords": [
-    "n8n-community-node-package",
-    "n8n",
-    "checkmk",
-    "monitoring"
-  ],
-  "license": "MIT",
-  "homepage": "https://github.com/yourusername/n8n-nodes-checkmk",
-  "author": {
-    "name": "Your Name",
-    "email": "your.email@example.com"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/yourusername/n8n-nodes-checkmk.git"
-  },
-  "main": "index.js",
-  "scripts": {
-    "build": "tsc && gulp build:icons",
-    "dev": "tsc --watch",
-    "format": "prettier nodes credentials --write",
-    "lint": "eslint \"nodes/**/*.ts\" \"credentials/**/*.ts\" package.json",
-    "lintfix": "eslint \"nodes/**/*.ts\" \"credentials/**/*.ts\" package.json --fix",
-    "prepublishOnly": "npm run build && eslint -c .eslintrc.prepublish.js \"nodes/**/*.ts\" \"credentials/**/*.ts\" package.json"
-  },
-  "files": [
-    "dist"
-  ],
-  "n8n": {
-    "n8nNodesApiVersion": 1,
-    "credentials": [
-      "dist/credentials/CheckmkApi.credentials.js"
-    ],
-    "nodes": [
-      "dist/nodes/Checkmk/Checkmk.node.js"
-    ]
-  },
-  "devDependencies": {
-    "@typescript-eslint/parser": "^5.62.0",
-    "eslint": "^8.47.0",
-    "eslint-plugin-n8n-nodes-base": "^1.15.0",
-    "gulp": "^5.0.1",
-    "n8n-workflow": "^1.0.0",
-    "prettier": "^3.0.0",
-    "typescript": "^5.1.6"
-  },
-  "peerDependencies": {
-    "n8n-workflow": "*"
-  },
-  "dependencies": {
-    "axios": "^1.13.1"
-  }
+	"name": "n8n-nodes-checkmk",
+	"version": "1.0.5",
+	"description": "Complete n8n node for Checkmk monitoring system with 100% API coverage - 38 resources, 100+ operations",
+	"keywords": [
+		"n8n-community-node-package",
+		"n8n",
+		"checkmk",
+		"monitoring"
+	],
+	"license": "MIT",
+	"homepage": "https://github.com/LynxmindRepo/n8n-nodes-checkmk",
+	"author": {
+		"name": "Elicarlos Dias",
+		"email": "elicarlos.dias@lynxmind.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/LynxmindRepo/n8n-nodes-checkmk.git"
+	},
+	"engines": {
+		"node": ">=20.15"
+	},
+	"main": "index.js",
+	"scripts": {
+		"build": "npx rimraf dist && tsc && gulp build:icons",
+		"dev": "tsc --watch",
+		"format": "prettier nodes credentials --write",
+		"lint": "eslint nodes credentials package.json",
+		"lintfix": "eslint nodes credentials package.json --fix",
+		"prepublishOnly": "npm run build && npm run lint -c .eslintrc.prepublish.js nodes credentials package.json"
+	},
+	"files": [
+		"dist"
+	],
+	"n8n": {
+		"n8nNodesApiVersion": 1,
+		"credentials": [
+			"dist/credentials/CheckmkApi.credentials.js"
+		],
+		"nodes": [
+			"dist/nodes/Checkmk/Checkmk.node.js"
+		]
+	},
+	"devDependencies": {
+		"@typescript-eslint/parser": "~8.32.0",
+		"eslint": "^8.57.0",
+		"eslint-plugin-n8n-nodes-base": "^1.16.3",
+		"gulp": "^5.0.0",
+		"n8n-workflow": "^1.115.0",
+		"prettier": "^3.5.3",
+		"typescript": "^5.8.2"
+	},
+	"peerDependencies": {
+		"n8n-workflow": "*"
+	},
+	"dependencies": {}
 }

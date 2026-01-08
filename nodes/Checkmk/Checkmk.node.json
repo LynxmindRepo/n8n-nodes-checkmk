@@ -1,0 +1,19 @@
+{
+	"node": "n8n-nodes-checkmk",
+	"nodeVersion": "1.0.5",
+	"codexVersion": "1.0",
+	"categories": ["Analytics", "Development", "Utility"],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://github.com/LynxmindRepo/n8n-nodes-checkmk/blob/main/DOCUMENTATION.md#credentials"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://github.com/LynxmindRepo/n8n-nodes-checkmk/blob/main/DOCUMENTATION.md"
+			}
+		]
+	}
+}
+

@@ -1,6 +1,6 @@
 {
 	"node": "n8n-nodes-checkmk",
-	"nodeVersion": "1.0.5",
+	"nodeVersion": "1.1.0",
 	"codexVersion": "1.0",
 	"categories": ["Analytics", "Development", "Utility"],
 	"resources": {
@@ -16,4 +16,3 @@
 		]
 	}
 }
-

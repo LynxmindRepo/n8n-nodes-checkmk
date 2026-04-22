@@ -1,0 +1,7 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <!-- Hexágono verde -->
+  <polygon fill="#13D4A3" points="60,0 116,30 116,90 60,120 4,90 4,30"/>
+
+  <!-- Seta branca central -->
+  <path fill="#ffffff" d="M52 85V57H37L60 35L83 57H68V85H52Z"/>
+</svg>

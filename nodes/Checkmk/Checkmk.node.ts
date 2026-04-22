@@ -6623,6 +6623,10 @@ export class Checkmk implements INodeType {
 											validation:	[
 													{
 												type: 'regex',
+												properties: {
+													regex: '^~.*',
+													errorMessage: 'Folder ID must start with ~',
+												},
 													},
 											]
 									},

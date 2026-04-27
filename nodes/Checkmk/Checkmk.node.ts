@@ -49,6 +49,7 @@ export class Checkmk implements INodeType {
 				type: 'options',
 				noDataExpression: true,
 				options: [ // MATEUS NOTES Those are all the resource options, we'll be using it to undoubtly identify a resource under displayOptions: { show: { resource: ['resource_name']}}
+					{ name: 'Acknowledge', value: 'acknowledge' },
 					{ name: 'Activate Change', value: 'activateChanges' }, // MATEUS NOTES: It takes the name, converts it to Uppercase and add "ACTIONS" in the end
 					{ name: 'Agent', value: 'agent' }, // MATEUS NOTES: We use the value to identify a certain resource, it will be used in the execute() method
 					{ name: 'Audit Log', value: 'auditLog' },
@@ -74,6 +75,7 @@ export class Checkmk implements INodeType {
 					{ name: 'LDAP Connection', value: 'ldapConnection' },
 					{ name: 'License Usage', value: 'licenseUsage' },
 					{ name: 'Metric', value: 'metric' },
+					{ name: 'Miscellaneous', value: 'miscellaneous' },
 					{ name: 'Notification Rule', value: 'notificationRule' },
 					{ name: 'OpenTelemetry', value: 'openTelemetry' },
 					{ name: 'Parent Scan', value: 'parentScan' },
@@ -91,8 +93,6 @@ export class Checkmk implements INodeType {
 					{ name: 'Time Period', value: 'timePeriod' },
 					{ name: 'User', value: 'user' },
 					{ name: 'User Role', value: 'userRole' },
-					{ name: 'Miscellaneous', value: 'miscellaneous' },
-					{ name: 'Acknowledge', value: 'acknowledge' },
 				],
 				default: 'host',
 			},
@@ -110,10 +110,22 @@ export class Checkmk implements INodeType {
 				},
 				options: [
 					{
+						name: 'Bulk Delete',
+						value: 'bulk_delete',
+						description: 'Delete multiple hosts',
+						action: 'Bulk delete hosts',
+					},
+					{
 						name: 'Create',
 						value: 'create',
 						description: 'Create a new host',
 						action: 'Create a host',
+					},
+					{
+						name: 'Create Cluster',
+						value: 'create_cluster',
+						description: 'Create a new cluster host',
+						action: 'Create a cluster host',
 					},
 					{
 						name: 'Delete',
@@ -127,17 +139,17 @@ export class Checkmk implements INodeType {
 						description: 'Get a host',
 						action: 'Get a host',
 					},
+					{
+						name: 'Get Many',
+						value: 'getAll',
+						description: 'Get many hosts',
+						action: 'Get many hosts',
+					},
 					{ //CMK_MOVEHOSTSTOANOTHERFOLDER
 						name: 'Move',
 						value: 'move',
 						description: 'Move host to different folder',
 						action: 'Move a host',
-					},
-					{
-						name: 'Bulk Delete',
-						value: 'bulk_delete',
-						description: 'Delete multiple hosts',
-						action: 'Bulk delete hosts',
 					},
 					{
 						name: 'Rename',
@@ -150,18 +162,6 @@ export class Checkmk implements INodeType {
 						value: 'update',
 						description: 'Update a host',
 						action: 'Update a host',
-					},
-					{
-						name: 'Get Many',
-						value: 'getAll',
-						description: 'Get many hosts',
-						action: 'Get many hosts',
-					},
-					{
-						name: 'Create Cluster',
-						value: 'create_cluster',
-						description: 'Create a new cluster host',
-						action: 'Create a cluster host',
 					},
 					{
 						name: 'Update Cluster Nodes',
@@ -187,6 +187,24 @@ export class Checkmk implements INodeType {
 					},
 				},
 				options: [
+					{
+						name: 'Bulk Create',
+						value: 'bulk_create',
+						description: 'Create multiple host groups at once',
+						action: 'Bulk create host groups',
+					},
+					{
+						name: 'Bulk Delete',
+						value: 'bulk_delete',
+						description: 'Delete multiple host groups',
+						action: 'Bulk delete host groups',
+					},
+					{
+						name: 'Bulk Update',
+						value: 'bulk_update',
+						description: 'Update multiple host groups',
+						action: 'Bulk update host groups',
+					},
 					{
 						name: 'Create',
 						value: 'create',
@@ -216,24 +234,6 @@ export class Checkmk implements INodeType {
 						value: 'update',
 						description: 'Update a host group',
 						action: 'Update a host group',
-					},
-					{
-						name: 'Bulk Create',
-						value: 'bulk_create',
-						description: 'Create multiple host groups at once',
-						action: 'Bulk create host groups',
-					},
-					{
-						name: 'Bulk Delete',
-						value: 'bulk_delete',
-						description: 'Delete multiple host groups',
-						action: 'Bulk delete host groups',
-					},
-					{
-						name: 'Bulk Update',
-						value: 'bulk_update',
-						description: 'Update multiple host groups',
-						action: 'Bulk update host groups',
 					},
 							],
 				default: 'getMany',
@@ -492,11 +492,11 @@ export class Checkmk implements INodeType {
 				},
 				options: [
 					{ name: 'Host', value: 'host' },
-					{ name: 'Service', value: 'service' },
-					{ name: 'Host Group', value: 'hostgroup' },
-					{ name: 'Service Group', value: 'servicegroup' },
 					{ name: 'Host by Query', value: 'host_by_query' },
+					{ name: 'Host Group', value: 'hostgroup' },
+					{ name: 'Service', value: 'service' },
 					{ name: 'Service by Query', value: 'service_by_query' },
+					{ name: 'Service Group', value: 'servicegroup' },
 				],
 				default: 'host',
 				description: 'Select the type of object to remove acknowledgement from',
@@ -629,6 +629,12 @@ export class Checkmk implements INodeType {
 					},
 				},
 				options: [
+					{ //CMK_UpdateFolder
+						name: 'Bulk Update',
+						value: 'bulk_update',
+						description: 'Update multiple folders simultaneously',
+						action: 'Update multiple folders simultaneously',
+					},
 					{ //CMK_CreateFolder
 						name: 'Create',
 						value: 'create',
@@ -647,35 +653,29 @@ export class Checkmk implements INodeType {
 						description: 'Get a folder',
 						action: 'Get a folder',
 					},
-					{ //CMK_GetManyFolders
-						name: 'Get Many',
-						value: 'getMany',
-						description: 'Get many folders',
-						action: 'Get many folders',
-					},
 					{ //CMK_HostsInFolder
 						name: 'Get Hosts',
 						value: 'getHosts',
 						description: 'Get hosts from a specific folder',
 						action: 'Get hosts from a folder',
 					},
-					{ //CMK_UpdateFolder
-						name: 'Update',
-						value: 'update',
-						description: 'Update a folder',
-						action: 'Update a folder',
-					},
-					{ //CMK_UpdateFolder
-						name: 'Bulk Update',
-						value: 'bulk_update',
-						description: 'Update multiple folders simultaneously',
-						action: 'Update multiple folders simultaneously',
+					{ //CMK_GetManyFolders
+						name: 'Get Many',
+						value: 'getMany',
+						description: 'Get many folders',
+						action: 'Get many folders',
 					},
 					{ //CMK_MoveFolder
 						name: 'Move',
 						value: 'move',
 						description: 'Move a folder',
 						action: 'Move a folder',
+					},
+					{ //CMK_UpdateFolder
+						name: 'Update',
+						value: 'update',
+						description: 'Update a folder',
+						action: 'Update a folder',
 					},
 				],
 				default: 'getMany',
@@ -740,6 +740,24 @@ export class Checkmk implements INodeType {
 				},
 				options: [
 					{
+						name: 'Bulk Create',
+						value: 'bulk_create',
+						description: 'Create multiple contact groups at once',
+						action: 'Bulk create contact groups',
+					},
+					{
+						name: 'Bulk Delete',
+						value: 'bulk_delete',
+						description: 'Delete multiple contact groups',
+						action: 'Bulk delete contact groups',
+					},
+					{
+						name: 'Bulk Update',
+						value: 'bulk_update',
+						description: 'Update multiple contact groups',
+						action: 'Bulk update contact groups',
+					},
+					{
 						name: 'Create',
 						value: 'create',
 						description: 'Create a contact group',
@@ -768,24 +786,6 @@ export class Checkmk implements INodeType {
 						value: 'update',
 						description: 'Update a contact group',
 						action: 'Update a contact group',
-					},
-					{
-						name: 'Bulk Create',
-						value: 'bulk_create',
-						description: 'Create multiple contact groups at once',
-						action: 'Bulk create contact groups',
-					},
-					{
-						name: 'Bulk Update',
-						value: 'bulk_update',
-						description: 'Update multiple contact groups',
-						action: 'Bulk update contact groups',
-					},
-					{
-						name: 'Bulk Delete',
-						value: 'bulk_delete',
-						description: 'Delete multiple contact groups',
-						action: 'Bulk delete contact groups',
 					},
 				],
 				default: 'getMany',
@@ -856,22 +856,16 @@ export class Checkmk implements INodeType {
 						action: 'Create a rule',
 					},
 					{
-						name: 'Show a Rule',
-						value: 'show',
+						name: 'Delete a Rule',
+						value: 'delete',
 
-						action: 'Show a rule',
+						action: 'Delete a rule',
 					},
 					{
 						name: 'List Rules',
 						value: 'list',
 
 						action: 'List rules',
-					},
-					{
-						name: 'Delete a Rule',
-						value: 'delete',
-
-						action: 'Delete a rule',
 					},
 					{
 						name: 'Modify a Rule',
@@ -884,7 +878,13 @@ export class Checkmk implements INodeType {
 						value: 'move',
 
 						action: 'Move a rule'
-					}
+					},
+					{
+						name: 'Show a Rule',
+						value: 'show',
+
+						action: 'Show a rule',
+					},
 				],
 				default: 'create',
 			},
@@ -908,12 +908,6 @@ export class Checkmk implements INodeType {
 						action: 'Execute a service discovery on a host',
 					},
 					{
-						name: 'Wait for Discovery Completion',
-						value: 'wait',
-						description: 'Wait for service discovery completion',
-						action: 'Wait for service discovery completion',
-					},
-					{
 						name: 'Show the Current Service Discovery Result',
 						value: 'showResult',
 
@@ -926,17 +920,23 @@ export class Checkmk implements INodeType {
 						action: 'Show the last service discovery background job on a host',
 					},
 					{
+						name: 'Start Bulk Discovery',
+						value: 'bulkDiscovery',
+						description: 'Start a bulk discovery job for multiple hosts',
+						action: 'Start a bulk discovery job',
+					},
+					{
 						name: 'Update the Phase of a Service',
 						value: 'update',
 
 						action: 'Update the phase of a service',
 					},	
 					{
-						name: 'Start Bulk Discovery',
-						value: 'bulkDiscovery',
-						description: 'Start a bulk discovery job for multiple hosts',
-						action: 'Start a bulk discovery job',
-					},			
+						name: 'Wait for Discovery Completion',
+						value: 'wait',
+						description: 'Wait for service discovery completion',
+						action: 'Wait for service discovery completion',
+					},
 				],
 				default: 'run',
 			},
@@ -1001,16 +1001,10 @@ export class Checkmk implements INodeType {
 						action: 'Create a site connection',
 					},
 					{
-						name: 'Show a Site Connection',
-						value: 'show',
+						name: 'Delete a Site Connection',
+						value: 'delete',
 
-						action: 'Show a site connection',
-					},
-					{
-						name: 'Show All Site Connections',
-						value: 'showAll',
-
-						action: 'Show all site connections',
+						action: 'Delete a site connection',
 					},
 					{
 						name: 'Login to a Remote Site',
@@ -1025,10 +1019,16 @@ export class Checkmk implements INodeType {
 						action: 'Logout from a remote site',
 					},
 					{
-						name: 'Delete a Site Connection',
-						value: 'delete',
+						name: 'Show a Site Connection',
+						value: 'show',
 
-						action: 'Delete a site connection',
+						action: 'Show a site connection',
+					},
+					{
+						name: 'Show All Site Connections',
+						value: 'showAll',
+
+						action: 'Show all site connections',
 					},
 					{
 						name: 'Update a Site Connection',
@@ -1161,12 +1161,6 @@ export class Checkmk implements INodeType {
 						action: 'Create a BI pack',
 					},
 					{
-						name: 'Get Many',
-						value: 'getMany',
-						description: 'Get many BI packs',
-						action: 'Get many BI packs',
-					},
-					{
 						name: 'Delete',
 						value: 'delete',
 						description: 'Delete a BI pack',
@@ -1177,6 +1171,12 @@ export class Checkmk implements INodeType {
 						value: 'get',
 						description: 'Get a BI pack and its rules and aggregations',
 						action: 'Get a BI pack',
+					},
+					{
+						name: 'Get Many',
+						value: 'getMany',
+						description: 'Get many BI packs',
+						action: 'Get many BI packs',
 					},
 					{
 						name: 'Update',
@@ -1207,18 +1207,6 @@ export class Checkmk implements INodeType {
 						action: 'Create a BI rule',
 					},
 					{
-						name: 'Update',
-						value: 'update',
-						description: 'Update an existing BI rule',
-						action: 'Update a BI rule',
-					},
-					{
-						name: 'Get Many',
-						value: 'getMany',
-						description: 'Get many BI rules',
-						action: 'Get many BI rules',
-					},
-					{
 						name: 'Delete',
 						value: 'delete',
 						description: 'Delete a BI rule',
@@ -1229,6 +1217,18 @@ export class Checkmk implements INodeType {
 						value: 'get',
 						description: 'Get a BI rule',
 						action: 'Get a BI rule',
+					},
+					{
+						name: 'Get Many',
+						value: 'getMany',
+						description: 'Get many BI rules',
+						action: 'Get many BI rules',
+					},
+					{
+						name: 'Update',
+						value: 'update',
+						description: 'Update an existing BI rule',
+						action: 'Update a BI rule',
 					},
 
 				],
@@ -1765,14 +1765,14 @@ export class Checkmk implements INodeType {
 									},
 								},
 								options: [
+									{ name: 'Last Month', value: 'last_month' },
+									{ name: 'Last Week', value: 'last_week' },
+									{ name: 'Last Year', value: 'last_year' },
+									{ name: 'This Month', value: 'this_month' },
+									{ name: 'This Week', value: 'this_week' },
+									{ name: 'This Year', value: 'this_year' },
 									{ name: 'Today', value: 'today' },
 									{ name: 'Yesterday', value: 'yesterday' },
-									{ name: 'This Week', value: 'this_week' },
-									{ name: 'Last Week', value: 'last_week' },
-									{ name: 'This Month', value: 'this_month' },
-									{ name: 'Last Month', value: 'last_month' },
-									{ name: 'This Year', value: 'this_year' },
-									{ name: 'Last Year', value: 'last_year' },
 								],
 								default: 'today',
 							},
@@ -1876,18 +1876,6 @@ export class Checkmk implements INodeType {
 						action: 'Create an aux tag',
 					},
 					{
-						name: 'Get Many',
-						value: 'getMany',
-						description: 'Get many aux tags',
-						action: 'Get many aux tags',
-					},
-					{
-						name: 'Update',
-						value: 'update',
-						description: 'Update an aux tag',
-						action: 'Update an aux tag',
-					},
-					{
 						name: 'Delete',
 						value: 'delete',
 						description: 'Delete an aux tag',
@@ -1898,6 +1886,18 @@ export class Checkmk implements INodeType {
 						value: 'get',
 						description: 'Show an auxiliary tag',
 						action: 'Get an auxiliary tag',
+					},
+					{
+						name: 'Get Many',
+						value: 'getMany',
+						description: 'Get many aux tags',
+						action: 'Get many aux tags',
+					},
+					{
+						name: 'Update',
+						value: 'update',
+						description: 'Update an aux tag',
+						action: 'Update an aux tag',
 					},
 				],
 				default: 'getMany',
@@ -1923,10 +1923,10 @@ export class Checkmk implements INodeType {
 						action: 'Create a host tag group',
 					},
 					{
-						name: 'Show All',
-						value: 'showAll',
-						description: 'Get many host tag groups',
-						action: 'Get many host tag groups',
+						name: 'Delete',
+						value: 'delete',
+						description: 'Delete a host tag group',
+						action: 'Delete a host tag group',
 					},
 					{
 						name: 'Show',
@@ -1935,16 +1935,16 @@ export class Checkmk implements INodeType {
 						action: 'Get a single host tag group',
 					},
 					{
+						name: 'Show All',
+						value: 'showAll',
+						description: 'Get many host tag groups',
+						action: 'Get many host tag groups',
+					},
+					{
 						name: 'Update',
 						value: 'update',
 						description: 'Update a host tag group',
 						action: 'Update a host tag group',
-					},
-					{
-						name: 'Delete',
-						value: 'delete',
-						description: 'Delete a host tag group',
-						action: 'Delete a host tag group',
 					},
 				],
 				default: 'showAll',
@@ -1969,18 +1969,6 @@ export class Checkmk implements INodeType {
 						action: 'Create an LDAP connection',
 					},
 					{
-						name: 'Get Many',
-						value: 'getMany',
-						description: 'Get many LDAP connections',
-						action: 'Get many LDAP connections',
-					},
-					{
-						name: 'Update',
-						value: 'update',
-						description: 'Update an LDAP connection',
-						action: 'Update an LDAP connection',
-					},
-					{
 						name: 'Delete',
 						value: 'delete',
 						description: 'Delete an LDAP connection',
@@ -1991,6 +1979,18 @@ export class Checkmk implements INodeType {
 						value: 'get',
 						description: 'Show an LDAP connection',
 						action: 'Show an LDAP connection',
+					},
+					{
+						name: 'Get Many',
+						value: 'getMany',
+						description: 'Get many LDAP connections',
+						action: 'Get many LDAP connections',
+					},
+					{
+						name: 'Update',
+						value: 'update',
+						description: 'Update an LDAP connection',
+						action: 'Update an LDAP connection',
 					},
 				],
 				default: 'getMany',
@@ -2025,16 +2025,22 @@ export class Checkmk implements INodeType {
 				},
 				options: [
 					{
+						name: 'Create a Notification Rule',
+						value: 'create',
+
+						action: 'Create a notification rule',
+					},
+					{
 						name: 'Delete a Notification Rule',
 						value: 'delete',
 
 						action: 'Delete a notification rule',
 					},
 					{
-						name: 'Create a Notification Rule',
-						value: 'create',
+						name: 'Show a Notification Rule',
+						value: 'show',
 
-						action: 'Create a notification rule',
+						action: 'Show a notification rule',
 					},
 					{
 						name: 'Show All Notification Rules',
@@ -2047,12 +2053,6 @@ export class Checkmk implements INodeType {
 						value: 'update',
 
 						action: 'Update a notification rule',
-					},
-					{
-						name: 'Show a Notification Rule',
-						value: 'show',
-
-						action: 'Show a notification rule',
 					},
 
 				],
@@ -2120,18 +2120,6 @@ export class Checkmk implements INodeType {
 						action: 'Create a BI aggregation',
 					},
 					{
-						name: 'Get State',
-						value: 'getState',
-						description: 'Get the state of BI aggregations',
-						action: 'Get the state of bi aggregations',
-						routing: {
-							request: {
-								method: 'GET',
-								url: '/domain-types/bi_aggregation/actions/aggregation_state/invoke',
-							},
-						},
-					},
-					{
 						name: 'Delete',
 						value: 'delete',
 						description: 'Delete a BI aggregation',
@@ -2142,6 +2130,18 @@ export class Checkmk implements INodeType {
 						value: 'get',
 						description: 'Get a BI aggregation',
 						action: 'Get a BI aggregation',
+					},
+					{
+						name: 'Get State',
+						value: 'getState',
+						description: 'Get the state of BI aggregations',
+						action: 'Get the state of bi aggregations',
+						routing: {
+							request: {
+								method: 'GET',
+								url: '/domain-types/bi_aggregation/actions/aggregation_state/invoke',
+							},
+						},
 					},
 					{
 						name: 'Update',
@@ -2317,11 +2317,11 @@ export class Checkmk implements INodeType {
 						name: 'type',
 						type: 'options',
 						options: [
-							{ name: 'None', value: 'none' },
 							{ name: 'Block', value: 'block' },
-							{ name: 'Hierarchy', value: 'hierarchy' },
-							{ name: 'Radial', value: 'radial' },
 							{ name: 'Force', value: 'force' },
+							{ name: 'Hierarchy', value: 'hierarchy' },
+							{ name: 'None', value: 'none' },
+							{ name: 'Radial', value: 'radial' },
 						],
 						default: 'none',
 					},
@@ -2347,12 +2347,6 @@ export class Checkmk implements INodeType {
 				},
 				options: [
 					{
-						displayName: 'Title',
-						name: 'title',
-						type: 'string',
-						default: '',
-					},
-					{
 						displayName: 'Comment',
 						name: 'comment',
 						type: 'string',
@@ -2375,6 +2369,12 @@ export class Checkmk implements INodeType {
 						name: 'state_messages',
 						type: 'json',
 						default: '{}',
+					},
+					{
+						displayName: 'Title',
+						name: 'title',
+						type: 'string',
+						default: '',
 					},
 				],
 			},
@@ -2736,12 +2736,6 @@ export class Checkmk implements INodeType {
 						action: 'Create a password',
 					},
 					{
-						name: 'Get Many',
-						value: 'getMany',
-						description: 'Get many passwords',
-						action: 'Get many passwords',
-					},
-					{
 						name: 'Delete',
 						value: 'delete',
 						description: 'Delete a password',
@@ -2752,6 +2746,12 @@ export class Checkmk implements INodeType {
 						value: 'get',
 						description: 'Get a single password',
 						action: 'Get a password',
+					},
+					{
+						name: 'Get Many',
+						value: 'getMany',
+						description: 'Get many passwords',
+						action: 'Get many passwords',
 					},
 					{
 						name: 'Update',
@@ -2816,14 +2816,7 @@ export class Checkmk implements INodeType {
 						name: 'force_explicit_parents',
 						type: 'boolean',
 						default: false,
-						description: 'Force explicit setting for parents even if setting matches that of the folder',
-					},
-					{
-						displayName: 'Timeout (Seconds)',
-						name: 'responses_timeout',
-						type: 'number',
-						default: 8,
-						description: 'Timeout for responses',
+						description: 'Whether to force explicit setting for parents even if setting matches that of the folder',
 					},
 					{
 						displayName: 'Hop Probes',
@@ -2846,6 +2839,13 @@ export class Checkmk implements INodeType {
 						default: 5,
 						description: 'Number of ping probes',
 					},
+					{
+						displayName: 'Timeout (Seconds)',
+						name: 'responses_timeout',
+						type: 'number',
+						default: 8,
+						description: 'Timeout for responses',
+					},
 				],
 			},
 			//Password update fields
@@ -2863,27 +2863,14 @@ export class Checkmk implements INodeType {
 				},
 				options: [
 					{
-						displayName: 'Title',
-						name: 'title',
+						displayName: 'Comment',
+						name: 'comment',
 						type: 'string',
-						default: '',
-					},
-					{
-						displayName: 'Password',
-						name: 'password',
-						type: 'string',
-						typeOptions: { password: true },
 						default: '',
 					},
 					{
 						displayName: 'Customer',
 						name: 'customer',
-						type: 'string',
-						default: '',
-					},
-					{
-						displayName: 'Comment',
-						name: 'comment',
 						type: 'string',
 						default: '',
 					},
@@ -2901,11 +2888,24 @@ export class Checkmk implements INodeType {
 						description: 'Group of users able to edit this password',
 					},
 					{
+						displayName: 'Password',
+						name: 'password',
+						type: 'string',
+						typeOptions: { password: true },
+						default: '',
+					},
+					{
 						displayName: 'Shared With',
 						name: 'shared',
 						type: 'string',
 						default: '',
 						description: 'Comma-separated list (e.g. "admin, user")',
+					},
+					{
+						displayName: 'Title',
+						name: 'title',
+						type: 'string',
+						default: '',
 					},
 				],
 			},
@@ -2998,10 +2998,28 @@ export class Checkmk implements INodeType {
 				},
 				options: [
 					{
+						name: 'Clone',
+						value: 'clone',
+						description: 'Clone an existing user role',
+						action: 'Clone a user role',
+					},
+					{
 						name: 'Create',
 						value: 'create',
 						description: 'Create a user role',
 						action: 'Create a user role',
+					},
+					{
+						name: 'Delete',
+						value: 'delete',
+						description: 'Delete a user role',
+						action: 'Delete a user role',
+					},
+					{
+						name: 'Get',
+						value: 'get',
+						description: 'Get a single user role',
+						action: 'Get a user role',
 					},
 					{
 						name: 'Get Many',
@@ -3014,24 +3032,6 @@ export class Checkmk implements INodeType {
 						value: 'update',
 						description: 'Update a user role',
 						action: 'Update a user role',
-					},
-					{
-						name: 'Delete',
-						value: 'delete',
-						description: 'Delete a user role',
-						action: 'Delete a user role',
-					},
-					{
-						name: 'Clone',
-						value: 'clone',
-						description: 'Clone an existing user role',
-						action: 'Clone a user role',
-					},
-					{
-						name: 'Get',
-						value: 'get',
-						description: 'Get a single user role',
-						action: 'Get a user role',
 					},
 				],
 				default: 'getMany',
@@ -3357,7 +3357,7 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: true,
-				description: 'If set, only a state-change to the UP/OK state will discard the acknowledgement',
+				description: 'Whether only a state-change to the UP/OK state will discard the acknowledgement',
 			},
 			{
 				displayName: 'Notify',
@@ -3370,7 +3370,7 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: true,
-				description: 'If set, notifications will be sent out to the configured contacts',
+				description: 'Whether notifications will be sent out to the configured contacts',
 			},
 			{
 				displayName: 'Persistent',
@@ -3383,7 +3383,7 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: false,
-				description: 'If set, the comment will persist a restart',
+				description: 'Whether the comment will persist a restart',
 			},
 			{
 				displayName: 'Expire On',
@@ -3988,14 +3988,14 @@ export class Checkmk implements INodeType {
 						description: 'Add a comment to a specific host',
 					},
 					{
-						name: 'Host Group',
-						value: 'host_group',
-						description: 'Add a comment to all hosts in a group',
-					},
-					{
 						name: 'Host by Query',
 						value: 'host_by_query',
 						description: 'Add a comment to hosts matching a Livestatus query',
+					},
+					{
+						name: 'Host Group',
+						value: 'host_group',
+						description: 'Add a comment to all hosts in a group',
 					},
 					{
 						name: 'Service',
@@ -4599,20 +4599,20 @@ export class Checkmk implements INodeType {
 										type: 'options',
 										default: '=',
 										options: [
-											{ name: '= (Equal)', value: '=' },
+											{ name: '!< (Not Less Than)', value: '!<' },
+											{ name: '!<= (Not Less or Equal)', value: '!<=' },
 											{ name: '!= (Not Equal)', value: '!=' },
-											{ name: '~ (Regex Match)', value: '~' },
+											{ name: '!> (Not Greater Than)', value: '!>' },
+											{ name: '!>= (Not Greater or Equal)', value: '!>=' },
 											{ name: '!~ (Regex No Match)', value: '!~' },
-											{ name: '~~ (Case Insensitive Regex)', value: '~~' },
 											{ name: '!~~ (No Case Insensitive Regex)', value: '!~~' },
 											{ name: '< (Less Than)', value: '<' },
-											{ name: '> (Greater Than)', value: '>' },
 											{ name: '<= (Less or Equal)', value: '<=' },
+											{ name: '= (Equal)', value: '=' },
+											{ name: '> (Greater Than)', value: '>' },
 											{ name: '>= (Greater or Equal)', value: '>=' },
-											{ name: '!< (Not Less Than)', value: '!<' },
-											{ name: '!> (Not Greater Than)', value: '!>' },
-											{ name: '!<= (Not Less or Equal)', value: '!<=' },
-											{ name: '!>= (Not Greater or Equal)', value: '!>=' },
+											{ name: '~ (Regex Match)', value: '~' },
+											{ name: '~~ (Case Insensitive Regex)', value: '~~' },
 										],
 									},
 							{
@@ -4660,12 +4660,12 @@ export class Checkmk implements INodeType {
 						type: 'options',
 						options: [
 							{ name: 'All', value: 'All' },
-							{ name: 'None', value: 'None' },
 							{ name: 'Folder', value: 'Folder' },
 							{ name: 'Host', value: 'Host' },
-							{ name: 'User', value: 'User' },
+							{ name: 'None', value: 'None' },
 							{ name: 'Rule', value: 'Rule' },
 							{ name: 'Ruleset', value: 'Ruleset' },
+							{ name: 'User', value: 'User' },
 						],
 						default: 'All',
 						description: 'The type of object we want to filter on',
@@ -4989,6 +4989,12 @@ export class Checkmk implements INodeType {
 						default: false,
 					},
 					{
+						displayName: 'Update Host Labels',
+						name: 'update_host_labels',
+						type: 'boolean',
+						default: false,
+					},
+					{
 						displayName: 'Update Service Labels',
 						name: 'update_service_labels',
 						type: 'boolean',
@@ -4997,12 +5003,6 @@ export class Checkmk implements INodeType {
 					{
 						displayName: 'Update Service Parameters',
 						name: 'update_service_parameters',
-						type: 'boolean',
-						default: false,
-					},
-					{
-						displayName: 'Update Host Labels',
-						name: 'update_host_labels',
 						type: 'boolean',
 						default: false,
 					},
@@ -5058,12 +5058,12 @@ export class Checkmk implements INodeType {
 				},
 				default: 'fix_all',
 				options: [
-					{ name: 'New', value: 'new', description: 'Monitor undecided services' },
-					{ name: 'Remove', value: 'remove', description: 'Remove vanished services' },
 					{ name: 'Fix All', value: 'fix_all', description: 'Accept all' },
-					{ name: 'Refresh', value: 'refresh', description: 'Rescan (starts background job)' },
+					{ name: 'New', value: 'new', description: 'Monitor undecided services' },
 					{ name: 'Only Host Labels', value: 'only_host_labels', description: 'Update host labels' },
 					{ name: 'Only Service Labels', value: 'only_service_labels', description: 'Update service labels' },
+					{ name: 'Refresh', value: 'refresh', description: 'Rescan (starts background job)' },
+					{ name: 'Remove', value: 'remove', description: 'Remove vanished services' },
 					{ name: 'Tabula Rasa', value: 'tabula_rasa', description: 'Remove all and find new (starts background job)' },
 				],
 				description: "Discovery mode to use. 'refresh' and 'tabula_rasa' start background jobs and redirect to wait-for-completion.",
@@ -5460,35 +5460,6 @@ export class Checkmk implements INodeType {
 					},
 				},
 				options: [
-					// --- Identification & Location ---
-					{
-						displayName: 'Alias',
-						name: 'alias',
-						type: 'string',
-						default: '',
-						description: 'An alias for the host',
-					},
-					{
-						displayName: 'Site',
-						name: 'site',
-						type: 'string',
-						default: '',
-						description: 'The site ID where this host is monitored',
-					},
-					
-					// --- Networking & Addresses ---
-					{
-						displayName: 'IP Address (IPv4)',
-						name: 'ipaddress',
-						type: 'string',
-						default: '',
-					},
-					{
-						displayName: 'IPv6 Address',
-						name: 'ipv6address',
-						type: 'string',
-						default: '',
-					},
 					{
 						displayName: 'Additional IPv4 Addresses',
 						name: 'additional_ipv4addresses',
@@ -5506,16 +5477,6 @@ export class Checkmk implements INodeType {
 						description: 'Comma-separated list of additional IPv6 addresses',
 					},
 					{
-						displayName: 'Parents',
-						name: 'parents',
-						type: 'string',
-						default: '',
-						placeholder: 'switch_01, router_main',
-						description: 'Comma-separated list of parent host names',
-					},
-
-					// --- Tags & Agents ---
-					{
 						displayName: 'Address Family Tag',
 						name: 'tag_address_family',
 						type: 'options',
@@ -5526,6 +5487,16 @@ export class Checkmk implements INodeType {
 							{ name: 'No IP', value: 'no-ip' },
 						],
 						default: 'ip-v4-only',
+					},
+					{
+						displayName: 'Agent Connection Mode',
+						name: 'cmk_agent_connection',
+						type: 'options',
+						options: [
+							{ name: 'Pull (Checkmk Connects to Agent)', value: 'pull-agent' },
+							{ name: 'Push (Agent Connects to Checkmk)', value: 'push-agent' },
+						],
+						default: 'pull-agent',
 					},
 					{
 						displayName: 'Agent Tag',
@@ -5540,74 +5511,26 @@ export class Checkmk implements INodeType {
 						default: 'cmk-agent',
 					},
 					{
-						displayName: 'Agent Connection Mode',
-						name: 'cmk_agent_connection',
-						type: 'options',
-						options: [
-							{ name: 'Pull (Checkmk Connects to Agent)', value: 'pull-agent' },
-							{ name: 'Push (Agent Connects to Checkmk)', value: 'push-agent' },
-						],
-						default: 'pull-agent',
-					},
-					{
-						displayName: 'SNMP Tag',
-						name: 'tag_snmp_ds',
-						type: 'options',
-						options: [
-							{ name: 'No SNMP', value: 'no-snmp' },
-							{ name: 'SNMP V1', value: 'snmp-v1' },
-							{ name: 'SNMP V2c', value: 'snmp-v2' },
-							{ name: 'SNMP V3', value: 'snmp-v3' },
-						],
-						default: 'no-snmp',
-					},
-					{
-						displayName: 'Piggyback Tag',
-						name: 'tag_piggyback',
-						type: 'options',
-						options: [
-							{ name: 'Use Piggyback Data', value: 'piggyback' },
-							{ name: 'Always Use Piggyback', value: 'auto-piggyback' },
-							{ name: 'Do Not Use Piggyback', value: 'no-piggyback' },
-						],
-						default: 'auto-piggyback',
-					},
-					{
-						displayName: 'Criticality Tag',
-						name: 'tag_criticality',
+						displayName: 'Alias',
+						name: 'alias',
 						type: 'string',
 						default: '',
-						placeholder: 'prod, test, offline',
+						description: 'An alias for the host',
 					},
 					{
-						displayName: 'Networking Tag',
-						name: 'tag_networking',
-						type: 'string',
-						default: '',
-						placeholder: 'lan, wan, dmz',
-					},
-
-					// --- Management Board ---
-					{
-						displayName: 'Management Protocol',
-						name: 'management_protocol',
-						type: 'options',
-						options: [
-							{ name: 'None', value: 'none' },
-							{ name: 'SNMP', value: 'snmp' },
-							{ name: 'IPMI', value: 'ipmi' },
-							{ name: 'Redfish', value: 'redfish' },
-						],
-						default: 'none',
+						displayName: 'Bake Agent',
+						name: 'bake_agent',
+						type: 'boolean',
+						default: false,
+						description: 'Whether to bake the agents (Enterprise only)',
 					},
 					{
-						displayName: 'Management Address',
-						name: 'management_address',
-						type: 'string',
-						default: '',
-						description: 'IP address or hostname of the management board',
+						displayName: 'Bake Agent Package',
+						name: 'bake_agent_package',
+						type: 'boolean',
+						default: false,
+						description: 'Whether to set the bake_agent_package attribute',
 					},
-
 					// --- Contact Groups (Complex Object) ---
 					{
 						displayName: 'Contact Groups Config',
@@ -5623,62 +5546,66 @@ export class Checkmk implements INodeType {
 								displayName: 'Settings',
 								name: 'settings',
 								values: [
-							{
-								displayName: 'Groups',
-								name: 'groups',
-								type: 'string',
-								default: '',
-								description: 'Comma-separated list of contact group names (e.g. admins, operators)',
-							},
-							{
-								displayName: 'Recurse Perms',
-								name: 'recurse_perms',
-								type: 'boolean',
-								default: true,
-							},
-							{
-								displayName: 'Recurse Use',
-								name: 'recurse_use',
-								type: 'boolean',
-								default: true,
-							},
-							{
-								displayName: 'Use',
-								name: 'use',
-								type: 'boolean',
-								default: true,
-							},
-							{
-								displayName: 'Use For Services',
-								name: 'use_for_services',
-								type: 'boolean',
-								default: true,
+									{
+										displayName: 'Groups',
+										name: 'groups',
+										type: 'string',
+										default: '',
+										description: 'Comma-separated list of contact group names (e.g. admins, operators)',
+									},
+									{
+										displayName: 'Recurse Perms',
+										name: 'recurse_perms',
+										type: 'boolean',
+										default: true,
+									},
+									{
+										displayName: 'Recurse Use',
+										name: 'recurse_use',
+										type: 'boolean',
+										default: true,
+									},
+									{
+										displayName: 'Use',
+										name: 'use',
+										type: 'boolean',
+										default: true,
+									},
+									{
+										displayName: 'Use For Services',
+										name: 'use_for_services',
+										type: 'boolean',
+										default: true,
+									},
+								],
 							},
 						],
-							},
-						],
-					},
-
-					// --- Flags & Others ---
-					{
-						displayName: 'Bake Agent',
-						name: 'bake_agent',
-						type: 'boolean',
-						default: false,
-						description: 'Whether to bake the agents (Enterprise only)',
 					},
 					{
-						displayName: 'Bake Agent Package',
-						name: 'bake_agent_package',
-						type: 'boolean',
-						default: false,
-						description: 'Attribute: bake_agent_package',
+						displayName: 'Criticality Tag',
+						name: 'tag_criticality',
+						type: 'string',
+						default: '',
+						placeholder: 'prod, test, offline',
 					},
 					{
-						displayName: 'Waiting for Discovery',
-						name: 'waiting_for_discovery',
-						type: 'boolean',
-						default: false,
+						displayName: 'Custom Attributes',
+						name: 'customAttributes',
+						type: 'json',
+						default: '{}',
+						description: 'Custom attributes as JSON object',
+					},
+					{
+						displayName: 'IP Address (IPv4)',
+						name: 'ipaddress',
+						type: 'string',
+						default: '',
+					},
+					{
+						displayName: 'IPv6 Address',
+						name: 'ipv6address',
+						type: 'string',
+						default: '',
 					},
 					{
 						displayName: 'Labels',
@@ -5689,11 +5616,75 @@ export class Checkmk implements INodeType {
 						description: 'Comma-separated labels',
 					},
 					{
-						displayName: 'Custom Attributes',
-						name: 'customAttributes',
-						type: 'json',
-						default: '{}',
-						description: 'Custom attributes as JSON object',
+						displayName: 'Management Address',
+						name: 'management_address',
+						type: 'string',
+						default: '',
+						description: 'IP address or hostname of the management board',
+					},
+					// --- Management Board ---
+					{
+						displayName: 'Management Protocol',
+						name: 'management_protocol',
+						type: 'options',
+						options: [
+							{ name: 'None', value: 'none' },
+							{ name: 'SNMP', value: 'snmp' },
+							{ name: 'IPMI', value: 'ipmi' },
+							{ name: 'Redfish', value: 'redfish' },
+						],
+						default: 'none',
+					},
+					{
+						displayName: 'Networking Tag',
+						name: 'tag_networking',
+						type: 'string',
+						default: '',
+						placeholder: 'lan, wan, dmz',
+					},
+					{
+						displayName: 'Parents',
+						name: 'parents',
+						type: 'string',
+						default: '',
+						placeholder: 'switch_01, router_main',
+						description: 'Comma-separated list of parent host names',
+					},
+					{
+						displayName: 'Piggyback Tag',
+						name: 'tag_piggyback',
+						type: 'options',
+						options: [
+							{ name: 'Use Piggyback Data', value: 'piggyback' },
+							{ name: 'Always Use Piggyback', value: 'auto-piggyback' },
+							{ name: 'Do Not Use Piggyback', value: 'no-piggyback' },
+						],
+						default: 'auto-piggyback',
+					},
+					{
+						displayName: 'Site',
+						name: 'site',
+						type: 'string',
+						default: '',
+						description: 'The site ID where this host is monitored',
+					},
+					{
+						displayName: 'SNMP Tag',
+						name: 'tag_snmp_ds',
+						type: 'options',
+						options: [
+							{ name: 'No SNMP', value: 'no-snmp' },
+							{ name: 'SNMP V1', value: 'snmp-v1' },
+							{ name: 'SNMP V2c', value: 'snmp-v2' },
+							{ name: 'SNMP V3', value: 'snmp-v3' },
+						],
+						default: 'no-snmp',
+					},
+					{
+						displayName: 'Waiting for Discovery',
+						name: 'waiting_for_discovery',
+						type: 'boolean',
+						default: false,
 					},
 				],
 			},
@@ -5787,7 +5778,7 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: false,
-				description: 'Only show deprecated rulesets. Defaults to False.',
+				description: 'Whether to include only deprecated rulesets',
 			},
 			{
 				displayName: 'Only Used',
@@ -5801,7 +5792,7 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: true,
-				description: 'Only show used rulesets. Defaults to True.',
+				description: 'Whether to include only used rulesets',
 			},
 			{
 				displayName: 'Name Regex',
@@ -6201,7 +6192,7 @@ export class Checkmk implements INodeType {
 						name: 'disabled',
 						type: 'boolean',
 						default: false,
-						description: 'When set to False, the rule will be evaluated. Default is False.',
+						description: 'Whether the rule is disabled',
 					},
 				],
 			},
@@ -6391,7 +6382,7 @@ export class Checkmk implements INodeType {
 						operation: ['update', 'delete'],
 					},
 				},
-				description: 'Allow repairing/updating tags on hosts that reference this tag group',
+				description: 'Whether to allow repairing/updating tags on hosts that reference this tag group',
 			},
 
 
@@ -7498,9 +7489,9 @@ export class Checkmk implements INodeType {
 				},
 				options: [
 					{ name: 'By ID', value: 'by_id' },
+					{ name: 'Hostgroup', value: 'hostgroup' },
 					{ name: 'Params', value: 'params' },
 					{ name: 'Query', value: 'query' },
-					{ name: 'Hostgroup', value: 'hostgroup' },
 					{ name: 'Servicegroup', value: 'servicegroup' },
 				],
 				default: 'by_id',
@@ -7535,7 +7526,7 @@ export class Checkmk implements INodeType {
 						operation: ['update'],
 					},
 				},
-				description: 'Enable to modify the end time of the downtime',
+				description: 'Whether to modify the end time of the downtime',
 			},
 			{
 				displayName: 'End Time Modify Type',

@@ -48,7 +48,8 @@ export class Checkmk implements INodeType {
 				name: 'resource',
 				type: 'options',
 				noDataExpression: true,
-				options: [ // MATEUS NOTES Those are all the resource options, we'll be using it to undoubtly identify a resource under displayOptions: { show: { resource: ['resource_name']}}
+				options: [
+					// MATEUS NOTES Those are all the resource options, we'll be using it to undoubtly identify a resource under displayOptions: { show: { resource: ['resource_name']}}
 					{ name: 'Acknowledge', value: 'acknowledge' },
 					{ name: 'Activate Change', value: 'activateChanges' }, // MATEUS NOTES: It takes the name, converts it to Uppercase and add "ACTIONS" in the end
 					{ name: 'Agent', value: 'agent' }, // MATEUS NOTES: We use the value to identify a certain resource, it will be used in the execute() method
@@ -145,7 +146,8 @@ export class Checkmk implements INodeType {
 						description: 'Get many hosts',
 						action: 'Get many hosts',
 					},
-					{ //CMK_MOVEHOSTSTOANOTHERFOLDER
+					{
+						//CMK_MOVEHOSTSTOANOTHERFOLDER
 						name: 'Move',
 						value: 'move',
 						description: 'Move host to different folder',
@@ -173,7 +175,6 @@ export class Checkmk implements INodeType {
 
 				default: 'get',
 			},
-
 
 			// ==================== HOST GROUP OPERATIONS ====================
 			{
@@ -235,7 +236,7 @@ export class Checkmk implements INodeType {
 						description: 'Update a host group',
 						action: 'Update a host group',
 					},
-							],
+				],
 				default: 'getMany',
 			},
 			{
@@ -253,7 +254,7 @@ export class Checkmk implements INodeType {
 				placeholder: 'windows, linux, servers',
 				description: 'Comma-separated list of host group names to delete',
 			},
-			
+
 			// ==================== HOST GROUP BULK UPDATE FIELDS ====================
 			{
 				displayName: 'Input Mode',
@@ -343,7 +344,8 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: '[]',
-				description: 'Array of objects. Example: [{"name": "hg1", "attributes": {"alias": "New Name"}}].',
+				description:
+					'Array of objects. Example: [{"name": "hg1", "attributes": {"alias": "New Name"}}].',
 			},
 			// ==================== HOST GROUP BULK CREATE FIELDS ====================
 			{
@@ -435,7 +437,8 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: '[]',
-				description: 'Array of objects. Example: [{"name": "hg1", "alias": "HG 1", "customer": "provider"}].',
+				description:
+					'Array of objects. Example: [{"name": "hg1", "alias": "HG 1", "customer": "provider"}].',
 			},
 			// ==================== ACKNOWLEDGE OPERATIONS ====================
 			{
@@ -457,7 +460,7 @@ export class Checkmk implements INodeType {
 					},
 					{
 						name: 'Set Acknowledgement',
-						value: 'create', 
+						value: 'create',
 						description: 'Set acknowledgement on related hosts or services',
 						action: 'Set acknowledgement on related hosts',
 					},
@@ -477,7 +480,8 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: '{}',
-				description: 'Livestatus query expression (e.g. {"op": "=", "left": "name", "right": "myhost"})',
+				description:
+					'Livestatus query expression (e.g. {"op": "=", "left": "name", "right": "myhost"})',
 			},
 			{
 				displayName: 'Acknowledge Type',
@@ -629,49 +633,57 @@ export class Checkmk implements INodeType {
 					},
 				},
 				options: [
-					{ //CMK_UpdateFolder
+					{
+						//CMK_UpdateFolder
 						name: 'Bulk Update',
 						value: 'bulk_update',
 						description: 'Update multiple folders simultaneously',
 						action: 'Update multiple folders simultaneously',
 					},
-					{ //CMK_CreateFolder
+					{
+						//CMK_CreateFolder
 						name: 'Create',
 						value: 'create',
 						description: 'Create a folder',
 						action: 'Create a folder',
 					},
-					{ //CMK_DeleteFolder
+					{
+						//CMK_DeleteFolder
 						name: 'Delete',
 						value: 'delete',
 						description: 'Delete a folder',
 						action: 'Delete a folder',
 					},
-					{ //CMK_GetFolder
+					{
+						//CMK_GetFolder
 						name: 'Get',
 						value: 'get',
 						description: 'Get a folder',
 						action: 'Get a folder',
 					},
-					{ //CMK_HostsInFolder
+					{
+						//CMK_HostsInFolder
 						name: 'Get Hosts',
 						value: 'getHosts',
 						description: 'Get hosts from a specific folder',
 						action: 'Get hosts from a folder',
 					},
-					{ //CMK_GetManyFolders
+					{
+						//CMK_GetManyFolders
 						name: 'Get Many',
 						value: 'getMany',
 						description: 'Get many folders',
 						action: 'Get many folders',
 					},
-					{ //CMK_MoveFolder
+					{
+						//CMK_MoveFolder
 						name: 'Move',
 						value: 'move',
 						description: 'Move a folder',
 						action: 'Move a folder',
 					},
-					{ //CMK_UpdateFolder
+					{
+						//CMK_UpdateFolder
 						name: 'Update',
 						value: 'update',
 						description: 'Update a folder',
@@ -776,7 +788,7 @@ export class Checkmk implements INodeType {
 						action: 'Get a contact group',
 					},
 					{
-						name: 'Show All', 
+						name: 'Show All',
 						value: 'getMany',
 						description: 'Get all contact groups',
 						action: 'Get all contact groups',
@@ -877,7 +889,7 @@ export class Checkmk implements INodeType {
 						name: 'Move a Rule',
 						value: 'move',
 
-						action: 'Move a rule'
+						action: 'Move a rule',
 					},
 					{
 						name: 'Show a Rule',
@@ -930,7 +942,7 @@ export class Checkmk implements INodeType {
 						value: 'update',
 
 						action: 'Update the phase of a service',
-					},	
+					},
 					{
 						name: 'Wait for Discovery Completion',
 						value: 'wait',
@@ -977,7 +989,6 @@ export class Checkmk implements INodeType {
 						description: 'Show all currently running activations',
 						action: 'Show all currently running activations',
 					},
-					
 				],
 				default: 'activate',
 			},
@@ -1036,7 +1047,6 @@ export class Checkmk implements INodeType {
 
 						action: 'Update a site connection',
 					},
-					
 				],
 				default: 'showAll',
 			},
@@ -1230,12 +1240,11 @@ export class Checkmk implements INodeType {
 						description: 'Update an existing BI rule',
 						action: 'Update a BI rule',
 					},
-
 				],
 				default: 'getMany',
 			},
 
-/// ==================== COMMENT OPERATIONS ====================
+			/// ==================== COMMENT OPERATIONS ====================
 			{
 				displayName: 'Operation',
 				name: 'operation',
@@ -1274,7 +1283,7 @@ export class Checkmk implements INodeType {
 				],
 				default: 'getMany',
 			},
-            // --- End Fields for Create Comment ---			
+			// --- End Fields for Create Comment ---
 			// ==================== EVENT CONSOLE OPERATIONS ====================
 			{
 				displayName: 'Operation',
@@ -1514,9 +1523,7 @@ export class Checkmk implements INodeType {
 						displayName: 'Connector Type',
 						name: 'connector_type',
 						type: 'options',
-						options: [
-							{ name: 'Piggyback', value: 'piggyback' },
-						],
+						options: [{ name: 'Piggyback', value: 'piggyback' }],
 						default: 'piggyback',
 					},
 					{
@@ -1616,13 +1623,13 @@ export class Checkmk implements INodeType {
 					},
 					{
 						name: 'Show the Monitored Services of a Host',
-						value: 'showHost', 
+						value: 'showHost',
 						description: 'Get monitored services with advanced filtering (POST)',
 						action: 'Show all monitored services of a host',
 					},
 					{
 						name: 'Show a Single Service of a Specific Host',
-						value: 'show', 
+						value: 'show',
 						description: 'Get a single service with advanced filtering (POST)',
 						action: 'Show a single service of a specific host',
 					},
@@ -1663,8 +1670,16 @@ export class Checkmk implements INodeType {
 					},
 				},
 				options: [
-					{ name: 'Manual Entry (UI)', value: 'ui', description: 'Compute a single SLA target via interface' },
-					{ name: 'JSON (Multiple Targets)', value: 'json', description: 'Pass a raw JSON array of SLA targets' },
+					{
+						name: 'Manual Entry (UI)',
+						value: 'ui',
+						description: 'Compute a single SLA target via interface',
+					},
+					{
+						name: 'JSON (Multiple Targets)',
+						value: 'json',
+						description: 'Pass a raw JSON array of SLA targets',
+					},
 				],
 				default: 'ui',
 				description: 'Choose how to provide the SLA compute targets',
@@ -1683,7 +1698,8 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: [],
-				description: 'The IDs of the SLA configurations for which the SLA should be computed (e.g. sla_configuration_1)',
+				description:
+					'The IDs of the SLA configurations for which the SLA should be computed (e.g. sla_configuration_1)',
 			},
 			{
 				displayName: 'Services',
@@ -1803,7 +1819,8 @@ export class Checkmk implements INodeType {
 						slaInputMode: ['json'],
 					},
 				},
-				default: '[\n  {\n    "sla_ids": ["sla_configuration_1"],\n    "services": [\n      { "host_name": "myhost", "service_description": "CPU load" }\n    ],\n    "time_ranges": [\n      { "range_type": "pre_defined", "range": "today" }\n    ]\n  }\n]',
+				default:
+					'[\n  {\n    "sla_ids": ["sla_configuration_1"],\n    "services": [\n      { "host_name": "myhost", "service_description": "CPU load" }\n    ],\n    "time_ranges": [\n      { "range_type": "pre_defined", "range": "today" }\n    ]\n  }\n]',
 				description: 'Array of SLA compute targets',
 			},
 
@@ -2054,7 +2071,6 @@ export class Checkmk implements INodeType {
 
 						action: 'Update a notification rule',
 					},
-
 				],
 				default: 'showAll',
 			},
@@ -2149,8 +2165,6 @@ export class Checkmk implements INodeType {
 						description: 'Update an existing BI aggregation',
 						action: 'Update a BI aggregation',
 					},
-
-
 				],
 				default: 'getState',
 			},
@@ -2214,7 +2228,7 @@ export class Checkmk implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['biRule'],
-						operation: ['create','update'],
+						operation: ['create', 'update'],
 					},
 				},
 				default: '',
@@ -2229,7 +2243,7 @@ export class Checkmk implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['biRule'],
-						operation: ['create','update'],
+						operation: ['create', 'update'],
 					},
 				},
 				default: [],
@@ -2244,7 +2258,7 @@ export class Checkmk implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['biRule'],
-						operation: ['create','update'],
+						operation: ['create', 'update'],
 					},
 				},
 				options: [
@@ -2287,7 +2301,7 @@ export class Checkmk implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['biRule'],
-						operation: ['create','update'],
+						operation: ['create', 'update'],
 					},
 				},
 				options: [
@@ -2308,7 +2322,7 @@ export class Checkmk implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['biRule'],
-						operation: ['create','update'],
+						operation: ['create', 'update'],
 					},
 				},
 				options: [
@@ -2342,7 +2356,7 @@ export class Checkmk implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['biRule'],
-						operation: ['create','update'],
+						operation: ['create', 'update'],
 					},
 				},
 				options: [
@@ -2388,7 +2402,7 @@ export class Checkmk implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['biRule'],
-						operation: ['create','update'],
+						operation: ['create', 'update'],
 					},
 				},
 				options: [
@@ -2400,18 +2414,14 @@ export class Checkmk implements INodeType {
 								displayName: 'Search Type',
 								name: 'search_type',
 								type: 'options',
-								options: [
-									{ name: 'Empty', value: 'empty' },
-								],
+								options: [{ name: 'Empty', value: 'empty' }],
 								default: 'empty',
 							},
 							{
 								displayName: 'Action Type',
 								name: 'action_type',
 								type: 'options',
-								options: [
-									{ name: 'Call A Rule', value: 'call_a_rule' },
-								],
+								options: [{ name: 'Call A Rule', value: 'call_a_rule' }],
 								default: 'call_a_rule',
 							},
 							{
@@ -2467,7 +2477,7 @@ export class Checkmk implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['biPack'],
-						operation: ['delete','get','create','update',],
+						operation: ['delete', 'get', 'create', 'update'],
 					},
 				},
 				default: '',
@@ -2545,7 +2555,8 @@ export class Checkmk implements INodeType {
 						name: 'paths',
 						type: 'json',
 						default: '[]',
-						description: 'List of group paths (Array of Arrays). Example: [["path", "group", "a"], ["path", "group", "b"]].',
+						description:
+							'List of group paths (Array of Arrays). Example: [["path", "group", "a"], ["path", "group", "b"]].',
 					},
 				],
 			},
@@ -2591,7 +2602,8 @@ export class Checkmk implements INodeType {
 						name: 'action_params',
 						type: 'json',
 						default: '{}',
-						description: 'Additional parameters for the action (e.g., {"host_regex": "", "rule_id": "my_rule"})',
+						description:
+							'Additional parameters for the action (e.g., {"host_regex": "", "rule_id": "my_rule"})',
 					},
 				],
 			},
@@ -2816,7 +2828,8 @@ export class Checkmk implements INodeType {
 						name: 'force_explicit_parents',
 						type: 'boolean',
 						default: false,
-						description: 'Whether to force explicit setting for parents even if setting matches that of the folder',
+						description:
+							'Whether to force explicit setting for parents even if setting matches that of the folder',
 					},
 					{
 						displayName: 'Hop Probes',
@@ -2943,7 +2956,6 @@ export class Checkmk implements INodeType {
 				],
 				default: 'getMany',
 			},
-
 
 			// ==================== SAML CONNECTION OPERATIONS ====================
 			{
@@ -3158,7 +3170,7 @@ export class Checkmk implements INodeType {
 				name: 'password',
 				type: 'string',
 				typeOptions: {
-					password: true, 
+					password: true,
 				},
 				required: true,
 				displayOptions: {
@@ -3245,7 +3257,8 @@ export class Checkmk implements INodeType {
 						name: 'new_basedon',
 						type: 'string',
 						default: 'guest',
-						description: 'A built-in user role that you want this role to be based on (e.g. "guest", "user", "admin")',
+						description:
+							'A built-in user role that you want this role to be based on (e.g. "guest", "user", "admin")',
 					},
 					{
 						displayName: 'New Permissions',
@@ -3357,7 +3370,8 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: true,
-				description: 'Whether only a state-change to the UP/OK state will discard the acknowledgement',
+				description:
+					'Whether only a state-change to the UP/OK state will discard the acknowledgement',
 			},
 			{
 				displayName: 'Notify',
@@ -3396,7 +3410,8 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: '',
-				description: 'If set, the acknowledgement will expire at this time. The timezone will default to UTC.',
+				description:
+					'If set, the acknowledgement will expire at this time. The timezone will default to UTC.',
 			},
 			// ==================== EVENT CONSOLE SPECIFIC FIELDS ====================
 
@@ -3485,7 +3500,7 @@ export class Checkmk implements INodeType {
 					},
 				},
 				description: 'JSON object defining the filter parameters',
-			},			
+			},
 			// ==================== EVENT CONSOLE CHANGE STATE FIELDS ====================
 			{
 				displayName: 'Event ID',
@@ -3508,11 +3523,11 @@ export class Checkmk implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['eventConsole'],
-						operation: ['changeState']
-					}
+						operation: ['changeState'],
+					},
 				},
 				default: '',
-				description: 'An existing site ID'
+				description: 'An existing site ID',
 			},
 			{
 				displayName: 'New State',
@@ -3520,31 +3535,31 @@ export class Checkmk implements INodeType {
 				type: 'options',
 				required: true,
 				options: [
-					{ 
+					{
 						name: 'OK',
-						value: 'ok' 
+						value: 'ok',
 					},
 					{
 						name: 'WARNING',
-						 value: 'warning' 
+						value: 'warning',
 					},
 					{
 						name: 'CRITICAL',
-						 value: 'critical' 
+						value: 'critical',
 					},
 					{
 						name: 'UNKNOWN',
-						 value: 'unknown' 
+						value: 'unknown',
 					},
 				],
 				displayOptions: {
 					show: {
 						resource: ['eventConsole'],
-						operation: ['changeState']
-					}
+						operation: ['changeState'],
+					},
 				},
 				default: 'ok',
-				description: 'The state'
+				description: 'The state',
 			},
 			// ==================== EVENT CONSOLE CHANGE MULTIPLE STATES FIELDS ====================
 			{
@@ -3554,11 +3569,11 @@ export class Checkmk implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['eventConsole'],
-						operation: ['changeMultipleStates']
-					}
+						operation: ['changeMultipleStates'],
+					},
 				},
 				default: '',
-				description: 'An existing site ID'
+				description: 'An existing site ID',
 			},
 			{
 				displayName: 'New State',
@@ -3566,39 +3581,47 @@ export class Checkmk implements INodeType {
 				type: 'options',
 				required: true,
 				options: [
-					{ 
+					{
 						name: 'OK',
-						value: 'ok' 
+						value: 'ok',
 					},
 					{
 						name: 'WARNING',
-						 value: 'warning' 
+						value: 'warning',
 					},
 					{
 						name: 'CRITICAL',
-						 value: 'critical' 
+						value: 'critical',
 					},
 					{
 						name: 'UNKNOWN',
-						 value: 'unknown' 
+						value: 'unknown',
 					},
 				],
 				displayOptions: {
 					show: {
 						resource: ['eventConsole'],
-						operation: ['changeMultipleStates']
-					}
+						operation: ['changeMultipleStates'],
+					},
 				},
 				default: 'ok',
-				description: 'The state'
+				description: 'The state',
 			},
 			{
 				displayName: 'Filter Type',
 				name: 'filter_type_change', // MESMO NOME!
 				type: 'options',
 				options: [
-					{ name: 'Parameters', value: 'params', description: 'Filter events based on specific parameters (JSON)' },
-					{ name: 'Query (Livestatus)', value: 'query', description: 'Filter events using a raw Livestatus query' },
+					{
+						name: 'Parameters',
+						value: 'params',
+						description: 'Filter events based on specific parameters (JSON)',
+					},
+					{
+						name: 'Query (Livestatus)',
+						value: 'query',
+						description: 'Filter events using a raw Livestatus query',
+					},
 				],
 				default: 'params', // Default diferente
 				displayOptions: {
@@ -3635,7 +3658,7 @@ export class Checkmk implements INodeType {
 					},
 				},
 				description: 'JSON object defining the filter parameters',
-			},	
+			},
 			// ==================== EVENT CONSOLE SHOW AN EVENT FIELDS ====================
 			{
 				displayName: 'Event ID',
@@ -3658,11 +3681,11 @@ export class Checkmk implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['eventConsole'],
-						operation: ['show']
-					}
+						operation: ['show'],
+					},
 				},
 				default: '',
-				description: 'An existing site ID'
+				description: 'An existing site ID',
 			},
 			// ==================== EVENT CONSOLE SHOW EVENTS FIELDS ====================
 			{
@@ -3672,11 +3695,11 @@ export class Checkmk implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['eventConsole'],
-						operation: ['showEvents']
-					}
+						operation: ['showEvents'],
+					},
 				},
 				default: '',
-				description: 'An existing site ID'
+				description: 'An existing site ID',
 			},
 			{
 				displayName: 'Host',
@@ -3685,11 +3708,12 @@ export class Checkmk implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['eventConsole'],
-						operation: ['showEvents']
-					}
+						operation: ['showEvents'],
+					},
 				},
 				default: '',
-				description: 'The host name. No exception is raised when the specified host name does not exist.'
+				description:
+					'The host name. No exception is raised when the specified host name does not exist.',
 			},
 			{
 				displayName: 'Application',
@@ -3698,11 +3722,11 @@ export class Checkmk implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['eventConsole'],
-						operation: ['showEvents']
-					}
+						operation: ['showEvents'],
+					},
 				},
 				default: '',
-				description: 'Show events that originated from this app'
+				description: 'Show events that originated from this app',
 			},
 			{
 				displayName: 'State',
@@ -3711,52 +3735,52 @@ export class Checkmk implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['eventConsole'],
-						operation: ['showEvents']
-					}
+						operation: ['showEvents'],
+					},
 				},
 				options: [
 					{
 						name: 'OK',
-						value: 'ok'
+						value: 'ok',
 					},
 					{
 						name: 'WARNING',
-						value: 'warning'
+						value: 'warning',
 					},
 					{
 						name: 'CRITICAL',
-						value: 'critical'
+						value: 'critical',
 					},
 					{
 						name: 'UNKNOWN',
-						value: 'unknown'
-					}
+						value: 'unknown',
+					},
 				],
 				default: 'ok',
-				description: 'Show events that originated from this app'
+				description: 'Show events that originated from this app',
 			},
 			{
 				displayName: 'Phase',
 				name: 'phase',
 				type: 'options',
 				options: [
-					{ 
+					{
 						name: 'ACK',
-						value: 'ack' 
+						value: 'ack',
 					},
 					{
 						name: 'OPEN',
-						 value: 'open' 
+						value: 'open',
 					},
 				],
 				displayOptions: {
 					show: {
 						resource: ['eventConsole'],
-						operation: ['showEvents']
-					}
+						operation: ['showEvents'],
+					},
 				},
 				default: 'ack',
-				description: 'To change the phase of an event'
+				description: 'To change the phase of an event',
 			},
 			{
 				displayName: 'Query (JSON)',
@@ -3829,23 +3853,23 @@ export class Checkmk implements INodeType {
 				name: 'phase',
 				type: 'options',
 				options: [
-					{ 
+					{
 						name: 'ACK',
-						value: 'ack' 
+						value: 'ack',
 					},
 					{
 						name: 'OPEN',
-						 value: 'open' 
+						value: 'open',
 					},
 				],
 				displayOptions: {
 					show: {
 						resource: ['eventConsole'],
-						operation: ['updateEvent']
-					}
+						operation: ['updateEvent'],
+					},
 				},
 				default: 'ack',
-				description: 'To change the phase of an event'
+				description: 'To change the phase of an event',
 			},
 			// ==================== EVENT CONSOLE UPDATE EVENTS FIELDS ====================
 			{
@@ -3891,31 +3915,39 @@ export class Checkmk implements INodeType {
 				name: 'phase',
 				type: 'options',
 				options: [
-					{ 
+					{
 						name: 'ACK',
-						value: 'ack' 
+						value: 'ack',
 					},
 					{
 						name: 'OPEN',
-						 value: 'open' 
+						value: 'open',
 					},
 				],
 				displayOptions: {
 					show: {
 						resource: ['eventConsole'],
-						operation: ['updateEvents']
-					}
+						operation: ['updateEvents'],
+					},
 				},
 				default: 'ack',
-				description: 'To change the phase of an event'
+				description: 'To change the phase of an event',
 			},
 			{
 				displayName: 'Filter Type',
 				name: 'filter_type_update', // MESMO NOME!
 				type: 'options',
 				options: [
-					{ name: 'Parameters', value: 'params', description: 'Filter events based on specific parameters (JSON)' },
-					{ name: 'Query (Livestatus)', value: 'query', description: 'Filter events using a raw Livestatus query' },
+					{
+						name: 'Parameters',
+						value: 'params',
+						description: 'Filter events based on specific parameters (JSON)',
+					},
+					{
+						name: 'Query (Livestatus)',
+						value: 'query',
+						description: 'Filter events using a raw Livestatus query',
+					},
 					{ name: 'All', value: 'all', description: 'Update all events' },
 				],
 				default: 'all', // Default diferente
@@ -3953,7 +3985,7 @@ export class Checkmk implements INodeType {
 					},
 				},
 				description: 'JSON object defining the filter parameters',
-			},	
+			},
 			// --- Inputs for Comment Operations ---
 			{
 				displayName: 'Comment ID',
@@ -4018,9 +4050,9 @@ export class Checkmk implements INodeType {
 				required: true,
 				displayOptions: {
 					show: {
-						resource: ['serviceStatus', 'metric', 'comment', 'acknowledge'], 
-						operation: ['show', 'getMetrics', 'create', 'remove'], 
-                        acknowledge_type: ['service'],
+						resource: ['serviceStatus', 'metric', 'comment', 'acknowledge'],
+						operation: ['show', 'getMetrics', 'create', 'remove'],
+						acknowledge_type: ['service'],
 					},
 				},
 				default: '',
@@ -4053,7 +4085,8 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: '{}',
-				description: 'Livestatus query expression (e.g. {"op": "=", "left": "name", "right": "myhost"})',
+				description:
+					'Livestatus query expression (e.g. {"op": "=", "left": "name", "right": "myhost"})',
 			},
 			{
 				displayName: 'Comment',
@@ -4289,7 +4322,8 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: '[]',
-				description: 'Array of objects. Example: [{"name": "cg1", "alias": "CG 1", "customer": "provider"}].',
+				description:
+					'Array of objects. Example: [{"name": "cg1", "alias": "CG 1", "customer": "provider"}].',
 			},
 			// ==================== END CONTACT GROUP BULK CREATE FIELDS ====================
 			// ==================== CONTACT GROUP BULK UPDATE FIELDS ====================
@@ -4385,96 +4419,96 @@ export class Checkmk implements INodeType {
 										displayName: 'Path Entry',
 										name: 'pathEntry',
 										values: [
-									{
-										displayName: 'Attributes Allowed Values',
-										name: 'attributesValues',
-										type: 'string',
-										default: '',
-										description: 'Comma-separated values to be allowed',
-									},
-									{
-										displayName: 'Attributes Restriction',
-										name: 'attributesType',
-										type: 'options',
-										options: [
+											{
+												displayName: 'Attributes Allowed Values',
+												name: 'attributesValues',
+												type: 'string',
+												default: '',
+												description: 'Comma-separated values to be allowed',
+											},
+											{
+												displayName: 'Attributes Restriction',
+												name: 'attributesType',
+												type: 'options',
+												options: [
 													{
-												name: 'No Restriction',
-												value: 'no_restriction',
+														name: 'No Restriction',
+														value: 'no_restriction',
 													},
 													{
-												name: 'Restrict All',
-												value: 'restrict_all',
+														name: 'Restrict All',
+														value: 'restrict_all',
 													},
 													{
-												name: 'Restrict Specific Values',
-												value: 'restrict_values',
+														name: 'Restrict Specific Values',
+														value: 'restrict_values',
 													},
 												],
-										default: 'no_restriction',
-									},
-									{
-										displayName: 'Columns Allowed Values',
-										name: 'columnsValues',
-										type: 'string',
-										default: '',
-										description: 'Comma-separated values to be allowed',
-									},
-									{
-										displayName: 'Columns Restriction',
-										name: 'columnsType',
-										type: 'options',
-										options: [
+												default: 'no_restriction',
+											},
+											{
+												displayName: 'Columns Allowed Values',
+												name: 'columnsValues',
+												type: 'string',
+												default: '',
+												description: 'Comma-separated values to be allowed',
+											},
+											{
+												displayName: 'Columns Restriction',
+												name: 'columnsType',
+												type: 'options',
+												options: [
 													{
-												name: 'No Restriction',
-												value: 'no_restriction',
+														name: 'No Restriction',
+														value: 'no_restriction',
 													},
 													{
-												name: 'Restrict All',
-												value: 'restrict_all',
+														name: 'Restrict All',
+														value: 'restrict_all',
 													},
 													{
-												name: 'Restrict Specific Values',
-												value: 'restrict_values',
+														name: 'Restrict Specific Values',
+														value: 'restrict_values',
 													},
-											],
-										default: 'no_restriction',
-									},
-									{
-										displayName: 'Nodes Allowed Values',
-										name: 'nodesValues',
-										type: 'string',
-										default: '',
-										description: 'Comma-separated values to be allowed',
-									},
-									{
-										displayName: 'Nodes Restriction',
-										name: 'nodesType',
-										type: 'options',
-										options: [
+												],
+												default: 'no_restriction',
+											},
+											{
+												displayName: 'Nodes Allowed Values',
+												name: 'nodesValues',
+												type: 'string',
+												default: '',
+												description: 'Comma-separated values to be allowed',
+											},
+											{
+												displayName: 'Nodes Restriction',
+												name: 'nodesType',
+												type: 'options',
+												options: [
 													{
-												name: 'No Restriction',
-												value: 'no_restriction',
-													},
-													{
-												name: 'Restrict All',
-												value: 'restrict_all',
+														name: 'No Restriction',
+														value: 'no_restriction',
 													},
 													{
-												name: 'Restrict Specific Values',
-												value: 'restrict_values',
+														name: 'Restrict All',
+														value: 'restrict_all',
 													},
-											],
-										default: 'no_restriction',
-									},
-									{
-										displayName: 'Path',
-										name: 'path',
-										type: 'string',
-											required:	true,
-										default: '',
-										description: 'Path to category (e.g.	/software)',
-									},
-					],
+													{
+														name: 'Restrict Specific Values',
+														value: 'restrict_values',
+													},
+												],
+												default: 'no_restriction',
+											},
+											{
+												displayName: 'Path',
+												name: 'path',
+												type: 'string',
+												required: true,
+												default: '',
+												description: 'Path to category (e.g.	/software)',
+											},
+										],
 									},
 								],
 							},
@@ -4496,7 +4530,8 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: '[]',
-				description: 'Array of objects. Example: [{"name": "cg1", "attributes": {"alias": "New Name"}}].',
+				description:
+					'Array of objects. Example: [{"name": "cg1", "attributes": {"alias": "New Name"}}].',
 			},
 
 			// ==================== END CONTACT GROUP BULK UPDATE FIELDS ====================
@@ -4508,12 +4543,13 @@ export class Checkmk implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['hostStatus'],
-						operation: ['get','getMany','getForHost'],
+						operation: ['get', 'getMany', 'getForHost'],
 					},
 				},
 				default: '',
 				placeholder: 'name,state,last_check',
-				description: 'Comma-separated list of columns to retrieve. If empty, returns default columns.',
+				description:
+					'Comma-separated list of columns to retrieve. If empty, returns default columns.',
 			},
 			{
 				displayName: 'Sites',
@@ -4522,7 +4558,7 @@ export class Checkmk implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['hostStatus'],
-						operation: ['getMany','getForHost'],
+						operation: ['getMany', 'getForHost'],
 					},
 				},
 				default: '',
@@ -4540,11 +4576,12 @@ export class Checkmk implements INodeType {
 				default: 'builder',
 				displayOptions: {
 					show: {
-						resource: ['hostStatus',],
+						resource: ['hostStatus'],
 						operation: ['getMany', 'showAll', 'showHost'],
 					},
 				},
-				description: 'Choose "Simple Builder" for standard filtering or "Raw JSON" for complex nested queries (AND inside OR)',
+				description:
+					'Choose "Simple Builder" for standard filtering or "Raw JSON" for complex nested queries (AND inside OR)',
 			},
 			// --- OPÇÃO 2: QUERY BUILDER VISUAL ---
 			{
@@ -4554,7 +4591,7 @@ export class Checkmk implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['hostStatus'],
-						operation: ['getMany','getForHost'],
+						operation: ['getMany', 'getForHost'],
 						queryMode: ['builder'],
 					},
 				},
@@ -4575,7 +4612,7 @@ export class Checkmk implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['hostStatus'],
-						operation: ['getMany','getForHost'],
+						operation: ['getMany', 'getForHost'],
 						queryMode: ['builder'],
 					},
 				},
@@ -4594,27 +4631,27 @@ export class Checkmk implements INodeType {
 								description: 'The column to check (e.g. name, state)',
 							},
 							{
-										displayName: 'Operator',
-										name: 'op',
-										type: 'options',
-										default: '=',
-										options: [
-											{ name: '!< (Not Less Than)', value: '!<' },
-											{ name: '!<= (Not Less or Equal)', value: '!<=' },
-											{ name: '!= (Not Equal)', value: '!=' },
-											{ name: '!> (Not Greater Than)', value: '!>' },
-											{ name: '!>= (Not Greater or Equal)', value: '!>=' },
-											{ name: '!~ (Regex No Match)', value: '!~' },
-											{ name: '!~~ (No Case Insensitive Regex)', value: '!~~' },
-											{ name: '< (Less Than)', value: '<' },
-											{ name: '<= (Less or Equal)', value: '<=' },
-											{ name: '= (Equal)', value: '=' },
-											{ name: '> (Greater Than)', value: '>' },
-											{ name: '>= (Greater or Equal)', value: '>=' },
-											{ name: '~ (Regex Match)', value: '~' },
-											{ name: '~~ (Case Insensitive Regex)', value: '~~' },
-										],
-									},
+								displayName: 'Operator',
+								name: 'op',
+								type: 'options',
+								default: '=',
+								options: [
+									{ name: '!< (Not Less Than)', value: '!<' },
+									{ name: '!<= (Not Less or Equal)', value: '!<=' },
+									{ name: '!= (Not Equal)', value: '!=' },
+									{ name: '!> (Not Greater Than)', value: '!>' },
+									{ name: '!>= (Not Greater or Equal)', value: '!>=' },
+									{ name: '!~ (Regex No Match)', value: '!~' },
+									{ name: '!~~ (No Case Insensitive Regex)', value: '!~~' },
+									{ name: '< (Less Than)', value: '<' },
+									{ name: '<= (Less or Equal)', value: '<=' },
+									{ name: '= (Equal)', value: '=' },
+									{ name: '> (Greater Than)', value: '>' },
+									{ name: '>= (Greater or Equal)', value: '>=' },
+									{ name: '~ (Regex Match)', value: '~' },
+									{ name: '~~ (Case Insensitive Regex)', value: '~~' },
+								],
+							},
 							{
 								displayName: 'Value',
 								name: 'right',
@@ -4689,7 +4726,8 @@ export class Checkmk implements INodeType {
 						name: 'regexp',
 						type: 'string',
 						default: '',
-						description: 'A regular expression to be applied to the user_id, action and summary fields',
+						description:
+							'A regular expression to be applied to the user_id, action and summary fields',
 					},
 				],
 			},
@@ -4757,7 +4795,7 @@ export class Checkmk implements INodeType {
 			},
 			{
 				displayName: 'Host Name',
-				name: 'host_name', 
+				name: 'host_name',
 				type: 'string',
 				required: true,
 				displayOptions: {
@@ -4793,7 +4831,7 @@ export class Checkmk implements INodeType {
 				required: true,
 				displayOptions: {
 					show: {
-						resource: ['serviceGroup', 'hostGroup', 'contactGroup','timePeriod'],
+						resource: ['serviceGroup', 'hostGroup', 'contactGroup', 'timePeriod'],
 						operation: ['create', 'update'],
 					},
 				},
@@ -4838,17 +4876,17 @@ export class Checkmk implements INodeType {
 						name: 'pathEntry',
 						values: [
 							{
-						displayName: 'Attributes Allowed Values',
-						name: 'attributesValues',
-						type: 'string',
-						default: '',
-						description: 'Comma-separated values to be allowed',
+								displayName: 'Attributes Allowed Values',
+								name: 'attributesValues',
+								type: 'string',
+								default: '',
+								description: 'Comma-separated values to be allowed',
 							},
 							{
-						displayName: 'Attributes Restriction',
-						name: 'attributesType',
-						type: 'options',
-						options: [
+								displayName: 'Attributes Restriction',
+								name: 'attributesType',
+								type: 'options',
+								options: [
 									{
 										name: 'No Restriction',
 										value: 'no_restriction',
@@ -4862,20 +4900,20 @@ export class Checkmk implements INodeType {
 										value: 'restrict_values',
 									},
 								],
-						default: 'no_restriction',
+								default: 'no_restriction',
 							},
 							{
-						displayName: 'Columns Allowed Values',
-						name: 'columnsValues',
-						type: 'string',
-						default: '',
-						description: 'Comma-separated values to be allowed',
+								displayName: 'Columns Allowed Values',
+								name: 'columnsValues',
+								type: 'string',
+								default: '',
+								description: 'Comma-separated values to be allowed',
 							},
 							{
-						displayName: 'Columns Restriction',
-						name: 'columnsType',
-						type: 'options',
-						options: [
+								displayName: 'Columns Restriction',
+								name: 'columnsType',
+								type: 'options',
+								options: [
 									{
 										name: 'No Restriction',
 										value: 'no_restriction',
@@ -4888,21 +4926,21 @@ export class Checkmk implements INodeType {
 										name: 'Restrict Specific Values',
 										value: 'restrict_values',
 									},
-					],
-						default: 'no_restriction',
+								],
+								default: 'no_restriction',
 							},
 							{
-						displayName: 'Nodes Allowed Values',
-						name: 'nodesValues',
-						type: 'string',
-						default: '',
-						description: 'Comma-separated values to be allowed',
+								displayName: 'Nodes Allowed Values',
+								name: 'nodesValues',
+								type: 'string',
+								default: '',
+								description: 'Comma-separated values to be allowed',
 							},
 							{
-						displayName: 'Nodes Restriction',
-						name: 'nodesType',
-						type: 'options',
-						options: [
+								displayName: 'Nodes Restriction',
+								name: 'nodesType',
+								type: 'options',
+								options: [
 									{
 										name: 'No Restriction',
 										value: 'no_restriction',
@@ -4915,18 +4953,18 @@ export class Checkmk implements INodeType {
 										name: 'Restrict Specific Values',
 										value: 'restrict_values',
 									},
-					],
-						default: 'no_restriction',
+								],
+								default: 'no_restriction',
 							},
 							{
-						displayName: 'Path',
-						name: 'path',
-						type: 'string',
-							required:	true,
-						default: '',
-						description: 'Path to category (e.g.	/software)',
+								displayName: 'Path',
+								name: 'path',
+								type: 'string',
+								required: true,
+								default: '',
+								description: 'Path to category (e.g.	/software)',
 							},
-					],
+						],
 					},
 				],
 			},
@@ -4937,8 +4975,24 @@ export class Checkmk implements INodeType {
 				required: true,
 				displayOptions: {
 					show: {
-						resource: ['host', 'service', 'discovery','hostStatus','metric'],
-						operation: ['create', 'delete', 'get', 'move', 'rename', 'update', 'create_cluster', 'update_cluster_nodes', 'getForHost', 'getMetrics', 'run', 'showResult', 'showLast', 'wait', 'remove'],
+						resource: ['host', 'service', 'discovery', 'hostStatus', 'metric'],
+						operation: [
+							'create',
+							'delete',
+							'get',
+							'move',
+							'rename',
+							'update',
+							'create_cluster',
+							'update_cluster_nodes',
+							'getForHost',
+							'getMetrics',
+							'run',
+							'showResult',
+							'showLast',
+							'wait',
+							'remove',
+						],
 					},
 				},
 				default: '',
@@ -5060,13 +5114,26 @@ export class Checkmk implements INodeType {
 				options: [
 					{ name: 'Fix All', value: 'fix_all', description: 'Accept all' },
 					{ name: 'New', value: 'new', description: 'Monitor undecided services' },
-					{ name: 'Only Host Labels', value: 'only_host_labels', description: 'Update host labels' },
-					{ name: 'Only Service Labels', value: 'only_service_labels', description: 'Update service labels' },
+					{
+						name: 'Only Host Labels',
+						value: 'only_host_labels',
+						description: 'Update host labels',
+					},
+					{
+						name: 'Only Service Labels',
+						value: 'only_service_labels',
+						description: 'Update service labels',
+					},
 					{ name: 'Refresh', value: 'refresh', description: 'Rescan (starts background job)' },
 					{ name: 'Remove', value: 'remove', description: 'Remove vanished services' },
-					{ name: 'Tabula Rasa', value: 'tabula_rasa', description: 'Remove all and find new (starts background job)' },
+					{
+						name: 'Tabula Rasa',
+						value: 'tabula_rasa',
+						description: 'Remove all and find new (starts background job)',
+					},
 				],
-				description: "Discovery mode to use. 'refresh' and 'tabula_rasa' start background jobs and redirect to wait-for-completion.",
+				description:
+					"Discovery mode to use. 'refresh' and 'tabula_rasa' start background jobs and redirect to wait-for-completion.",
 			},
 			{
 				displayName: 'Target Phase',
@@ -5082,22 +5149,49 @@ export class Checkmk implements INodeType {
 				options: [
 					{ name: 'Active', value: 'active', description: 'Service is actively monitored' },
 					{ name: 'Changed', value: 'changed', description: 'Service configuration has changed' },
-					{ name: 'Clustered Ignored', value: 'clustered_ignored', description: 'Clustered service that is ignored' },
-					{ name: 'Clustered Monitored', value: 'clustered_monitored', description: 'Clustered service that is monitored' },
-					{ name: 'Clustered Undecided', value: 'clustered_undecided', description: 'Clustered service awaiting decision' },
-					{ name: 'Clustered Vanished', value: 'clustered_vanished', description: 'Clustered service that has vanished' },
+					{
+						name: 'Clustered Ignored',
+						value: 'clustered_ignored',
+						description: 'Clustered service that is ignored',
+					},
+					{
+						name: 'Clustered Monitored',
+						value: 'clustered_monitored',
+						description: 'Clustered service that is monitored',
+					},
+					{
+						name: 'Clustered Undecided',
+						value: 'clustered_undecided',
+						description: 'Clustered service awaiting decision',
+					},
+					{
+						name: 'Clustered Vanished',
+						value: 'clustered_vanished',
+						description: 'Clustered service that has vanished',
+					},
 					{ name: 'Custom', value: 'custom', description: 'Service with custom configuration' },
 					{ name: 'Ignored', value: 'ignored', description: 'Service is ignored' },
-					{ name: 'Ignored Active', value: 'ignored_active', description: 'Previously active service that is now ignored' },
-					{ name: 'Ignored Custom', value: 'ignored_custom', description: 'Custom service that is ignored' },
+					{
+						name: 'Ignored Active',
+						value: 'ignored_active',
+						description: 'Previously active service that is now ignored',
+					},
+					{
+						name: 'Ignored Custom',
+						value: 'ignored_custom',
+						description: 'Custom service that is ignored',
+					},
 					{ name: 'Legacy', value: 'legacy', description: 'Legacy service configuration' },
-					{ name: 'Legacy Ignored', value: 'legacy_ignored', description: 'Legacy service that is ignored' },
+					{
+						name: 'Legacy Ignored',
+						value: 'legacy_ignored',
+						description: 'Legacy service that is ignored',
+					},
 					{ name: 'Manual', value: 'manual', description: 'Service configured manually' },
 					{ name: 'Monitored', value: 'monitored', description: 'Service is monitored' },
 					{ name: 'Removed', value: 'removed', description: 'Service has been removed' },
 					{ name: 'Undecided', value: 'undecided', description: 'Service awaiting decision' },
 					{ name: 'Vanished', value: 'vanished', description: 'Service has vanished' },
-					
 				],
 				description: 'Target phase to move the service to',
 			},
@@ -5136,15 +5230,16 @@ export class Checkmk implements INodeType {
 				required: true,
 				displayOptions: {
 					show: {
-						resource: ['serviceGroup','hostGroup', 'password'],
+						resource: ['serviceGroup', 'hostGroup', 'password'],
 						operation: ['create', 'update'],
 					},
 				},
 				default: 'global',
-				description: 'By specifying a customer, you configure on which sites the user object will be available. global will make the object available on all sites.',
+				description:
+					'By specifying a customer, you configure on which sites the user object will be available. global will make the object available on all sites.',
 			},
 
-// ==================== SERVICE GROUP BULK CREATE FIELDS ====================
+			// ==================== SERVICE GROUP BULK CREATE FIELDS ====================
 			{
 				displayName: 'Input Mode',
 				name: 'createMode',
@@ -5152,7 +5247,7 @@ export class Checkmk implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['serviceGroup'],
-						operation: ['bulk_create','bulk_update','bulk_delete'],
+						operation: ['bulk_create', 'bulk_update', 'bulk_delete'],
 					},
 				},
 				options: [
@@ -5170,7 +5265,7 @@ export class Checkmk implements INodeType {
 				default: 'ui',
 				description: 'Choose how to provide the service group entries',
 			},
-			
+
 			// OPÇÃO 1: MODO UI (Fixed Collection)
 			{
 				displayName: 'Entries',
@@ -5215,13 +5310,13 @@ export class Checkmk implements INodeType {
 								type: 'string',
 								required: true,
 								default: 'global',
-								description: 'By specifying a customer, you configure on which sites the object will be available. global will make the object available on all sites.',
+								description:
+									'By specifying a customer, you configure on which sites the object will be available. global will make the object available on all sites.',
 							},
 						],
 					},
 				],
 			},
-
 
 			// OPÇÃO 2: MODO JSON (Raw)
 			{
@@ -5236,10 +5331,11 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: '[]',
-				description: 'An array of objects. Example: [{"name": "sg1", "alias": "Service Group 1", "customer": "global"}].',
+				description:
+					'An array of objects. Example: [{"name": "sg1", "alias": "Service Group 1", "customer": "global"}].',
 			},
 
-// ==================== SERVICE GROUP BULK UPDATE FIELDS ====================
+			// ==================== SERVICE GROUP BULK UPDATE FIELDS ====================
 			{
 				displayName: 'Entries',
 				name: 'updateEntries',
@@ -5281,7 +5377,8 @@ export class Checkmk implements INodeType {
 								name: 'customer',
 								type: 'string',
 								default: 'global',
-								description: 'By specifying a customer, you configure on which sites the object will be available',
+								description:
+									'By specifying a customer, you configure on which sites the object will be available',
 							},
 						],
 					},
@@ -5300,10 +5397,11 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: '[]',
-				description: 'An array of objects with name and attributes to update. Example: [{"name": "sg1", "attributes": {"alias": "New Alias", "customer": "global"}}].',
+				description:
+					'An array of objects with name and attributes to update. Example: [{"name": "sg1", "attributes": {"alias": "New Alias", "customer": "global"}}].',
 			},
 
-// ==================== SERVICE GROUP BULK DELETE FIELDS ====================
+			// ==================== SERVICE GROUP BULK DELETE FIELDS ====================
 			{
 				displayName: 'Entries',
 				name: 'deleteEntries',
@@ -5352,10 +5450,10 @@ export class Checkmk implements INodeType {
 				default: '[]',
 				description: 'An array of service group names to delete. Example: ["sg1", "sg2"].',
 			},
-		
+
 			{
 				displayName: 'Hostnames (List)',
-				name: 'hostNames', 
+				name: 'hostNames',
 				type: 'string',
 				required: true,
 				displayOptions: {
@@ -5404,7 +5502,7 @@ export class Checkmk implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['host'],
-						operation: ['create_cluster','update_cluster_nodes'],
+						operation: ['create_cluster', 'update_cluster_nodes'],
 					},
 				},
 				default: '',
@@ -5551,7 +5649,8 @@ export class Checkmk implements INodeType {
 										name: 'groups',
 										type: 'string',
 										default: '',
-										description: 'Comma-separated list of contact group names (e.g. admins, operators)',
+										description:
+											'Comma-separated list of contact group names (e.g. admins, operators)',
 									},
 									{
 										displayName: 'Recurse Perms',
@@ -5698,7 +5797,7 @@ export class Checkmk implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['userRole'],
-						operation: ['clone', 'delete', 'update','get'],
+						operation: ['clone', 'delete', 'update', 'get'],
 					},
 				},
 				default: 'admin',
@@ -5734,7 +5833,6 @@ export class Checkmk implements INodeType {
 			},
 			// ==================== USER ROLE FIELDS END ====================
 
-
 			// RULESET SPECIFIC FIELDS
 
 			// RULESET search fields
@@ -5764,7 +5862,8 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: '',
-				description: 'The folder in which to search for rules. Path delimiters can be either ~, / or \\. Please use the one most appropriate for your quoting/escaping needs. A good default choice is ~.',
+				description:
+					'The folder in which to search for rules. Path delimiters can be either ~, / or \\. Please use the one most appropriate for your quoting/escaping needs. A good default choice is ~.',
 			},
 			{
 				displayName: 'Only Deprecated',
@@ -5858,7 +5957,9 @@ export class Checkmk implements INodeType {
 				name: 'metadataUrl',
 				type: 'string',
 				required: true,
-				displayOptions: { show: { resource: ['samlConnection'], operation: ['create'], metadataType: ['url'] } },
+				displayOptions: {
+					show: { resource: ['samlConnection'], operation: ['create'], metadataType: ['url'] },
+				},
 				default: '',
 			},
 			{
@@ -5866,7 +5967,9 @@ export class Checkmk implements INodeType {
 				name: 'metadataXml',
 				type: 'string',
 				required: true,
-				displayOptions: { show: { resource: ['samlConnection'], operation: ['create'], metadataType: ['xml'] } },
+				displayOptions: {
+					show: { resource: ['samlConnection'], operation: ['create'], metadataType: ['xml'] },
+				},
 				default: '',
 			},
 			{
@@ -5885,7 +5988,9 @@ export class Checkmk implements INodeType {
 				name: 'signingKey',
 				type: 'string',
 				required: true,
-				displayOptions: { show: { resource: ['samlConnection'], operation: ['create'], signingType: ['custom'] } },
+				displayOptions: {
+					show: { resource: ['samlConnection'], operation: ['create'], signingType: ['custom'] },
+				},
 				default: '',
 			},
 			{
@@ -5893,7 +5998,9 @@ export class Checkmk implements INodeType {
 				name: 'signingCert',
 				type: 'string',
 				required: true,
-				displayOptions: { show: { resource: ['samlConnection'], operation: ['create'], signingType: ['custom'] } },
+				displayOptions: {
+					show: { resource: ['samlConnection'], operation: ['create'], signingType: ['custom'] },
+				},
 				default: '',
 			},
 			{
@@ -5914,7 +6021,9 @@ export class Checkmk implements INodeType {
 				type: 'fixedCollection',
 				typeOptions: { multipleValues: true },
 				placeholder: 'Add Mapping',
-				displayOptions: { show: { resource: ['samlConnection'], operation: ['create'], cgType: ['map'] } },
+				displayOptions: {
+					show: { resource: ['samlConnection'], operation: ['create'], cgType: ['map'] },
+				},
 				default: {},
 				options: [
 					{
@@ -5922,12 +6031,16 @@ export class Checkmk implements INodeType {
 						name: 'mapping',
 						values: [
 							{ displayName: 'Attribute Value', name: 'value', type: 'string', default: '' },
-							{ displayName: 'Contact Groups (Comma Separated)', name: 'groups', type: 'string', default: '' },
+							{
+								displayName: 'Contact Groups (Comma Separated)',
+								name: 'groups',
+								type: 'string',
+								default: '',
+							},
 						],
 					},
 				],
 			},
-
 
 			// ==================== END SAML CONNECTION CREATE FIELDS ====================
 
@@ -5956,8 +6069,8 @@ export class Checkmk implements INodeType {
 				required: true,
 				displayOptions: {
 					show: {
-						resource: ['rule', 'notificationRule', 'biRule','get'],
-						operation: ['delete', 'modify', 'show', 'move', 'update','create'],
+						resource: ['rule', 'notificationRule', 'biRule', 'get'],
+						operation: ['delete', 'modify', 'show', 'move', 'update', 'create'],
 					},
 				},
 				default: '',
@@ -6063,7 +6176,7 @@ export class Checkmk implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['rule'],
-								operation: ['create'],
+						operation: ['create'],
 					},
 				},
 				default: { mode: 'id', value: '~' },
@@ -6108,7 +6221,8 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: '',
-				description: 'The raw parameter value for this rule. To create the correct structure, for now use the \'export for API\' menu item in the Rule Editor of the GUI. The value is expected to be a valid Python type.',
+				description:
+					"The raw parameter value for this rule. To create the correct structure, for now use the 'export for API' menu item in the Rule Editor of the GUI. The value is expected to be a valid Python type.",
 			},
 			// Rule create fields
 			{
@@ -6151,7 +6265,6 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: '{}',
-
 			},
 			{
 				displayName: 'Additional Fields',
@@ -6196,7 +6309,7 @@ export class Checkmk implements INodeType {
 					},
 				],
 			},
-			
+
 			// HOST TAG GROUP specific fields
 			{
 				displayName: 'Tag groupID',
@@ -6220,7 +6333,7 @@ export class Checkmk implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['hostTagGroup'],
-						operation: ['delete','show', 'update'],
+						operation: ['delete', 'show', 'update'],
 					},
 				},
 				default: '',
@@ -6263,7 +6376,7 @@ export class Checkmk implements INodeType {
 				required: true,
 				displayOptions: {
 					show: {
-						resource: ['hostTagGroup','auxTag'],
+						resource: ['hostTagGroup', 'auxTag'],
 						operation: ['create'],
 					},
 				},
@@ -6289,8 +6402,8 @@ export class Checkmk implements INodeType {
 				type: 'string',
 				displayOptions: {
 					show: {
-						resource: ['hostTagGroup','auxTag'],
-						operation: ['create','update'],
+						resource: ['hostTagGroup', 'auxTag'],
+						operation: ['create', 'update'],
 					},
 				},
 				default: 'Tags',
@@ -6302,8 +6415,8 @@ export class Checkmk implements INodeType {
 				type: 'string',
 				displayOptions: {
 					show: {
-						resource: ['hostTagGroup','auxTag'],
-						operation: ['create','update'],
+						resource: ['hostTagGroup', 'auxTag'],
+						operation: ['create', 'update'],
 					},
 				},
 				default: '""',
@@ -6382,11 +6495,9 @@ export class Checkmk implements INodeType {
 						operation: ['update', 'delete'],
 					},
 				},
-				description: 'Whether to allow repairing/updating tags on hosts that reference this tag group',
+				description:
+					'Whether to allow repairing/updating tags on hosts that reference this tag group',
 			},
-
-
-
 
 			// FOLDER SPECIFIC FIELDS MATEUS
 			{
@@ -6397,7 +6508,7 @@ export class Checkmk implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['folder'],
-								operation: ['get', 'update', 'delete', 'getHosts', 'move'],
+						operation: ['get', 'update', 'delete', 'getHosts', 'move'],
 					},
 				},
 				default: { mode: 'id', value: '~' },
@@ -6515,7 +6626,7 @@ export class Checkmk implements INodeType {
 				description: 'Max number of results to return',
 			},
 
-// ==================== FOLDER BULK UPDATE FIELDS ====================
+			// ==================== FOLDER BULK UPDATE FIELDS ====================
 			{
 				displayName: 'Input Mode',
 				name: 'updateMode',
@@ -6541,7 +6652,7 @@ export class Checkmk implements INodeType {
 				default: 'ui',
 				description: 'Choose how to provide the folder update entries',
 			},
-			
+
 			// OPÇÃO 1: MODO UI (Fixed Collection)
 			{
 				displayName: 'Entries',
@@ -6565,10 +6676,10 @@ export class Checkmk implements INodeType {
 						name: 'entry',
 						values: [
 							{
-						displayName: 'Attribute Choice',
-						name: 'attributeChoice',
-						type: 'options',
-						options: [
+								displayName: 'Attribute Choice',
+								name: 'attributeChoice',
+								type: 'options',
+								options: [
 									{
 										name: 'Update Attributes (Merge)',
 										value: 'update_attributes',
@@ -6582,60 +6693,60 @@ export class Checkmk implements INodeType {
 										value: 'remove_attributes',
 									},
 								],
-						default: 'update_attributes',
+								default: 'update_attributes',
 							},
 							{
-						displayName: 'Attributes (JSON)',
-						name: 'attributes_json',
-						type: 'json',
-						default: '{}',
-						description: 'Attributes e.g.	{\'tag_criticality\': \'prod\'}',
+								displayName: 'Attributes (JSON)',
+								name: 'attributes_json',
+								type: 'json',
+								default: '{}',
+								description: "Attributes e.g.	{'tag_criticality': 'prod'}",
 							},
 							{
-						displayName: 'Attributes to Remove',
-						name: 'remove_attributes_list',
-						type: 'string',
-						default: '',
-						description: 'Comma-separated list (e.g. \'tag_foo,tag_bar\')',
+								displayName: 'Attributes to Remove',
+								name: 'remove_attributes_list',
+								type: 'string',
+								default: '',
+								description: "Comma-separated list (e.g. 'tag_foo,tag_bar')",
 							},
 							{
-						displayName: 'Folder',
-						name: 'folder',
-						type: 'resourceLocator',
-						default: 'undefined',
-							required:	true,
-						description: 'The folder path to update',
-							modes:	[
+								displayName: 'Folder',
+								name: 'folder',
+								type: 'resourceLocator',
+								default: 'undefined',
+								required: true,
+								description: 'The folder path to update',
+								modes: [
 									{
 										displayName: 'By ID',
 										name: 'id',
 										type: 'string',
 										placeholder: '~folder_id',
-											validation:	[
-													{
+										validation: [
+											{
 												type: 'regex',
 												properties: {
 													regex: '^~.*',
 													errorMessage: 'Folder ID must start with ~',
 												},
-													},
-											]
+											},
+										],
 									},
 									{
 										displayName: 'From List',
 										name: 'list',
 										type: 'list',
 									},
-					]
+								],
 							},
 							{
-						displayName: 'Title',
-						name: 'title',
-						type: 'string',
-						default: '',
-						description: 'The new title of the folder (optional)',
+								displayName: 'Title',
+								name: 'title',
+								type: 'string',
+								default: '',
+								description: 'The new title of the folder (optional)',
 							},
-					],
+						],
 					},
 				],
 			},
@@ -6653,9 +6764,10 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: '[]',
-				description: 'An array of objects. Example: [{"folder": "~my_folder", "title": "New Title", "attributes": {"tag_foo": "bar"}}].',
+				description:
+					'An array of objects. Example: [{"folder": "~my_folder", "title": "New Title", "attributes": {"tag_foo": "bar"}}].',
 			},
-				// Additional Fields for Get Hosts from Folder
+			// Additional Fields for Get Hosts from Folder
 			{
 				displayName: 'Additional Fields',
 				name: 'additionalFields',
@@ -6709,7 +6821,8 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: '',
-				description: 'Display name for the folder. Checkmk will automatically generate the unique ID.',
+				description:
+					'Display name for the folder. Checkmk will automatically generate the unique ID.',
 			},
 			{
 				displayName: 'Parent',
@@ -6763,7 +6876,8 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: '{}',
-				description: 'Replace all attributes with the ones given in this JSON object (e.g., {"tag_criticality": "prod"})',
+				description:
+					'Replace all attributes with the ones given in this JSON object (e.g., {"tag_criticality": "prod"})',
 			},
 			{
 				displayName: 'Delete Mode',
@@ -6832,7 +6946,8 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: '{}',
-				description: 'Replace all attributes with the ones given in this JSON object (e.g., {"tag_criticality": "prod"})',
+				description:
+					'Replace all attributes with the ones given in this JSON object (e.g., {"tag_criticality": "prod"})',
 			},
 			{
 				displayName: 'Update Attributes',
@@ -6846,7 +6961,8 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: '{}',
-				description: 'Update the folder attributes with these attributes (merges with existing ones, e.g., {"tag_networking": "wan"})',
+				description:
+					'Update the folder attributes with these attributes (merges with existing ones, e.g., {"tag_networking": "wan"})',
 			},
 			{
 				displayName: 'Remove Attributes',
@@ -6860,7 +6976,8 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: '',
-				description: 'Comma-separated list of attributes to remove (e.g., "tag_criticality,tag_networking")',
+				description:
+					'Comma-separated list of attributes to remove (e.g., "tag_criticality,tag_networking")',
 			},
 			{
 				displayName: 'Show Hosts',
@@ -6911,7 +7028,7 @@ export class Checkmk implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['user'],
-						operation: ['create','update'],
+						operation: ['create', 'update'],
 					},
 				},
 				default: '',
@@ -6924,11 +7041,12 @@ export class Checkmk implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['user'],
-						operation: ['create', 'update' ],
+						operation: ['create', 'update'],
 					},
 				},
 				default: '',
-				description: 'By specifying a customer, you configure on which sites the user object will be available. global will make the object available on all sites.',
+				description:
+					'By specifying a customer, you configure on which sites the user object will be available. global will make the object available on all sites.',
 			},
 			{
 				displayName: 'Authorized Sites',
@@ -6941,7 +7059,8 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: 'all',
-				description: 'Comma-separated list of sites the user is authorized to handle (e.g. "all" or "site1,site2")',
+				description:
+					'Comma-separated list of sites the user is authorized to handle (e.g. "all" or "site1,site2")',
 			},
 			{
 				displayName: 'Roles',
@@ -7009,8 +7128,8 @@ export class Checkmk implements INodeType {
 				displayName: 'Password',
 				name: 'password',
 				type: 'credentials',
-				typeOptions:{
-					password:true,
+				typeOptions: {
+					password: true,
 				},
 				displayOptions: {
 					show: {
@@ -7043,7 +7162,7 @@ export class Checkmk implements INodeType {
 				required: true,
 				displayOptions: {
 					show: {
-						resource: ['activateChanges' ],
+						resource: ['activateChanges'],
 						operation: ['get', 'waitForCompletion'],
 					},
 				},
@@ -7078,20 +7197,20 @@ export class Checkmk implements INodeType {
 				description: 'Whether to activate changes made by other users',
 			},
 			// Additional options
-			
+
 			{
 				displayName: 'Return All',
 				name: 'returnAll',
 				type: 'boolean',
 				displayOptions: {
 					show: {
-						operation: ['getMany','getAll'],
+						operation: ['getMany', 'getAll'],
 					},
 				},
 				default: false,
 				description: 'Whether to return all results or only up to a given limit',
 			},
-			
+
 			{
 				displayName: 'Limit',
 				name: 'limit',
@@ -7127,7 +7246,8 @@ export class Checkmk implements INodeType {
 						name: 'effective_attributes',
 						type: 'boolean',
 						default: false,
-								description: 'Whether to show all effective attributes on hosts, not just the attributes which were set on this host specifically',
+						description:
+							'Whether to show all effective attributes on hosts, not just the attributes which were set on this host specifically',
 					},
 				],
 			},
@@ -7144,59 +7264,61 @@ export class Checkmk implements INodeType {
 						operation: ['getMany'],
 					},
 				},
-							options: [
-								{
-									displayName: 'Effective Attributes',
-									name: 'effective_attributes',
-									type: 'boolean',
-									default: false,
-									description: 'Whether to show all effective attributes on hosts, not just the attributes which were set on this host specifically',
-								},
-								{
-									displayName: 'Fields',
-									name: 'fields',
-									type: 'string',
-									default: '',
-									placeholder: '!(links)',
-									description: 'The fields to include/exclude (e.g., !(links) or (ipaddress,ipv6address))',
-								},
-								{
-									displayName: 'Hostnames',
-									name: 'hostnames',
-									type: 'string',
-									default: '',
-									placeholder: 'host1,host2',
-									description: 'Comma-separated list of host names to filter the result',
-								},
-								{
-								displayName: 'Hostnames',
-								name: 'hostNames',
-								type: 'string',
-								required: true,
-								displayOptions: {
-									show: {
-										resource: ['host'],
-										operation: ['bulk_delete'],
-									},
-								},
-								default: '',
-								description: 'Comma-separated list of hostnames to delete (e.g. "host1, host2")',
+				options: [
+					{
+						displayName: 'Effective Attributes',
+						name: 'effective_attributes',
+						type: 'boolean',
+						default: false,
+						description:
+							'Whether to show all effective attributes on hosts, not just the attributes which were set on this host specifically',
+					},
+					{
+						displayName: 'Fields',
+						name: 'fields',
+						type: 'string',
+						default: '',
+						placeholder: '!(links)',
+						description:
+							'The fields to include/exclude (e.g., !(links) or (ipaddress,ipv6address))',
+					},
+					{
+						displayName: 'Hostnames',
+						name: 'hostnames',
+						type: 'string',
+						default: '',
+						placeholder: 'host1,host2',
+						description: 'Comma-separated list of host names to filter the result',
+					},
+					{
+						displayName: 'Hostnames',
+						name: 'hostNames',
+						type: 'string',
+						required: true,
+						displayOptions: {
+							show: {
+								resource: ['host'],
+								operation: ['bulk_delete'],
 							},
-								{
-									displayName: 'Include Links',
-									name: 'include_links',
-									type: 'boolean',
-									default: false,
-									description: 'Whether the links field of the individual hosts should be populated',
-								},
-								{
-									displayName: 'Site',
-									name: 'site',
-									type: 'string',
-									default: '',
-									description: 'Filter the result by a specific site',
-								},
-							],
+						},
+						default: '',
+						description: 'Comma-separated list of hostnames to delete (e.g. "host1, host2")',
+					},
+					{
+						displayName: 'Include Links',
+						name: 'include_links',
+						type: 'boolean',
+						default: false,
+						description: 'Whether the links field of the individual hosts should be populated',
+					},
+					{
+						displayName: 'Site',
+						name: 'site',
+						type: 'string',
+						default: '',
+						description: 'Filter the result by a specific site',
+					},
+				],
 			},
 			// Additional Fields for Host Update
 			{
@@ -7217,7 +7339,8 @@ export class Checkmk implements INodeType {
 						name: 'attributes',
 						type: 'json',
 						default: '{}',
-						description: 'Replace all currently set attributes on the host (removes attributes not specified here)',
+						description:
+							'Replace all currently set attributes on the host (removes attributes not specified here)',
 					},
 					{
 						displayName: 'Update Attributes',
@@ -7311,7 +7434,6 @@ export class Checkmk implements INodeType {
 					{
 						name: '',
 						value: '',
-
 					},
 					{
 						name: 'Password',
@@ -7321,23 +7443,23 @@ export class Checkmk implements INodeType {
 					{
 						name: 'Automation',
 						value: 'automation',
-						description: 'For accounts used by automation processes (such as fetching data from views for further procession). This is the automation secret.',
+						description:
+							'For accounts used by automation processes (such as fetching data from views for further procession). This is the automation secret.',
 					},
 				],
 				default: '',
-
 			},
 			{
 				displayName: 'Password',
 				name: 'password',
 				type: 'string',
-				typeOptions:{
-					password:true,
+				typeOptions: {
+					password: true,
 				},
 				displayOptions: {
 					show: {
 						resource: ['user'],
-						operation: ['create','update'],
+						operation: ['create', 'update'],
 						authType: ['password'],
 					},
 				},
@@ -7348,24 +7470,25 @@ export class Checkmk implements INodeType {
 				displayName: 'Secret',
 				name: 'automation',
 				type: 'string',
-				typeOptions:{
-					password:true,
+				typeOptions: {
+					password: true,
 				},
 				displayOptions: {
 					show: {
 						resource: ['user'],
-						operation: ['create','update'],
+						operation: ['create', 'update'],
 						authType: ['automation'],
 					},
 				},
 				default: '',
-				description: 'For accounts used by automation processes (such as fetching data from views for further procession). This is the automation secret.',
+				description:
+					'For accounts used by automation processes (such as fetching data from views for further procession). This is the automation secret.',
 			},
 
 			// ==================== SERVICE STATUS FIELDS (showAll) ====================
 			{
 				displayName: 'Host Name',
-				name: 'host_name', 
+				name: 'host_name',
 				type: 'string',
 				displayOptions: {
 					show: {
@@ -7389,7 +7512,7 @@ export class Checkmk implements INodeType {
 				},
 				default: '',
 				description: 'Restrict the query to this particular host name',
-			},			
+			},
 			{
 				displayName: 'Sites',
 				name: 'sites',
@@ -7426,7 +7549,7 @@ export class Checkmk implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['serviceStatus', 'metric'],
-						operation: ['show','getMetrics'],
+						operation: ['show', 'getMetrics'],
 					},
 				},
 				default: '',
@@ -7444,7 +7567,8 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: '{}',
-				description: 'Livestatus query expression in nested dictionary form (e.g. {"op": "=", "left": "state", "right": "2"})',
+				description:
+					'Livestatus query expression in nested dictionary form (e.g. {"op": "=", "left": "state", "right": "2"})',
 			},
 
 			// NOTIFICATION RULES SPECIFIC FIELDS
@@ -7456,7 +7580,7 @@ export class Checkmk implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['notificationRule'],
-						operation: ['create', 'update']
+						operation: ['create', 'update'],
 					},
 				},
 				default: '{}',
@@ -7608,7 +7732,8 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: '',
-				description: 'The end datetime of the new downtime. The format has to conform to the ISO 8601 profile.',
+				description:
+					'The end datetime of the new downtime. The format has to conform to the ISO 8601 profile.',
 			},
 			{
 				displayName: 'Downtime ID',
@@ -7618,13 +7743,13 @@ export class Checkmk implements INodeType {
 				displayOptions: {
 					show: {
 						resource: ['downtime'],
-						operation: ['get','delete','update'],
+						operation: ['get', 'delete', 'update'],
 					},
 				},
 				default: '',
-				description: 'The ID of the downtime'
+				description: 'The ID of the downtime',
 			},
-			
+
 			{
 				displayName: 'Downtime Type',
 				name: 'downtimeType',
@@ -7650,7 +7775,7 @@ export class Checkmk implements INodeType {
 					{
 						name: 'Host by Query',
 						value: 'hostByQuery',
-						description: 'Schedule based on a Livestatus query expression'
+						description: 'Schedule based on a Livestatus query expression',
 					},
 				],
 				default: 'host',
@@ -7664,10 +7789,10 @@ export class Checkmk implements INodeType {
 				required: true,
 				displayOptions: {
 					show: {
-						resource: ['downtime', 'comment'], 
-						operation: ['create', 'remove'], 
+						resource: ['downtime', 'comment'],
+						operation: ['create', 'remove'],
 						downtimeType: ['host'],
-                        commentType: ['host', 'service'],
+						commentType: ['host', 'service'],
 					},
 				},
 				default: '',
@@ -7702,14 +7827,13 @@ export class Checkmk implements INodeType {
 					},
 				},
 				default: {},
-				description:
-					'Livestatus query expression in nested dictionary format',
+				description: 'Livestatus query expression in nested dictionary format',
 			},
 			{
 				displayName: 'Comment',
 				name: 'comment',
 				type: 'string',
-                required: true,
+				required: true,
 				displayOptions: {
 					show: {
 						resource: ['downtime'],
@@ -7793,7 +7917,10 @@ export class Checkmk implements INodeType {
 					results: await getFoldersList.call(this),
 				};
 			},
-			searchDestinationFolders: async function (this: ILoadOptionsFunctions, filter?: string): Promise<any> {
+			searchDestinationFolders: async function (
+				this: ILoadOptionsFunctions,
+				filter?: string,
+			): Promise<any> {
 				return {
 					results: await searchDestinationFolders.call(this, filter),
 				};
@@ -7813,70 +7940,96 @@ export class Checkmk implements INodeType {
 			try {
 				// ==================== HOST OPERATIONS ====================
 				if (resource === 'host') {
-					if (operation === 'create') {  //CMK_CREATEHOSTS
+					if (operation === 'create') {
+						//CMK_CREATEHOSTS
 						const hostName = this.getNodeParameter('hostName', i) as string;
 						// Correção da Pasta: Remove o prefixo '~' se existir
 						let folder = this.getNodeParameter('folder', i) as string;
 						if (folder.startsWith('~')) {
 							folder = folder.substring(1);
 						}
-						
-						const additionalFields = this.getNodeParameter('additionalFields', i, {},) as IDataObject;
+
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const attributes: IDataObject = {};
 
 						// --- 1. Basic Fields ---
 						if (additionalFields.alias) attributes.alias = additionalFields.alias;
 						if (additionalFields.site) attributes.site = additionalFields.site;
-						
+
 						// --- 2. Networking ---
 						if (additionalFields.ipaddress) attributes.ipaddress = additionalFields.ipaddress;
 						if (additionalFields.ipv6address) attributes.ipv6address = additionalFields.ipv6address;
 
 						// Arrays de IPs (split comma)
 						if (additionalFields.additional_ipv4addresses) {
-							attributes.additional_ipv4addresses = (additionalFields.additional_ipv4addresses as string)
-								.split(',').map(ip => ip.trim()).filter(ip => ip);
+							attributes.additional_ipv4addresses = (
+								additionalFields.additional_ipv4addresses as string
+							)
+								.split(',')
+								.map((ip) => ip.trim())
+								.filter((ip) => ip);
 						}
 						if (additionalFields.additional_ipv6addresses) {
-							attributes.additional_ipv6addresses = (additionalFields.additional_ipv6addresses as string)
-								.split(',').map(ip => ip.trim()).filter(ip => ip);
+							attributes.additional_ipv6addresses = (
+								additionalFields.additional_ipv6addresses as string
+							)
+								.split(',')
+								.map((ip) => ip.trim())
+								.filter((ip) => ip);
 						}
 
 						// Parents (split comma)
 						if (additionalFields.parents) {
 							attributes.parents = (additionalFields.parents as string)
-								.split(',').map(p => p.trim()).filter(p => p);
+								.split(',')
+								.map((p) => p.trim())
+								.filter((p) => p);
 						}
 
 						// --- 3. Tags & Enums ---
-						if (additionalFields.tag_address_family) attributes.tag_address_family = additionalFields.tag_address_family;
+						if (additionalFields.tag_address_family)
+							attributes.tag_address_family = additionalFields.tag_address_family;
 						if (additionalFields.tag_agent) attributes.tag_agent = additionalFields.tag_agent;
-						if (additionalFields.cmk_agent_connection) attributes.cmk_agent_connection = additionalFields.cmk_agent_connection;
+						if (additionalFields.cmk_agent_connection)
+							attributes.cmk_agent_connection = additionalFields.cmk_agent_connection;
 						if (additionalFields.tag_snmp_ds) attributes.tag_snmp_ds = additionalFields.tag_snmp_ds;
-						if (additionalFields.tag_piggyback) attributes.tag_piggyback = additionalFields.tag_piggyback;
-						if (additionalFields.tag_criticality) attributes.tag_criticality = additionalFields.tag_criticality;
-						if (additionalFields.tag_networking) attributes.tag_networking = additionalFields.tag_networking;
+						if (additionalFields.tag_piggyback)
+							attributes.tag_piggyback = additionalFields.tag_piggyback;
+						if (additionalFields.tag_criticality)
+							attributes.tag_criticality = additionalFields.tag_criticality;
+						if (additionalFields.tag_networking)
+							attributes.tag_networking = additionalFields.tag_networking;
 
 						// --- 4. Management Board ---
-						if (additionalFields.management_protocol && additionalFields.management_protocol !== 'none') {
+						if (
+							additionalFields.management_protocol &&
+							additionalFields.management_protocol !== 'none'
+						) {
 							attributes.management_protocol = additionalFields.management_protocol;
 						}
-						if (additionalFields.management_address) attributes.management_address = additionalFields.management_address;
+						if (additionalFields.management_address)
+							attributes.management_address = additionalFields.management_address;
 
 						// --- 5. Booleans ---
-						if (additionalFields.waiting_for_discovery !== undefined) attributes.waiting_for_discovery = additionalFields.waiting_for_discovery;
-						if (additionalFields.bake_agent_package !== undefined) attributes.bake_agent_package = additionalFields.bake_agent_package;
+						if (additionalFields.waiting_for_discovery !== undefined)
+							attributes.waiting_for_discovery = additionalFields.waiting_for_discovery;
+						if (additionalFields.bake_agent_package !== undefined)
+							attributes.bake_agent_package = additionalFields.bake_agent_package;
 
 						// --- 6. Contact Groups (Complex Object) ---
 						const cgUi = additionalFields.contactgroups_ui as IDataObject;
 						if (cgUi && cgUi.settings) {
 							const settings = cgUi.settings as IDataObject;
-							
+
 							// Transforma string "admins,users" em array ["admins", "users"]
-							const groupsArray = (settings.groups as string || '')
+							const groupsArray = ((settings.groups as string) || '')
 								.split(',')
-								.map(g => g.trim())
-								.filter(g => g !== '');
+								.map((g) => g.trim())
+								.filter((g) => g !== '');
 
 							// Checkmk espera este formato exato para contactgroups
 							attributes.contactgroups = {
@@ -7893,9 +8046,9 @@ export class Checkmk implements INodeType {
 							const labelsString = additionalFields.labels as string;
 							if (labelsString.trim() !== '') {
 								const labelsObj: IDataObject = {};
-								const labelPairs = labelsString.split(',').map(l => l.trim());
+								const labelPairs = labelsString.split(',').map((l) => l.trim());
 								for (const pair of labelPairs) {
-									const [key, value] = pair.split(':').map(s => s.trim());
+									const [key, value] = pair.split(':').map((s) => s.trim());
 									if (key && value) {
 										labelsObj[key] = value;
 									}
@@ -7917,7 +8070,10 @@ export class Checkmk implements INodeType {
 								}
 								Object.assign(attributes, customAttrs);
 							} catch (error) {
-								throw new NodeOperationError(this.getNode(), `Invalid JSON in customAttributes field: ${error}`);
+								throw new NodeOperationError(
+									this.getNode(),
+									`Invalid JSON in customAttributes field: ${error}`,
+								);
 							}
 						}
 
@@ -7931,8 +8087,6 @@ export class Checkmk implements INodeType {
 						if (additionalFields.bake_agent !== undefined) {
 							qs.bake_agent = additionalFields.bake_agent;
 						}
-						
-						
 
 						const response = await checkmkApiRequest.call(
 							this,
@@ -7944,11 +8098,16 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'create_cluster') { //CMK_CREATECLUSTER
+					if (operation === 'create_cluster') {
+						//CMK_CREATECLUSTER
 						const hostName = this.getNodeParameter('hostName', i) as string;
 						const folder = this.getNodeParameter('folder', i) as string;
 						const nodesInput = this.getNodeParameter('nodes', i) as string;
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 
 						const nodes = nodesInput
 							.split(',')
@@ -7956,7 +8115,10 @@ export class Checkmk implements INodeType {
 							.filter((n) => n !== '');
 
 						if (nodes.length === 0) {
-							throw new NodeOperationError(this.getNode(), 'A cluster must have at least one node.');
+							throw new NodeOperationError(
+								this.getNode(),
+								'A cluster must have at least one node.',
+							);
 						}
 
 						const attributes: IDataObject = {};
@@ -7966,12 +8128,11 @@ export class Checkmk implements INodeType {
 
 						const body: IDataObject = {
 							host_name: hostName,
-							folder: normalizeFolderId(folder), 
+							folder: normalizeFolderId(folder),
 							nodes: nodes,
 							attributes: attributes,
 						};
 
-					
 						const response = await checkmkApiRequest.call(
 							this,
 							'POST',
@@ -7980,7 +8141,8 @@ export class Checkmk implements INodeType {
 						);
 						returnData.push(response);
 					}
-					if (operation === 'update_cluster_nodes') { //CMK_UPDATECLUSTERNODES
+					if (operation === 'update_cluster_nodes') {
+						//CMK_UPDATECLUSTERNODES
 						const hostName = this.getNodeParameter('hostName', i) as string;
 						const nodesInput = this.getNodeParameter('nodes', i) as string;
 
@@ -7990,16 +8152,18 @@ export class Checkmk implements INodeType {
 							.filter((n) => n !== '');
 
 						if (nodes.length === 0) {
-							throw new NodeOperationError(this.getNode(), 'A cluster must have at least one node.');
+							throw new NodeOperationError(
+								this.getNode(),
+								'A cluster must have at least one node.',
+							);
 						}
 
-						
 						const hostData = await checkmkApiRequestWithETag.call(
 							this,
 							'GET',
-							`/objects/host_config/${encodeURIComponent(hostName)}`
+							`/objects/host_config/${encodeURIComponent(hostName)}`,
 						);
-						
+
 						const etag = hostData.etag;
 						const ifMatchHeader = etag ? `"${etag}"` : '"*"';
 
@@ -8012,18 +8176,23 @@ export class Checkmk implements INodeType {
 							'PUT',
 							`/objects/host_config/${encodeURIComponent(hostName)}/properties/nodes`,
 							body,
-							{}, 
-							{ 'If-Match': ifMatchHeader } 
+							{},
+							{ 'If-Match': ifMatchHeader },
 						);
-						
+
 						returnData.push(response);
 					}
 
-					if (operation === 'get') { //CMK_GETHOSTS
+					if (operation === 'get') {
+						//CMK_GETHOSTS
 						const hostName = this.getNodeParameter('hostName', i) as string;
 
 						// Additional Fields for this operation
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 
 						// Build query parameters
 						const qs: IDataObject = {};
@@ -8041,7 +8210,8 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'update') { //CMK_UPDATEHOSTS
+					if (operation === 'update') {
+						//CMK_UPDATEHOSTS
 						const hostName = this.getNodeParameter('hostName', i) as string;
 						const additionalFields = this.getNodeParameter(
 							'additionalFields',
@@ -8062,7 +8232,10 @@ export class Checkmk implements INodeType {
 								}
 								body.attributes = attributes;
 							} catch (error) {
-								throw new NodeOperationError(this.getNode(), `Invalid JSON in attributes field: ${error}`);
+								throw new NodeOperationError(
+									this.getNode(),
+									`Invalid JSON in attributes field: ${error}`,
+								);
 							}
 						} else if (additionalFields.update_attributes) {
 							let updateAttrs: IDataObject = {};
@@ -8074,12 +8247,15 @@ export class Checkmk implements INodeType {
 								}
 								body.update_attributes = updateAttrs;
 							} catch (error) {
-								throw new NodeOperationError(this.getNode(), `Invalid JSON in update_attributes field: ${error}`);
+								throw new NodeOperationError(
+									this.getNode(),
+									`Invalid JSON in update_attributes field: ${error}`,
+								);
 							}
 						} else if (additionalFields.remove_attributes) {
 							const removeAttrsString = additionalFields.remove_attributes as string;
 							if (removeAttrsString.trim() !== '') {
-								body.remove_attributes = removeAttrsString.split(',').map(a => a.trim());
+								body.remove_attributes = removeAttrsString.split(',').map((a) => a.trim());
 							}
 						}
 
@@ -8092,7 +8268,8 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'delete') { //CMK_DELETEHOSTS
+					if (operation === 'delete') {
+						//CMK_DELETEHOSTS
 						const hostName = this.getNodeParameter('hostName', i) as string;
 						await checkmkApiRequestWithIfMatch.call(
 							this,
@@ -8101,9 +8278,10 @@ export class Checkmk implements INodeType {
 						);
 						returnData.push({ success: true, hostName });
 					}
-					if (operation === 'bulk_delete') { //CMK_BULKDELETEHOSTS
+					if (operation === 'bulk_delete') {
+						//CMK_BULKDELETEHOSTS
 						const hostNamesInput = this.getNodeParameter('hostNames', i) as string;
-						
+
 						const entries = hostNamesInput
 							.split(',')
 							.map((h) => h.trim())
@@ -8124,17 +8302,21 @@ export class Checkmk implements INodeType {
 							body,
 						);
 
-						if (response === undefined || (typeof response === 'object' && Object.keys(response).length === 0)) {
-							returnData.push({ 
-								success: true, 
+						if (
+							response === undefined ||
+							(typeof response === 'object' && Object.keys(response).length === 0)
+						) {
+							returnData.push({
+								success: true,
 								message: 'Hosts deleted successfully',
-								deleted_hosts: entries 
+								deleted_hosts: entries,
 							});
 						} else {
 							returnData.push(response);
 						}
 					}
-					if (operation === 'move') { //CMK_MOVEHOSTSTOANOTHERFOLDER
+					if (operation === 'move') {
+						//CMK_MOVEHOSTSTOANOTHERFOLDER
 						const hostName = this.getNodeParameter('hostName', i) as string;
 						const folder = this.getNodeParameter('folder', i) as string;
 
@@ -8151,7 +8333,8 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'rename') { //CMK_RENAMEHOSTS
+					if (operation === 'rename') {
+						//CMK_RENAMEHOSTS
 						const hostName = this.getNodeParameter('hostName', i) as string;
 						const newName = this.getNodeParameter('newName', i) as string;
 
@@ -8170,7 +8353,7 @@ export class Checkmk implements INodeType {
 					//CMK_GetAllHosts
 					if (operation === 'getAll') {
 						const returnAll = this.getNodeParameter('returnAll', i, false) as boolean;
-						
+
 						const additionalFields = this.getNodeParameter(
 							'additionalFields',
 							i,
@@ -8208,7 +8391,7 @@ export class Checkmk implements INodeType {
 							returnData.push(...response);
 						} else {
 							const limit = this.getNodeParameter('limit', i, 50) as number;
-							
+
 							const response = await checkmkApiRequest.call(
 								this,
 								'GET',
@@ -8220,15 +8403,14 @@ export class Checkmk implements INodeType {
 							returnData.push(...hosts.slice(0, limit));
 						}
 					}
-
 				}
-
 
 				// ==================== HOST GROUP OPERATIONS ====================
 				if (resource === 'hostGroup') {
 					const name = this.getNodeParameter('name', i, '') as string;
 
-					if (operation === 'create') { //CMK_CreateHostGroup
+					if (operation === 'create') {
+						//CMK_CreateHostGroup
 						const alias = this.getNodeParameter('alias', i, '') as string;
 						const customer = this.getNodeParameter('customer', i, '') as string;
 
@@ -8247,7 +8429,8 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'bulk_update') { //CMK_BulkUpdateHostGroups
+					if (operation === 'bulk_update') {
+						//CMK_BulkUpdateHostGroups
 						const mode = this.getNodeParameter('hostGroupUpdateMode', i) as string;
 						let entries: IDataObject[] = [];
 
@@ -8269,7 +8452,7 @@ export class Checkmk implements INodeType {
 								if (Object.keys(attributes).length > 0) {
 									entries.push({
 										name: name,
-										attributes: attributes
+										attributes: attributes,
 									});
 								}
 							}
@@ -8280,7 +8463,10 @@ export class Checkmk implements INodeType {
 								try {
 									entries = JSON.parse(jsonInput);
 								} catch (e) {
-									throw new NodeOperationError(this.getNode(), 'Invalid JSON in Entries JSON field');
+									throw new NodeOperationError(
+										this.getNode(),
+										'Invalid JSON in Entries JSON field',
+									);
 								}
 							} else if (Array.isArray(jsonInput)) {
 								entries = jsonInput as IDataObject[];
@@ -8288,23 +8474,27 @@ export class Checkmk implements INodeType {
 						}
 
 						if (entries.length === 0) {
-							throw new NodeOperationError(this.getNode(), 'No valid entries provided for bulk update');
+							throw new NodeOperationError(
+								this.getNode(),
+								'No valid entries provided for bulk update',
+							);
 						}
 
 						const body = {
-							entries: entries
+							entries: entries,
 						};
 
 						const response = await checkmkApiRequest.call(
 							this,
-							'PUT', 
+							'PUT',
 							'/domain-types/host_group_config/actions/bulk-update/invoke',
-							body
+							body,
 						);
 						returnData.push(response);
 					}
 
-					if (operation === 'bulk_delete') { //CMK_BulkDeleteHostGroups
+					if (operation === 'bulk_delete') {
+						//CMK_BulkDeleteHostGroups
 						const namesInput = this.getNodeParameter('hostGroupNames', i) as string;
 
 						const entries = namesInput
@@ -8313,7 +8503,10 @@ export class Checkmk implements INodeType {
 							.filter((n) => n !== '');
 
 						if (entries.length === 0) {
-							throw new NodeOperationError(this.getNode(), 'Please provide at least one host group name.');
+							throw new NodeOperationError(
+								this.getNode(),
+								'Please provide at least one host group name.',
+							);
 						}
 
 						const body: IDataObject = {
@@ -8326,19 +8519,23 @@ export class Checkmk implements INodeType {
 							'/domain-types/host_group_config/actions/bulk-delete/invoke',
 							body,
 						);
-						
-						if (response === undefined || (typeof response === 'object' && Object.keys(response).length === 0)) {
-							returnData.push({ 
-								success: true, 
+
+						if (
+							response === undefined ||
+							(typeof response === 'object' && Object.keys(response).length === 0)
+						) {
+							returnData.push({
+								success: true,
 								message: 'Host groups deleted successfully',
-								deleted_groups: entries 
+								deleted_groups: entries,
 							});
 						} else {
 							returnData.push(response);
 						}
 					}
 
-					if (operation === 'bulk_create') { //CMK_BulkCreateHostGroups
+					if (operation === 'bulk_create') {
+						//CMK_BulkCreateHostGroups
 						const mode = this.getNodeParameter('hostGroupCreateMode', i) as string;
 						let entries: IDataObject[] = [];
 
@@ -8354,7 +8551,10 @@ export class Checkmk implements INodeType {
 								try {
 									entries = JSON.parse(jsonInput);
 								} catch (e) {
-									throw new NodeOperationError(this.getNode(), 'Invalid JSON in Entries JSON field');
+									throw new NodeOperationError(
+										this.getNode(),
+										'Invalid JSON in Entries JSON field',
+									);
 								}
 							} else if (Array.isArray(jsonInput)) {
 								entries = jsonInput as IDataObject[];
@@ -8366,30 +8566,32 @@ export class Checkmk implements INodeType {
 						}
 
 						const body = {
-							entries: entries
+							entries: entries,
 						};
 
 						const response = await checkmkApiRequest.call(
 							this,
 							'POST',
 							'/domain-types/host_group_config/actions/bulk-create/invoke',
-							body
+							body,
 						);
 						returnData.push(response);
 					}
 
-					if (operation === 'get') { //CMK_GetHostGroup
+					if (operation === 'get') {
+						//CMK_GetHostGroup
 						const response = await checkmkApiRequest.call(
 							this,
 							'GET',
-							`/objects/host_group_config/${encodeURIComponent(name)}`, 
+							`/objects/host_group_config/${encodeURIComponent(name)}`,
 						);
 						returnData.push(response);
 					}
 
-					if (operation === 'getMany') { //CMK_GetManyHostGroups
+					if (operation === 'getMany') {
+						//CMK_GetManyHostGroups
 						const returnAll = this.getNodeParameter('returnAll', i, false) as boolean;
-						
+
 						if (returnAll) {
 							const response = await checkmkApiRequestAllItems.call(
 								this,
@@ -8399,19 +8601,20 @@ export class Checkmk implements INodeType {
 							returnData.push(...response);
 						} else {
 							const limit = this.getNodeParameter('limit', i, 50) as number;
-							
+
 							const response = await checkmkApiRequest.call(
 								this,
 								'GET',
 								'/domain-types/host_group_config/collections/all',
 							);
-							
+
 							const groups = response.value || [];
 							returnData.push(...groups.slice(0, limit));
 						}
 					}
 
-					if (operation === 'update') { //CMK_UpdateHostGroup
+					if (operation === 'update') {
+						//CMK_UpdateHostGroup
 						const alias = this.getNodeParameter('alias', i, '') as string;
 						const customer = this.getNodeParameter('customer', i, '') as string;
 
@@ -8428,8 +8631,9 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'delete') { //CMK_DeleteHostGroup
-						
+					if (operation === 'delete') {
+						//CMK_DeleteHostGroup
+
 						await checkmkApiRequestWithIfMatch.call(
 							this,
 							'DELETE',
@@ -8442,19 +8646,16 @@ export class Checkmk implements INodeType {
 
 				// ==================== SERVICE GROUP OPERATIONS ====================
 				if (resource === 'serviceGroup') {
-		
-
 					// CMK_CreateServiceGroup
 					if (operation === 'create') {
-
-						const name 		= this.getNodeParameter('name', i, '') as string;
-						const alias		= this.getNodeParameter('alias', i, '') as string;
-						const customer 	= this.getNodeParameter('customer', i, '') as string;
+						const name = this.getNodeParameter('name', i, '') as string;
+						const alias = this.getNodeParameter('alias', i, '') as string;
+						const customer = this.getNodeParameter('customer', i, '') as string;
 
 						const body: IDataObject = {
 							name: name,
 							alias: alias,
-							customer: customer
+							customer: customer,
 						};
 
 						const response = await checkmkApiRequest.call(
@@ -8486,23 +8687,31 @@ export class Checkmk implements INodeType {
 
 								apiEntries.push(apiEntry);
 							}
-
 						} else {
 							const rawJson = this.getNodeParameter('entriesJson', i);
 							if (typeof rawJson === 'string') {
 								try {
 									apiEntries = JSON.parse(rawJson);
 								} catch (error) {
-									throw new NodeOperationError(this.getNode(), 'Invalid JSON format in Entries JSON field.');
+									throw new NodeOperationError(
+										this.getNode(),
+										'Invalid JSON format in Entries JSON field.',
+									);
 								}
 							} else if (Array.isArray(rawJson)) {
 								apiEntries = rawJson as IDataObject[];
 							} else {
-								throw new NodeOperationError(this.getNode(), 'Entries JSON must be an array of objects.');
+								throw new NodeOperationError(
+									this.getNode(),
+									'Entries JSON must be an array of objects.',
+								);
 							}
 
-							if (apiEntries.some(e => !e.name || !e.alias || !e.customer)) {
-								throw new NodeOperationError(this.getNode(), 'All entries in JSON mode must contain the "name", "alias", and "customer" properties.');
+							if (apiEntries.some((e) => !e.name || !e.alias || !e.customer)) {
+								throw new NodeOperationError(
+									this.getNode(),
+									'All entries in JSON mode must contain the "name", "alias", and "customer" properties.',
+								);
 							}
 						}
 
@@ -8520,8 +8729,7 @@ export class Checkmk implements INodeType {
 
 					// CMK_GetServiceGroup
 					if (operation === 'get') {
-
-						const name 	= this.getNodeParameter('name', i, '') as string;
+						const name = this.getNodeParameter('name', i, '') as string;
 						const response = await checkmkApiRequest.call(
 							this,
 							'GET',
@@ -8532,25 +8740,23 @@ export class Checkmk implements INodeType {
 
 					// CMK_GetManyServiceGroup
 					if (operation === 'getMany') {
-
 						const response = await checkmkApiRequest.call(
 							this,
 							'GET',
-							'/domain-types/service_group_config/collections/all'
-						)
+							'/domain-types/service_group_config/collections/all',
+						);
 						returnData.push(response);
-
 					}
-					
+
 					// CMK_UpdateServiceGroup
 					if (operation === 'update') {
-						const alias 	= this.getNodeParameter('alias', i, '') as string;
-						const name 		= this.getNodeParameter('name', i, '') as string;
-						const customer	= this.getNodeParameter('customer', i, '') as string;
+						const alias = this.getNodeParameter('alias', i, '') as string;
+						const name = this.getNodeParameter('name', i, '') as string;
+						const customer = this.getNodeParameter('customer', i, '') as string;
 
 						const body: IDataObject = {
 							alias: alias,
-							customer: customer
+							customer: customer,
 						};
 
 						const response = await checkmkApiRequestWithIfMatch.call(
@@ -8564,7 +8770,7 @@ export class Checkmk implements INodeType {
 
 					// CMK_DeleteServiceGroup
 					if (operation === 'delete') {
-						const name 	= this.getNodeParameter('name', i, '') as string;
+						const name = this.getNodeParameter('name', i, '') as string;
 						await checkmkApiRequestWithIfMatch.call(
 							this,
 							'DELETE',
@@ -8600,23 +8806,31 @@ export class Checkmk implements INodeType {
 
 								apiEntries.push(apiEntry);
 							}
-
 						} else {
 							const rawJson = this.getNodeParameter('updateEntriesJson', i);
 							if (typeof rawJson === 'string') {
 								try {
 									apiEntries = JSON.parse(rawJson);
 								} catch (error) {
-									throw new NodeOperationError(this.getNode(), 'Invalid JSON format in Update Entries JSON field.');
+									throw new NodeOperationError(
+										this.getNode(),
+										'Invalid JSON format in Update Entries JSON field.',
+									);
 								}
 							} else if (Array.isArray(rawJson)) {
 								apiEntries = rawJson as IDataObject[];
 							} else {
-								throw new NodeOperationError(this.getNode(), 'Update Entries JSON must be an array of objects.');
+								throw new NodeOperationError(
+									this.getNode(),
+									'Update Entries JSON must be an array of objects.',
+								);
 							}
 
-							if (apiEntries.some(e => !e.name || !e.attributes)) {
-								throw new NodeOperationError(this.getNode(), 'All entries in JSON mode must contain the "name" and "attributes" properties.');
+							if (apiEntries.some((e) => !e.name || !e.attributes)) {
+								throw new NodeOperationError(
+									this.getNode(),
+									'All entries in JSON mode must contain the "name" and "attributes" properties.',
+								);
 							}
 						}
 
@@ -8646,23 +8860,31 @@ export class Checkmk implements INodeType {
 							for (const entry of entriesList) {
 								entries.push(entry.name as string);
 							}
-
 						} else {
 							const rawJson = this.getNodeParameter('deleteEntriesJson', i);
 							if (typeof rawJson === 'string') {
 								try {
 									entries = JSON.parse(rawJson);
 								} catch (error) {
-									throw new NodeOperationError(this.getNode(), 'Invalid JSON format in Delete Entries JSON field.');
+									throw new NodeOperationError(
+										this.getNode(),
+										'Invalid JSON format in Delete Entries JSON field.',
+									);
 								}
 							} else if (Array.isArray(rawJson)) {
 								entries = rawJson as string[];
 							} else {
-								throw new NodeOperationError(this.getNode(), 'Delete Entries JSON must be an array of strings.');
+								throw new NodeOperationError(
+									this.getNode(),
+									'Delete Entries JSON must be an array of strings.',
+								);
 							}
 
-							if (!entries.every(e => typeof e === 'string')) {
-								throw new NodeOperationError(this.getNode(), 'All entries in JSON mode must be strings (service group names).');
+							if (!entries.every((e) => typeof e === 'string')) {
+								throw new NodeOperationError(
+									this.getNode(),
+									'All entries in JSON mode must be strings (service group names).',
+								);
 							}
 						}
 
@@ -8684,14 +8906,9 @@ export class Checkmk implements INodeType {
 					// Using shared normalizeFolderId and folderIdToPath from GenericFunctions
 					// CMK_CreateFolder
 					if (operation === 'create') {
-
 						const title = this.getNodeParameter('title', i) as string;
 						const parentLocator = this.getNodeParameter('parent', i) as any;
-						const attributes = this.getNodeParameter(
-							'attributes',
-							i,
-							{},
-						) as IDataObject;
+						const attributes = this.getNodeParameter('attributes', i, {}) as IDataObject;
 
 						// Extract parent folder ID from resource locator
 						const parentFolderId = await extractFolderIdFromLocator.call(this, parentLocator);
@@ -8717,7 +8934,10 @@ export class Checkmk implements INodeType {
 									body.attributes = parsedAttributes;
 								}
 							} catch (error) {
-								throw new NodeOperationError(this.getNode(), `Invalid JSON in attributes field: ${error}`);
+								throw new NodeOperationError(
+									this.getNode(),
+									`Invalid JSON in attributes field: ${error}`,
+								);
 							}
 						}
 
@@ -8735,7 +8955,6 @@ export class Checkmk implements INodeType {
 						returnData.push(enhanced);
 					}
 
-
 					// CMK_GetFolder
 					if (operation === 'get') {
 						const folderLocator = this.getNodeParameter('folder', i) as any;
@@ -8746,13 +8965,13 @@ export class Checkmk implements INodeType {
 						if (show_hosts) {
 							qs.show_hosts = show_hosts;
 						}
-						
+
 						const response = await checkmkApiRequest.call(
 							this,
 							'GET',
 							`/objects/folder_config/${encodeURIComponent(folderId)}`,
 							{},
-							qs
+							qs,
 						);
 						const res = { ...(response as IDataObject) } as IDataObject;
 						if (res.id) {
@@ -8767,7 +8986,11 @@ export class Checkmk implements INodeType {
 						const folderLocator = this.getNodeParameter('folder', i) as any;
 						const folderId = await extractFolderIdFromLocator.call(this, folderLocator);
 						const returnAll = this.getNodeParameter('returnAll', i) as boolean;
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 
 						const qs: IDataObject = {};
 						if (additionalFields.effective_attributes !== undefined) {
@@ -8786,13 +9009,7 @@ export class Checkmk implements INodeType {
 						const endpoint = `/objects/folder_config/${encodeURIComponent(folderId)}/collections/hosts`;
 
 						if (returnAll) {
-							const response = await checkmkApiRequestAllItems.call(
-								this,
-								'GET',
-								endpoint,
-								{},
-								qs,
-							);
+							const response = await checkmkApiRequestAllItems.call(this, 'GET', endpoint, {}, qs);
 							// Push only new hosts (dedupe by id)
 							if (Array.isArray(response)) {
 								for (const h of response) {
@@ -8805,13 +9022,7 @@ export class Checkmk implements INodeType {
 							}
 						} else {
 							const limit = this.getNodeParameter('limit', i) as number;
-							const response = await checkmkApiRequest.call(
-								this,
-								'GET',
-								endpoint,
-								{},
-								qs,
-							);
+							const response = await checkmkApiRequest.call(this, 'GET', endpoint, {}, qs);
 							const hosts = response.value || [];
 							for (const h of hosts.slice(0, limit)) {
 								const id = h.id || h.name || h.title || JSON.stringify(h);
@@ -8825,36 +9036,41 @@ export class Checkmk implements INodeType {
 
 					// CMK_GetManyFolders
 					if (operation === 'getMany') {
-						
-						const parentLocator = this.getNodeParameter('parent', i) as any; 
+						const parentLocator = this.getNodeParameter('parent', i) as any;
 						const parent = await extractFolderIdFromLocator.call(this, parentLocator);
 						const recursive = this.getNodeParameter('recursive', i, false) as boolean;
 						const show_hosts = this.getNodeParameter('show_hosts', i, false) as boolean;
-						
+
 						const qs: IDataObject = {};
 						if (parent) qs.parent = parent;
 						if (recursive) qs.recursive = recursive;
 						if (show_hosts) qs.show_hosts = show_hosts;
 
-	
 						const response = await checkmkApiRequestAllItems.call(
 							this,
 							'GET',
 							'/domain-types/folder_config/collections/all',
-							{},  
-							qs   
+							{},
+							qs,
 						);
 						const enhanced = Array.isArray(response)
-							? response.map((r: any) => (r && r.id ? { ...r, path: folderIdToPath(String(r.id)), locator: `${folderIdToPath(String(r.id))} (${r.id})` } : r))
+							? response.map((r: any) =>
+									r && r.id
+										? {
+												...r,
+												path: folderIdToPath(String(r.id)),
+												locator: `${folderIdToPath(String(r.id))} (${r.id})`,
+											}
+										: r,
+								)
 							: response;
 						returnData.push(...enhanced);
-
 					}
 					// CMK_UpdateFolder
 					if (operation === 'update') {
 						const folderLocator = this.getNodeParameter('folder', i) as any;
 						const folderId = await extractFolderIdFromLocator.call(this, folderLocator);
-						
+
 						const title = this.getNodeParameter('title', i, '') as string;
 						const attributeChoice = this.getNodeParameter('attributeChoice', i) as string;
 						const body: IDataObject = {};
@@ -8869,7 +9085,9 @@ export class Checkmk implements INodeType {
 							try {
 								if (attributeChoice === 'attributes') {
 									// Replace all attributes with the given ones
-									const attributesInput = this.getNodeParameter('attributes', i, '{}') as string | IDataObject;
+									const attributesInput = this.getNodeParameter('attributes', i, '{}') as
+										| string
+										| IDataObject;
 									let parsedAttributes: IDataObject = {};
 									if (typeof attributesInput === 'string') {
 										parsedAttributes = JSON.parse(attributesInput);
@@ -8881,7 +9099,11 @@ export class Checkmk implements INodeType {
 									}
 								} else if (attributeChoice === 'update_attributes') {
 									// Update existing attributes with the given ones
-									const updateAttributesInput = this.getNodeParameter('update_attributes', i, '{}') as string | IDataObject;
+									const updateAttributesInput = this.getNodeParameter(
+										'update_attributes',
+										i,
+										'{}',
+									) as string | IDataObject;
 									let parsedUpdateAttributes: IDataObject = {};
 									if (typeof updateAttributesInput === 'string') {
 										parsedUpdateAttributes = JSON.parse(updateAttributesInput);
@@ -8893,13 +9115,22 @@ export class Checkmk implements INodeType {
 									}
 								} else if (attributeChoice === 'remove_attributes') {
 									// Remove specified attributes (comma-separated string)
-									const removeAttributesInput = this.getNodeParameter('remove_attributes', i, '') as string;
+									const removeAttributesInput = this.getNodeParameter(
+										'remove_attributes',
+										i,
+										'',
+									) as string;
 									if (removeAttributesInput.trim() !== '') {
-										body.remove_attributes = removeAttributesInput.split(',').map(attr => attr.trim());
+										body.remove_attributes = removeAttributesInput
+											.split(',')
+											.map((attr) => attr.trim());
 									}
 								}
 							} catch (error) {
-								throw new NodeOperationError(this.getNode(), `Invalid attributes format for ${attributeChoice}: ${error}`);
+								throw new NodeOperationError(
+									this.getNode(),
+									`Invalid attributes format for ${attributeChoice}: ${error}`,
+								);
 							}
 						}
 
@@ -8935,10 +9166,16 @@ export class Checkmk implements INodeType {
 							qs,
 						);
 						const folderPath = folderIdToPath(folderId);
-						returnData.push({ success: true, folderId, path: folderPath, locator: `${folderPath} (${folderId})` });
+						returnData.push({
+							success: true,
+							folderId,
+							path: folderPath,
+							locator: `${folderPath} (${folderId})`,
+						});
 					}
 
-					if (operation === 'move') { // CMK_MoveFolder
+					if (operation === 'move') {
+						// CMK_MoveFolder
 						const folderLocator = this.getNodeParameter('folder', i) as any;
 						const folderId = await extractFolderIdFromLocator.call(this, folderLocator);
 						const destinationLocator = this.getNodeParameter('destination', i) as any;
@@ -8948,15 +9185,19 @@ export class Checkmk implements INodeType {
 							destination: destinationId,
 						};
 
-						
 						await checkmkApiRequestWithIfMatch.call(
 							this,
 							'POST',
 							`/objects/folder_config/${encodeURIComponent(folderId)}/actions/move/invoke`,
-							body
+							body,
 						);
 						const folderPath = folderIdToPath(folderId);
-						returnData.push({ success: true, folderId, path: folderPath, locator: `${folderPath} (${folderId})` });
+						returnData.push({
+							success: true,
+							folderId,
+							path: folderPath,
+							locator: `${folderPath} (${folderId})`,
+						});
 					}
 
 					// CMK_UpdateFolder (Bulk)
@@ -8968,7 +9209,7 @@ export class Checkmk implements INodeType {
 							// ================= MODO UI =================
 							const entriesInput = this.getNodeParameter('entries', i) as IDataObject;
 							const entriesList = (entriesInput.entry as IDataObject[]) || [];
-							
+
 							if (entriesList.length === 0) continue;
 
 							for (const entry of entriesList) {
@@ -8993,7 +9234,10 @@ export class Checkmk implements INodeType {
 										try {
 											parsedAttrs = JSON.parse(jsonInput);
 										} catch (e) {
-											throw new NodeOperationError(this.getNode(), `Invalid JSON in attributes for folder ${folderId}`);
+											throw new NodeOperationError(
+												this.getNode(),
+												`Invalid JSON in attributes for folder ${folderId}`,
+											);
 										}
 									} else {
 										parsedAttrs = jsonInput as IDataObject;
@@ -9004,57 +9248,66 @@ export class Checkmk implements INodeType {
 								} else if (choice === 'remove_attributes') {
 									const removeStr = entry.remove_attributes_list as string;
 									if (removeStr && removeStr.trim() !== '') {
-										apiEntry.remove_attributes = removeStr.split(',').map(s => s.trim());
+										apiEntry.remove_attributes = removeStr.split(',').map((s) => s.trim());
 									}
 								}
 								apiEntries.push(apiEntry);
 							}
-
 						} else {
 							// ================= MODO JSON =================
 							const rawJson = this.getNodeParameter('entriesJson', i);
-							
+
 							if (typeof rawJson === 'string') {
 								try {
 									apiEntries = JSON.parse(rawJson);
 								} catch (error) {
-									throw new NodeOperationError(this.getNode(), 'Invalid JSON format in Entries JSON field.');
+									throw new NodeOperationError(
+										this.getNode(),
+										'Invalid JSON format in Entries JSON field.',
+									);
 								}
 							} else if (Array.isArray(rawJson)) {
 								apiEntries = rawJson as IDataObject[];
 							} else {
-								throw new NodeOperationError(this.getNode(), 'Entries JSON must be an array of objects.');
+								throw new NodeOperationError(
+									this.getNode(),
+									'Entries JSON must be an array of objects.',
+								);
 							}
 
 							// Validação básica do JSON para garantir que tem o campo folder
 							// O usuário é responsável por passar o ID correto (ex: ~folder_id) neste modo
-							if (apiEntries.some(e => !e.folder)) {
-								throw new NodeOperationError(this.getNode(), 'All entries in JSON mode must contain the "folder" property.');
+							if (apiEntries.some((e) => !e.folder)) {
+								throw new NodeOperationError(
+									this.getNode(),
+									'All entries in JSON mode must contain the "folder" property.',
+								);
 							}
 						}
 
 						// Envia para a API se tivermos entradas
 						if (apiEntries.length > 0) {
 							const body = {
-								entries: apiEntries
+								entries: apiEntries,
 							};
 
 							const response = await checkmkApiRequest.call(
 								this,
 								'PUT',
 								'/domain-types/folder_config/actions/bulk-update/invoke',
-								body
+								body,
 							);
 							returnData.push(response);
 						}
 					}
-				}// Common fields used across multiple resources
+				} // Common fields used across multiple resources
 
 				// ==================== USER OPERATIONS ====================
 				if (resource === 'user') {
 					const name = this.getNodeParameter('username', i, '') as string;
 
-					if (operation === 'create') { //CMK_CreateUser
+					if (operation === 'create') {
+						//CMK_CreateUser
 						const fullname = this.getNodeParameter('fullname', i, '') as string;
 						const customer = this.getNodeParameter('customer', i, '') as string;
 						const authType = this.getNodeParameter('authType', i, '') as string;
@@ -9075,7 +9328,7 @@ export class Checkmk implements INodeType {
 							fullname: fullname,
 							disable_login: false,
 							roles: roles,
-							authorized_sites: authorizedSites.split(',').map(s => s.trim()),
+							authorized_sites: authorizedSites.split(',').map((s) => s.trim()),
 						};
 						if (customer && customer.trim() !== '') {
 							body.customer = customer.trim();
@@ -9118,8 +9371,9 @@ export class Checkmk implements INodeType {
 						);
 						returnData.push(response);
 					}
-					
-					if (operation === 'getMany') { //CMK_GetAllUsers
+
+					if (operation === 'getMany') {
+						//CMK_GetAllUsers
 						const returnAll = this.getNodeParameter('returnAll', i);
 						if (returnAll) {
 							const response = await checkmkApiRequestAllItems.call(
@@ -9140,7 +9394,8 @@ export class Checkmk implements INodeType {
 						}
 					}
 
-					if (operation === 'update') { //CMK_EditUser
+					if (operation === 'update') {
+						//CMK_EditUser
 						const fullname = this.getNodeParameter('fullname', i, '') as string;
 						const customer = this.getNodeParameter('customer', i, '') as string;
 						const authorizedSites = this.getNodeParameter('authorizedSites', i, '') as string;
@@ -9151,10 +9406,10 @@ export class Checkmk implements INodeType {
 
 						if (fullname) body.fullname = fullname;
 						if (customer) body.customer = customer;
-						
+
 						if (roles.length > 0) body.roles = roles;
 						if (authorizedSites) {
-							body.authorized_sites = authorizedSites.split(',').map(s => s.trim());
+							body.authorized_sites = authorizedSites.split(',').map((s) => s.trim());
 						}
 
 						if (authType === 'password') {
@@ -9184,7 +9439,8 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'delete') { //CMK_DeleteUser
+					if (operation === 'delete') {
+						//CMK_DeleteUser
 						await checkmkApiRequestWithIfMatch.call(
 							this,
 							'DELETE',
@@ -9192,14 +9448,14 @@ export class Checkmk implements INodeType {
 						);
 						returnData.push({ success: true, name });
 					}
-					
 				}
 
 				// ==================== CONTACT GROUP OPERATIONS ====================
 				if (resource === 'contactGroup') {
 					const name = this.getNodeParameter('name', i, '') as string;
 
-					if (operation === 'create') { //CMK_CreateContactGroup
+					if (operation === 'create') {
+						//CMK_CreateContactGroup
 						const alias = this.getNodeParameter('alias', i, '') as string;
 						const invType = this.getNodeParameter('inventoryPathsType', i, 'allow_all') as string;
 
@@ -9212,7 +9468,6 @@ export class Checkmk implements INodeType {
 							type: invType,
 						};
 
-						
 						if (invType === 'specific_paths') {
 							const specificPaths = this.getNodeParameter('specificPaths', i, '') as string;
 							inventoryPathsObj.paths = specificPaths
@@ -9234,7 +9489,8 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'get') { //CMK_GetContactGroup
+					if (operation === 'get') {
+						//CMK_GetContactGroup
 						const response = await checkmkApiRequest.call(
 							this,
 							'GET',
@@ -9243,7 +9499,8 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'getMany') { //CMK_GetManyContactGroups
+					if (operation === 'getMany') {
+						//CMK_GetManyContactGroups
 						const returnAll = this.getNodeParameter('returnAll', i, false) as boolean;
 
 						if (returnAll) {
@@ -9255,19 +9512,20 @@ export class Checkmk implements INodeType {
 							returnData.push(...response);
 						} else {
 							const limit = this.getNodeParameter('limit', i, 50) as number;
-							
+
 							const response = await checkmkApiRequest.call(
 								this,
 								'GET',
 								'/domain-types/contact_group_config/collections/all',
 							);
-							
+
 							const groups = response.value || [];
 							returnData.push(...groups.slice(0, limit));
 						}
 					}
 
-					if (operation === 'update') { //CMK_UpdateContactGroup
+					if (operation === 'update') {
+						//CMK_UpdateContactGroup
 						const alias = this.getNodeParameter('alias', i, '') as string;
 						const invType = this.getNodeParameter('inventoryPathsType', i, '') as string;
 
@@ -9288,21 +9546,30 @@ export class Checkmk implements INodeType {
 								const pathsArray: IDataObject[] = [];
 
 								for (const p of pathEntries) {
-									const pathObj: IDataObject = { 
-										path: p.path as string 
+									const pathObj: IDataObject = {
+										path: p.path as string,
 									};
 
 									// Função para estruturar os restritores conforme o schema exigido pelo Checkmk
 									const buildRestriction = (type: string, valuesStr?: string) => {
 										const res: IDataObject = { type: type };
 										if (type === 'restrict_values' && valuesStr) {
-											res.values = valuesStr.split(',').map(v => v.trim()).filter(v => v !== '');
+											res.values = valuesStr
+												.split(',')
+												.map((v) => v.trim())
+												.filter((v) => v !== '');
 										}
 										return res;
 									};
 
-									pathObj.attributes = buildRestriction(p.attributesType as string, p.attributesValues as string);
-									pathObj.columns = buildRestriction(p.columnsType as string, p.columnsValues as string);
+									pathObj.attributes = buildRestriction(
+										p.attributesType as string,
+										p.attributesValues as string,
+									);
+									pathObj.columns = buildRestriction(
+										p.columnsType as string,
+										p.columnsValues as string,
+									);
 									pathObj.nodes = buildRestriction(p.nodesType as string, p.nodesValues as string);
 
 									pathsArray.push(pathObj);
@@ -9321,18 +9588,20 @@ export class Checkmk implements INodeType {
 						);
 						returnData.push(response);
 					}
-					if (operation === 'delete') { //CMK_DeleteContactGroup
+					if (operation === 'delete') {
+						//CMK_DeleteContactGroup
 						await checkmkApiRequestWithIfMatch.call(
 							this,
 							'DELETE',
 							`/objects/contact_group_config/${encodeURIComponent(name)}`,
 						);
-						
+
 						// Retorna uma confirmação de sucesso
 						returnData.push({ success: true, name });
 					}
 
-					if (operation === 'bulk_create') { //CMK_BulkCreateContactGroups
+					if (operation === 'bulk_create') {
+						//CMK_BulkCreateContactGroups
 						const mode = this.getNodeParameter('contactGroupCreateMode', i) as string;
 						let entries: IDataObject[] = [];
 
@@ -9347,7 +9616,10 @@ export class Checkmk implements INodeType {
 								try {
 									entries = JSON.parse(jsonInput);
 								} catch (e) {
-									throw new NodeOperationError(this.getNode(), 'Invalid JSON in Entries JSON field');
+									throw new NodeOperationError(
+										this.getNode(),
+										'Invalid JSON in Entries JSON field',
+									);
 								}
 							} else if (Array.isArray(jsonInput)) {
 								entries = jsonInput as IDataObject[];
@@ -9359,53 +9631,61 @@ export class Checkmk implements INodeType {
 						}
 
 						const body = {
-							entries: entries
+							entries: entries,
 						};
 
 						const response = await checkmkApiRequest.call(
 							this,
 							'POST',
 							'/domain-types/contact_group_config/actions/bulk-create/invoke',
-							body
+							body,
 						);
 						returnData.push(response);
 					}
 
-					if (operation === 'bulk_delete') { //CMK_BulkDeleteContactGroups
+					if (operation === 'bulk_delete') {
+						//CMK_BulkDeleteContactGroups
 						const namesInput = this.getNodeParameter('contactGroupNames', i) as string;
-						
+
 						const entries = namesInput
 							.split(',')
 							.map((n) => n.trim())
 							.filter((n) => n !== '');
 
 						if (entries.length === 0) {
-							throw new NodeOperationError(this.getNode(), 'Please provide at least one contact group name.');
+							throw new NodeOperationError(
+								this.getNode(),
+								'Please provide at least one contact group name.',
+							);
 						}
 
 						const body = {
-							entries: entries
+							entries: entries,
 						};
 
 						const response = await checkmkApiRequest.call(
 							this,
-							'POST', 
+							'POST',
 							'/domain-types/contact_group_config/actions/bulk-delete/invoke',
 							body,
 						);
-						
-						if (response === undefined || (typeof response === 'object' && Object.keys(response).length === 0)) {
-							returnData.push({ 
-								success: true, 
+
+						if (
+							response === undefined ||
+							(typeof response === 'object' && Object.keys(response).length === 0)
+						) {
+							returnData.push({
+								success: true,
 								message: 'Contact groups deleted successfully',
-								deleted_groups: entries 
+								deleted_groups: entries,
 							});
 						} else {
 							returnData.push(response);
 						}
 					}
 
-					if (operation === 'bulk_update') { // CMK_BulkUpdateContactGroups
+					if (operation === 'bulk_update') {
+						// CMK_BulkUpdateContactGroups
 						const mode = this.getNodeParameter('contactGroupUpdateMode', i) as string;
 						let entries: IDataObject[] = [];
 
@@ -9446,22 +9726,34 @@ export class Checkmk implements INodeType {
 										const pathsArray: IDataObject[] = [];
 
 										for (const p of pathEntries) {
-											const pathObj: IDataObject = { 
-												path: p.path as string 
+											const pathObj: IDataObject = {
+												path: p.path as string,
 											};
 
 											// Função auxiliar para construir as restrições (Attributes, Columns, Nodes)
 											const buildRestriction = (type: string, valuesStr?: string) => {
 												const res: IDataObject = { type: type };
 												if (type === 'restrict_values' && valuesStr) {
-													res.values = valuesStr.split(',').map(v => v.trim()).filter(v => v !== '');
+													res.values = valuesStr
+														.split(',')
+														.map((v) => v.trim())
+														.filter((v) => v !== '');
 												}
 												return res;
 											};
 
-											pathObj.attributes = buildRestriction(p.attributesType as string, p.attributesValues as string);
-											pathObj.columns = buildRestriction(p.columnsType as string, p.columnsValues as string);
-											pathObj.nodes = buildRestriction(p.nodesType as string, p.nodesValues as string);
+											pathObj.attributes = buildRestriction(
+												p.attributesType as string,
+												p.attributesValues as string,
+											);
+											pathObj.columns = buildRestriction(
+												p.columnsType as string,
+												p.columnsValues as string,
+											);
+											pathObj.nodes = buildRestriction(
+												p.nodesType as string,
+												p.nodesValues as string,
+											);
 
 											pathsArray.push(pathObj);
 										}
@@ -9475,7 +9767,7 @@ export class Checkmk implements INodeType {
 								if (Object.keys(attributes).length > 0) {
 									entries.push({
 										name: name,
-										attributes: attributes
+										attributes: attributes,
 									});
 								}
 							}
@@ -9486,7 +9778,10 @@ export class Checkmk implements INodeType {
 								try {
 									entries = JSON.parse(jsonInput);
 								} catch (e) {
-									throw new NodeOperationError(this.getNode(), 'Invalid JSON in Entries JSON field');
+									throw new NodeOperationError(
+										this.getNode(),
+										'Invalid JSON in Entries JSON field',
+									);
 								}
 							} else if (Array.isArray(jsonInput)) {
 								entries = jsonInput as IDataObject[];
@@ -9494,11 +9789,14 @@ export class Checkmk implements INodeType {
 						}
 
 						if (entries.length === 0) {
-							throw new NodeOperationError(this.getNode(), 'No valid entries provided for bulk update');
+							throw new NodeOperationError(
+								this.getNode(),
+								'No valid entries provided for bulk update',
+							);
 						}
 
 						const body = {
-							entries: entries
+							entries: entries,
 						};
 
 						// Debug Log para validar o Body enviado
@@ -9509,7 +9807,7 @@ export class Checkmk implements INodeType {
 							this,
 							'PUT',
 							'/domain-types/contact_group_config/actions/bulk-update/invoke',
-							body
+							body,
 						);
 						returnData.push(response);
 					}
@@ -9519,22 +9817,27 @@ export class Checkmk implements INodeType {
 				if (resource === 'timePeriod') {
 					const name = this.getNodeParameter('name', i, '') as string;
 
-					if (operation === 'create') { //CMK_CreateTimePeriod
+					if (operation === 'create') {
+						//CMK_CreateTimePeriod
 						const alias = this.getNodeParameter('alias', i, '') as string;
-						
-						const activeTimeRangesUi = this.getNodeParameter('activeTimeRangesUi', i, {}) as IDataObject;
+
+						const activeTimeRangesUi = this.getNodeParameter(
+							'activeTimeRangesUi',
+							i,
+							{},
+						) as IDataObject;
 						const activeTimeRanges: IDataObject[] = [];
 
 						if (activeTimeRangesUi.timeRange) {
 							const rangesByDay: { [key: string]: IDataObject[] } = {};
-							
-							for (const item of (activeTimeRangesUi.timeRange as IDataObject[])) {
+
+							for (const item of activeTimeRangesUi.timeRange as IDataObject[]) {
 								const d = item.day as string;
-								const r = { 
-									start: item.start || '00:00:00', 
-									end: item.end || '24:00:00' 
+								const r = {
+									start: item.start || '00:00:00',
+									end: item.end || '24:00:00',
 								};
-								
+
 								if (!rangesByDay[d]) rangesByDay[d] = [];
 								rangesByDay[d].push(r);
 							}
@@ -9542,7 +9845,7 @@ export class Checkmk implements INodeType {
 							for (const [day, ranges] of Object.entries(rangesByDay)) {
 								activeTimeRanges.push({
 									day: day,
-									time_ranges: ranges
+									time_ranges: ranges,
 								});
 							}
 						}
@@ -9552,14 +9855,14 @@ export class Checkmk implements INodeType {
 
 						if (exceptionsUi.exception) {
 							const rangesByDate: { [key: string]: IDataObject[] } = {};
-							
-							for (const item of (exceptionsUi.exception as IDataObject[])) {
+
+							for (const item of exceptionsUi.exception as IDataObject[]) {
 								const d = item.date as string;
-								const r = { 
-									start: item.start || '00:00:00', 
-									end: item.end || '24:00:00' 
+								const r = {
+									start: item.start || '00:00:00',
+									end: item.end || '24:00:00',
 								};
-								
+
 								if (!rangesByDate[d]) rangesByDate[d] = [];
 								rangesByDate[d].push(r);
 							}
@@ -9567,14 +9870,17 @@ export class Checkmk implements INodeType {
 							for (const [date, ranges] of Object.entries(rangesByDate)) {
 								exceptions.push({
 									date: date,
-									time_ranges: ranges
+									time_ranges: ranges,
 								});
 							}
 						}
 
 						const excludeStr = this.getNodeParameter('exclude', i, '') as string;
-						const exclude = excludeStr 
-							? excludeStr.split(',').map(s => s.trim()).filter(s => s !== '') 
+						const exclude = excludeStr
+							? excludeStr
+									.split(',')
+									.map((s) => s.trim())
+									.filter((s) => s !== '')
 							: [];
 
 						const body: IDataObject = {
@@ -9599,7 +9905,8 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'get') { //CMK_ShowTimePeriod
+					if (operation === 'get') {
+						//CMK_ShowTimePeriod
 						const response = await checkmkApiRequest.call(
 							this,
 							'GET',
@@ -9608,7 +9915,8 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'getMany') { //CMK_ShowAllTimePeriods
+					if (operation === 'getMany') {
+						//CMK_ShowAllTimePeriods
 						const returnAll = this.getNodeParameter('returnAll', i);
 						if (returnAll) {
 							const response = await checkmkApiRequestAllItems.call(
@@ -9629,25 +9937,30 @@ export class Checkmk implements INodeType {
 						}
 					}
 
-					if (operation === 'update') { //CMK_UpdatetTimePeriod
+					if (operation === 'update') {
+						//CMK_UpdatetTimePeriod
 						const alias = this.getNodeParameter('alias', i, '') as string;
-						
+
 						const body: IDataObject = {};
 
 						if (alias !== '') {
 							body.alias = alias;
 						}
 
-						const activeTimeRangesUi = this.getNodeParameter('activeTimeRangesUi', i, {}) as IDataObject;
+						const activeTimeRangesUi = this.getNodeParameter(
+							'activeTimeRangesUi',
+							i,
+							{},
+						) as IDataObject;
 						if (activeTimeRangesUi.timeRange) {
 							const activeTimeRanges: IDataObject[] = [];
 							const rangesByDay: { [key: string]: IDataObject[] } = {};
-							
-							for (const item of (activeTimeRangesUi.timeRange as IDataObject[])) {
+
+							for (const item of activeTimeRangesUi.timeRange as IDataObject[]) {
 								const d = item.day as string;
-								const r = { 
-									start: item.start || '00:00:00', 
-									end: item.end || '24:00:00' 
+								const r = {
+									start: item.start || '00:00:00',
+									end: item.end || '24:00:00',
 								};
 								if (!rangesByDay[d]) rangesByDay[d] = [];
 								rangesByDay[d].push(r);
@@ -9656,7 +9969,7 @@ export class Checkmk implements INodeType {
 							for (const [day, ranges] of Object.entries(rangesByDay)) {
 								activeTimeRanges.push({
 									day: day,
-									time_ranges: ranges
+									time_ranges: ranges,
 								});
 							}
 							body.active_time_ranges = activeTimeRanges;
@@ -9666,12 +9979,12 @@ export class Checkmk implements INodeType {
 						if (exceptionsUi.exception) {
 							const exceptions: IDataObject[] = [];
 							const rangesByDate: { [key: string]: IDataObject[] } = {};
-							
-							for (const item of (exceptionsUi.exception as IDataObject[])) {
+
+							for (const item of exceptionsUi.exception as IDataObject[]) {
 								const d = item.date as string;
-								const r = { 
-									start: item.start || '00:00:00', 
-									end: item.end || '24:00:00' 
+								const r = {
+									start: item.start || '00:00:00',
+									end: item.end || '24:00:00',
 								};
 								if (!rangesByDate[d]) rangesByDate[d] = [];
 								rangesByDate[d].push(r);
@@ -9680,7 +9993,7 @@ export class Checkmk implements INodeType {
 							for (const [date, ranges] of Object.entries(rangesByDate)) {
 								exceptions.push({
 									date: date,
-									time_ranges: ranges
+									time_ranges: ranges,
 								});
 							}
 							body.exceptions = exceptions;
@@ -9690,8 +10003,8 @@ export class Checkmk implements INodeType {
 						if (excludeStr) {
 							body.exclude = excludeStr
 								.split(',')
-								.map(s => s.trim())
-								.filter(s => s !== '');
+								.map((s) => s.trim())
+								.filter((s) => s !== '');
 						}
 
 						const response = await checkmkApiRequestWithIfMatch.call(
@@ -9703,7 +10016,8 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'delete') { //CMK_DeleteTimePeriod
+					if (operation === 'delete') {
+						//CMK_DeleteTimePeriod
 						await checkmkApiRequestWithIfMatch.call(
 							this,
 							'DELETE',
@@ -9715,7 +10029,6 @@ export class Checkmk implements INodeType {
 
 				// ==================== RULE OPERATIONS ====================
 				if (resource === 'rule') {
-
 					// CMK_CreateRule
 					if (operation === 'create') {
 						const ruleset = this.getNodeParameter('ruleset', i) as string;
@@ -9725,9 +10038,11 @@ export class Checkmk implements INodeType {
 						let properties = this.getNodeParameter('properties', i) as IDataObject | string;
 						let conditions = this.getNodeParameter('conditions', i) as IDataObject | string;
 
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
-
-					
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 
 						if (typeof properties === 'string') {
 							if (properties.trim() === '') {
@@ -9736,7 +10051,10 @@ export class Checkmk implements INodeType {
 								try {
 									properties = JSON.parse(properties);
 								} catch (error) {
-									throw new NodeOperationError(this.getNode(), `Invalid JSON in properties field: ${error}`);
+									throw new NodeOperationError(
+										this.getNode(),
+										`Invalid JSON in properties field: ${error}`,
+									);
 								}
 							}
 						}
@@ -9747,20 +10065,34 @@ export class Checkmk implements INodeType {
 						if (additionalFields.comment && !(properties as IDataObject).comment) {
 							(properties as IDataObject).comment = additionalFields.comment;
 						}
-						if (additionalFields.documentationUrl && !(properties as IDataObject).documentation_url) {
+						if (
+							additionalFields.documentationUrl &&
+							!(properties as IDataObject).documentation_url
+						) {
 							(properties as IDataObject).documentation_url = additionalFields.documentationUrl;
 						}
-						if (additionalFields.disabled !== undefined && (properties as IDataObject).disabled === undefined) {
+						if (
+							additionalFields.disabled !== undefined &&
+							(properties as IDataObject).disabled === undefined
+						) {
 							(properties as IDataObject).disabled = additionalFields.disabled;
 						}
 
 						let parsedConditions: IDataObject | undefined;
-						if (conditions && (typeof conditions === 'string' ? conditions.trim() !== '{}' : Object.keys(conditions).length > 0)) {
+						if (
+							conditions &&
+							(typeof conditions === 'string'
+								? conditions.trim() !== '{}'
+								: Object.keys(conditions).length > 0)
+						) {
 							if (typeof conditions === 'string') {
 								try {
 									parsedConditions = JSON.parse(conditions);
 								} catch (error) {
-									throw new NodeOperationError(this.getNode(), `Invalid JSON in conditions field: ${error}`);
+									throw new NodeOperationError(
+										this.getNode(),
+										`Invalid JSON in conditions field: ${error}`,
+									);
 								}
 							} else {
 								parsedConditions = conditions;
@@ -9789,33 +10121,26 @@ export class Checkmk implements INodeType {
 
 					// CMK_ShowRule
 					if (operation === 'show') {
+						const ruleId = this.getNodeParameter('rule_id', i) as string;
 
-						const ruleId =  this.getNodeParameter('rule_id', i) as string;
-
-						const response = await checkmkApiRequest.call(
-							this,
-							'GET',
-							`/objects/rule/${ruleId}`
-						);
+						const response = await checkmkApiRequest.call(this, 'GET', `/objects/rule/${ruleId}`);
 
 						returnData.push(response);
 					}
 
-
 					// CMK_ListRules
 					if (operation === 'list') {
+						const ruleset = this.getNodeParameter('ruleset', i) as string;
+						const qs: IDataObject = {
+							ruleset_name: ruleset,
+						};
 
-							const ruleset = this.getNodeParameter('ruleset', i) as string;
-							const qs : IDataObject = {
-								ruleset_name : ruleset,
-							};
-							
-							const response = await checkmkApiRequest.call(
+						const response = await checkmkApiRequest.call(
 							this,
 							'GET',
 							'/domain-types/rule/collections/all',
 							{},
-							qs
+							qs,
 						);
 
 						returnData.push(response);
@@ -9823,10 +10148,9 @@ export class Checkmk implements INodeType {
 
 					// CMK_DeleteRule
 					if (operation === 'delete') {
+						const rule_id = this.getNodeParameter('rule_id', i) as string;
 
-							const rule_id = this.getNodeParameter('rule_id', i) as string;
-							
-							const response = await checkmkApiRequest.call(
+						const response = await checkmkApiRequest.call(
 							this,
 							'DELETE',
 							`/objects/rule/${rule_id}`,
@@ -9837,7 +10161,6 @@ export class Checkmk implements INodeType {
 
 					// CMK_ModifyRule
 					if (operation === 'modify') {
-
 						const rule_id = this.getNodeParameter('rule_id', i) as string;
 						const value_raw = this.getNodeParameter('value_raw', i) as string;
 						let properties = this.getNodeParameter('properties', i) as IDataObject | string;
@@ -9850,18 +10173,29 @@ export class Checkmk implements INodeType {
 								try {
 									properties = JSON.parse(properties);
 								} catch (error) {
-									throw new NodeOperationError(this.getNode(), `Invalid JSON in properties field: ${error}`);
+									throw new NodeOperationError(
+										this.getNode(),
+										`Invalid JSON in properties field: ${error}`,
+									);
 								}
 							}
 						}
 
 						let parsedConditions: IDataObject | undefined;
-						if (conditions && (typeof conditions === 'string' ? conditions.trim() !== '{}' : Object.keys(conditions).length > 0)) {
+						if (
+							conditions &&
+							(typeof conditions === 'string'
+								? conditions.trim() !== '{}'
+								: Object.keys(conditions).length > 0)
+						) {
 							if (typeof conditions === 'string') {
 								try {
 									parsedConditions = JSON.parse(conditions);
 								} catch (error) {
-									throw new NodeOperationError(this.getNode(), `Invalid JSON in conditions field: ${error}`);
+									throw new NodeOperationError(
+										this.getNode(),
+										`Invalid JSON in conditions field: ${error}`,
+									);
 								}
 							} else {
 								parsedConditions = conditions;
@@ -9878,10 +10212,10 @@ export class Checkmk implements INodeType {
 						}
 
 						const response = await checkmkApiRequestWithIfMatch.call(
-						this,
-						'PUT',
-						`/objects/rule/${rule_id}`,
-						body
+							this,
+							'PUT',
+							`/objects/rule/${rule_id}`,
+							body,
 						);
 
 						returnData.push(response);
@@ -9914,155 +10248,150 @@ export class Checkmk implements INodeType {
 							this,
 							'POST',
 							`/objects/rule/${ruleId}/actions/move/invoke`,
-							body
+							body,
 						);
 
 						returnData.push(response);
 					}
 				}
 
-					// ==================== DISCOVERY OPERATIONS ====================
-					if (resource === 'discovery') {
+				// ==================== DISCOVERY OPERATIONS ====================
+				if (resource === 'discovery') {
+					// CMK_RunServiceDiscovery
+					if (operation === 'run') {
+						const hostName = this.getNodeParameter('hostName', i) as string;
+						const mode = this.getNodeParameter('mode', i) as any;
+						const body: IDataObject = {
+							host_name: hostName,
+							mode,
+						};
 
+						const response = await checkmkApiRequest.call(
+							this,
+							'POST',
+							'/domain-types/service_discovery_run/actions/start/invoke',
+							body,
+						);
+						returnData.push(response);
+					}
 
-						// CMK_RunServiceDiscovery
-						if (operation === 'run') {
+					// CMK_WaitServiceDiscovery
+					if (operation === 'wait') {
+						const hostName = this.getNodeParameter('hostName', i) as string;
 
-							const hostName = this.getNodeParameter('hostName', i) as string;
-							const mode = this.getNodeParameter('mode', i) as any;
-							const body: IDataObject = {
-								host_name: hostName,
-								mode,
-							};
+						const response = await checkmkApiRequest.call(
+							this,
+							'GET',
+							`/objects/service_discovery_run/${encodeURIComponent(hostName)}/actions/wait-for-completion/invoke`,
+						);
+						returnData.push(response);
+					}
 
-							const response = await checkmkApiRequest.call(
-								this,
-								'POST',
-								'/domain-types/service_discovery_run/actions/start/invoke',
-								body,
-							);
-							returnData.push(response);
+					// CMK_ShowDiscoveryResult
+					if (operation === 'showResult') {
+						const hostName = this.getNodeParameter('hostName', i) as string;
+
+						const response = await checkmkApiRequest.call(
+							this,
+							'GET',
+							`/objects/service_discovery/${encodeURIComponent(hostName)}`,
+						);
+						returnData.push(response);
+					}
+
+					// CMK_ShowLastDiscoveryResult
+					if (operation === 'showLast') {
+						const hostName = this.getNodeParameter('hostName', i) as string;
+
+						const response = await checkmkApiRequest.call(
+							this,
+							'GET',
+							`/objects/service_discovery_run/${encodeURIComponent(hostName)}`,
+						);
+						returnData.push(response);
+					}
+
+					// CMK_UpdateServicePhase
+					if (operation === 'update') {
+						const hostName = this.getNodeParameter('hostName', i) as string;
+						const check_type = this.getNodeParameter('check_type', i) as string;
+						const service_item = this.getNodeParameter('service_item', i) as string;
+						const target_phase = this.getNodeParameter('target_phase', i) as any;
+
+						const body: IDataObject = {
+							check_type: check_type,
+							service_item: service_item,
+							target_phase: target_phase,
+						};
+
+						const response = await checkmkApiRequest.call(
+							this,
+							'PUT',
+							`/objects/host/${encodeURIComponent(hostName)}/actions/update_discovery_phase/invoke`,
+							body,
+						);
+						returnData.push(response);
+					}
+
+					// CMK_StartBulkDiscovery
+					if (operation === 'bulkDiscovery') {
+						const hostNamesInput = this.getNodeParameter('hostNames', i) as string;
+
+						// Pega as collections separadas
+						const discoveryOptsInput = this.getNodeParameter(
+							'discoveryOptions',
+							i,
+							{},
+						) as IDataObject;
+						const jobConfigInput = this.getNodeParameter('jobConfiguration', i, {}) as IDataObject;
+
+						// 1. Processar Hostnames
+						const hostnames = hostNamesInput
+							.split(',')
+							.map((h) => h.trim())
+							.filter((h) => h !== '');
+
+						if (hostnames.length === 0) {
+							throw new NodeOperationError(this.getNode(), 'Please provide at least one hostname.');
 						}
 
-						// CMK_WaitServiceDiscovery
-						if (operation === 'wait') {
+						// 2. Construir o objeto 'options' (nested)
+						// Se o usuário não preencher nada na collection, enviamos os defaults false (ou o que a API esperar)
+						const optionsObj = {
+							monitor_undecided_services: discoveryOptsInput.monitor_undecided_services ?? false,
+							remove_vanished_services: discoveryOptsInput.remove_vanished_services ?? false,
+							update_service_labels: discoveryOptsInput.update_service_labels ?? false,
+							update_service_parameters: discoveryOptsInput.update_service_parameters ?? false,
+							update_host_labels: discoveryOptsInput.update_host_labels ?? false,
+						};
 
-							const hostName = this.getNodeParameter('hostName', i) as string;
+						// 3. Construir o Body final (Root fields)
+						const body: IDataObject = {
+							hostnames: hostnames,
+							options: optionsObj, // Objeto aninhado obrigatório
+							// Campos opcionais na raiz (com defaults do schema)
+							do_full_scan: jobConfigInput.do_full_scan ?? true,
+							bulk_size: jobConfigInput.bulk_size ?? 10,
+							ignore_errors: jobConfigInput.ignore_errors ?? true,
+						};
 
-							const response = await checkmkApiRequest.call(
-								this,
-								'GET',
-								`/objects/service_discovery_run/${encodeURIComponent(hostName)}/actions/wait-for-completion/invoke`,
-							);
-							returnData.push(response);
-
-						}
-
-						// CMK_ShowDiscoveryResult
-						if (operation === 'showResult') {
-
-							const hostName = this.getNodeParameter('hostName', i) as string;
-
-							const response = await checkmkApiRequest.call(
-								this,
-								'GET',
-								`/objects/service_discovery/${encodeURIComponent(hostName)}`,
-							);
-							returnData.push(response);
-						}
-
-						// CMK_ShowLastDiscoveryResult
-						if (operation === 'showLast') {
-
-							const hostName = this.getNodeParameter('hostName', i) as string;
-
-							const response = await checkmkApiRequest.call(
-								this,
-								'GET',
-								`/objects/service_discovery_run/${encodeURIComponent(hostName)}`,
-							);
-							returnData.push(response);
-						}
-
-						// CMK_UpdateServicePhase
-						if (operation === 'update') {
-
-							const hostName = this.getNodeParameter('hostName', i) as string;
-							const check_type = this.getNodeParameter('check_type', i) as string;
-							const service_item = this.getNodeParameter('service_item', i) as string;
-							const target_phase = this.getNodeParameter('target_phase', i) as any;
-
-							const body: IDataObject = {
-								check_type: check_type,
-								service_item: service_item,
-								target_phase: target_phase
-							};
-
-
-							const response = await checkmkApiRequest.call(
-								this,
-								'PUT',
-								`/objects/host/${encodeURIComponent(hostName)}/actions/update_discovery_phase/invoke`,
-								body
-							);
-							returnData.push(response);
-						}
-
-						// CMK_StartBulkDiscovery
-						if (operation === 'bulkDiscovery') {
-							const hostNamesInput = this.getNodeParameter('hostNames', i) as string;
-							
-							// Pega as collections separadas
-							const discoveryOptsInput = this.getNodeParameter('discoveryOptions', i, {}) as IDataObject;
-							const jobConfigInput = this.getNodeParameter('jobConfiguration', i, {}) as IDataObject;
-
-							// 1. Processar Hostnames
-							const hostnames = hostNamesInput
-								.split(',')
-								.map((h) => h.trim())
-								.filter((h) => h !== '');
-
-							if (hostnames.length === 0) {
-								throw new NodeOperationError(this.getNode(), 'Please provide at least one hostname.');
-							}
-
-							// 2. Construir o objeto 'options' (nested)
-							// Se o usuário não preencher nada na collection, enviamos os defaults false (ou o que a API esperar)
-							const optionsObj = {
-								monitor_undecided_services: discoveryOptsInput.monitor_undecided_services ?? false,
-								remove_vanished_services: discoveryOptsInput.remove_vanished_services ?? false,
-								update_service_labels: discoveryOptsInput.update_service_labels ?? false,
-								update_service_parameters: discoveryOptsInput.update_service_parameters ?? false,
-								update_host_labels: discoveryOptsInput.update_host_labels ?? false,
-							};
-
-							// 3. Construir o Body final (Root fields)
-							const body: IDataObject = {
-								hostnames: hostnames,
-								options: optionsObj, // Objeto aninhado obrigatório
-								// Campos opcionais na raiz (com defaults do schema)
-								do_full_scan: jobConfigInput.do_full_scan ?? true,
-								bulk_size: jobConfigInput.bulk_size ?? 10,
-								ignore_errors: jobConfigInput.ignore_errors ?? true,
-							};
-
-							const response = await checkmkApiRequest.call(
-								this,
-								'POST',
-								'/domain-types/discovery_run/actions/bulk-discovery-start/invoke',
-								body,
-							);
-							returnData.push(response);
-						}
-
+						const response = await checkmkApiRequest.call(
+							this,
+							'POST',
+							'/domain-types/discovery_run/actions/bulk-discovery-start/invoke',
+							body,
+						);
+						returnData.push(response);
+					}
 				}
-				
+
 				// ==================== ACKNOWLEDGE OPERATIONS ====================
 				if (resource === 'acknowledge') {
-					if (operation === 'remove') {//CMK_RemoveAcknowledge
+					if (operation === 'remove') {
+						//CMK_RemoveAcknowledge
 						// ... (código existente da operação remove mantido igual) ...
 						const type = this.getNodeParameter('acknowledge_type', i) as string;
-						
+
 						const body: IDataObject = {
 							acknowledge_type: type,
 						};
@@ -10088,7 +10417,7 @@ export class Checkmk implements INodeType {
 								body.query = queryInput as IDataObject;
 							}
 						}
-						
+
 						// --- DEBUG CONSOLE ---
 						//@ts-ignore
 						//console.log('--- DEBUG ACKNOWLEDGE CREATE BODY ---');
@@ -10105,7 +10434,8 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'create') { //CMK_SetHostAcknowledgement
+					if (operation === 'create') {
+						//CMK_SetHostAcknowledgement
 						const type = this.getNodeParameter('acknowledge_type', i) as string;
 						const comment = this.getNodeParameter('comment', i) as string;
 						const sticky = this.getNodeParameter('sticky', i) as boolean;
@@ -10128,7 +10458,7 @@ export class Checkmk implements INodeType {
 
 						// Define o Endpoint correto baseando-se no tipo
 						let endpoint = '/domain-types/acknowledge/collections/host';
-						
+
 						if (type === 'service' || type === 'service_by_query' || type === 'servicegroup') {
 							endpoint = '/domain-types/acknowledge/collections/service';
 						}
@@ -10159,22 +10489,15 @@ export class Checkmk implements INodeType {
 						// --- DEBUG ---
 						//@ts-ignore
 						//console.log(`Sending to ${endpoint}:`, JSON.stringify(body, null, 2));
-						const response = await checkmkApiRequest.call(
-							this,
-							'POST',
-							endpoint,
-							body,
-						);
+						const response = await checkmkApiRequest.call(this, 'POST', endpoint, body);
 						returnData.push(response);
 					}
-				
 				}
-				
-				
 
 				// ==================== ACTIVATE CHANGES OPERATIONS ====================
 				if (resource === 'activateChanges') {
-					if (operation === 'activate') { //CMK_ActivatePendingChanges
+					if (operation === 'activate') {
+						//CMK_ActivatePendingChanges
 						const sites = this.getNodeParameter('activateOnSites', i, '') as string;
 						const forceForeignChanges = this.getNodeParameter(
 							'forceForeignChanges',
@@ -10218,7 +10541,7 @@ export class Checkmk implements INodeType {
 					}
 					if (operation === 'get') {
 						const activationId = this.getNodeParameter('activationId', i) as string;
-							const response = await checkmkApiRequest.call(
+						const response = await checkmkApiRequest.call(
 							this,
 							'GET',
 							`/objects/activation_run/${activationId}`,
@@ -10226,7 +10549,8 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'waitForCompletion') { //CMK_WaitForActivationCompletion
+					if (operation === 'waitForCompletion') {
+						//CMK_WaitForActivationCompletion
 						const activationId = this.getNodeParameter('activationId', i) as string;
 						const response = await checkmkApiRequest.call(
 							this,
@@ -10236,7 +10560,8 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'getPending') { //CMK_GetPendingChanges
+					if (operation === 'getPending') {
+						//CMK_GetPendingChanges
 						const response = await checkmkApiRequest.call(
 							this,
 							'GET',
@@ -10245,7 +10570,8 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'getRunning') { //CMK_GetRunningActivations
+					if (operation === 'getRunning') {
+						//CMK_GetRunningActivations
 						const response = await checkmkApiRequest.call(
 							this,
 							'GET',
@@ -10257,17 +10583,16 @@ export class Checkmk implements INodeType {
 
 				// ==================== SITE OPERATIONS ====================
 				if (resource === 'site') {
-
 					if (operation === 'create') {
 						const site_config = this.getNodeParameter('site_config', i) as string;
 						const body: IDataObject = {
-							site_config: site_config
-						}
+							site_config: site_config,
+						};
 						const response = await checkmkApiRequest.call(
 							this,
 							'POST',
 							`/domain-types/site_connection/collections/all`,
-							body
+							body,
 						);
 						returnData.push(response);
 					}
@@ -10286,20 +10611,24 @@ export class Checkmk implements INodeType {
 						const siteId = this.getNodeParameter('siteId', i) as string;
 						const site_config = this.getNodeParameter('site_config', i) as string;
 						const body: IDataObject = {
-							site_config: site_config
-						}
+							site_config: site_config,
+						};
 						const response = await checkmkApiRequest.call(
 							this,
 							'PUT',
 							`/objects/site_connection/${siteId}`,
-							body
+							body,
 						);
 						returnData.push(response);
 					}
 
 					if (operation === 'show') {
 						const siteId = this.getNodeParameter('siteId', i) as string;
-						const response = await checkmkApiRequest.call(this, 'GET', `/objects/site_connection/${siteId}`);
+						const response = await checkmkApiRequest.call(
+							this,
+							'GET',
+							`/objects/site_connection/${siteId}`,
+						);
 						returnData.push(response);
 					}
 
@@ -10318,7 +10647,7 @@ export class Checkmk implements INodeType {
 						const password = this.getNodeParameter('password', i) as string;
 						const body: IDataObject = {
 							username: username,
-							password: password
+							password: password,
 						};
 						const response = await checkmkApiRequest.call(
 							this,
@@ -10421,8 +10750,8 @@ export class Checkmk implements INodeType {
 
 				// ==================== DOWNTIME OPERATIONS ====================
 				if (resource === 'downtime') {
-
-					if (operation === 'create') { //CMK_ScheduleDowntime
+					if (operation === 'create') {
+						//CMK_ScheduleDowntime
 
 						const downtimeType = this.getNodeParameter('downtimeType', i) as string;
 						const rawStartTime = this.getNodeParameter('start_time', i) as string;
@@ -10431,7 +10760,7 @@ export class Checkmk implements INodeType {
 						// 2. Convertemos para objeto Date e depois para String ISO (UTC)
 						// Isso garante o formato: "2026-01-16T17:00:00.000Z" que o Checkmk aceita
 						const startTime = new Date(rawStartTime).toISOString().split('.')[0] + 'Z';
-                        const endTime = new Date(rawEndTime).toISOString().split('.')[0] + 'Z';
+						const endTime = new Date(rawEndTime).toISOString().split('.')[0] + 'Z';
 						const comment = this.getNodeParameter('comment', i) as string;
 
 						const additionalFields = this.getNodeParameter(
@@ -10448,12 +10777,12 @@ export class Checkmk implements INodeType {
 						};
 
 						if (downtimeType === 'host') {
-							body.host_name = this.getNodeParameter('host_name', i) as string; 
+							body.host_name = this.getNodeParameter('host_name', i) as string;
 						} else if (downtimeType === 'hostgroup') {
 							body.hostgroup_name = this.getNodeParameter('hostgroup_name', i) as string;
 						} else if (downtimeType === 'host_by_query') {
 							const queryInput = this.getNodeParameter('query', i);
-							if (typeof queryInput === 'string'){
+							if (typeof queryInput === 'string') {
 								try {
 									body.query = JSON.parse(queryInput);
 								} catch (e) {
@@ -10466,7 +10795,7 @@ export class Checkmk implements INodeType {
 
 						if (additionalFields.duration) body.duration = additionalFields.duration;
 						if (additionalFields.recur) body.recur = additionalFields.recur;
-						
+
 						const response = await checkmkApiRequest.call(
 							this,
 							'POST',
@@ -10480,22 +10809,26 @@ export class Checkmk implements INodeType {
 						const downtimeId = this.getNodeParameter('downtimeId', i) as string;
 						const site = this.getNodeParameter('site', i) as string;
 						const modifyType = this.getNodeParameter('modifyType', i) as string;
-						
+
 						const updateEndTime = this.getNodeParameter('updateEndTime', i) as boolean;
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 
 						// 1. Construir Body Raiz
 						// Nota: Para este endpoint específico, downtime_id e site_id vão no BODY.
 						const body: IDataObject = {
 							modify_type: modifyType,
-							downtime_id: downtimeId, 
+							downtime_id: downtimeId,
 							site_id: site,
 						};
 
 						// 2. Construir o objeto 'end_time' se o switch estiver ativo
 						if (updateEndTime) {
 							const mode = this.getNodeParameter('endTimeMode', i) as string;
-							
+
 							const endTimeObj: IDataObject = {
 								modify_type: mode, // 'absolute' ou 'relative'
 							};
@@ -10522,14 +10855,15 @@ export class Checkmk implements INodeType {
 						// Mantemos PUT conforme o teu YAML, mas se falhar, tenta POST.
 						const response = await checkmkApiRequest.call(
 							this,
-							'PUT', 
+							'PUT',
 							'/domain-types/downtime/actions/modify/invoke',
 							body,
 						);
 						returnData.push(response);
 					}
 
-					if (operation === 'get') { //CMK_GetDowntime
+					if (operation === 'get') {
+						//CMK_GetDowntime
 						const downtimeId = this.getNodeParameter('downtimeId', i) as string;
 						const site = this.getNodeParameter('site', i) as string;
 						const qs: IDataObject = {
@@ -10540,13 +10874,14 @@ export class Checkmk implements INodeType {
 							this,
 							'GET',
 							`/objects/downtime/${downtimeId}`,
-							{}, 
+							{},
 							qs,
 						);
 						returnData.push(response);
 					}
 
-					if (operation === 'getMany') { //CMK_GetAllDowntimes
+					if (operation === 'getMany') {
+						//CMK_GetAllDowntimes
 						const returnAll = this.getNodeParameter('returnAll', i);
 
 						if (returnAll) {
@@ -10568,7 +10903,8 @@ export class Checkmk implements INodeType {
 						}
 					}
 
-					if (operation === 'delete') { //CMK_DeleteDowntime
+					if (operation === 'delete') {
+						//CMK_DeleteDowntime
 						const downtimeId = this.getNodeParameter('downtimeId', i) as string;
 						const site = this.getNodeParameter('site', i) as string;
 						const deleteType = this.getNodeParameter('deleteType', i, 'by_id') as string;
@@ -10579,17 +10915,16 @@ export class Checkmk implements INodeType {
 							site_id: site,
 						};
 
-						
 						await checkmkApiRequest.call(
 							this,
 							'POST',
 							'/domain-types/downtime/actions/delete/invoke',
 							body,
 						);
-						
+
 						returnData.push({ success: true, downtimeId, site, deleteType });
 					}
-			}
+				}
 
 				// ==================== PROBLEM OPERATIONS ====================
 				if (resource === 'problem') {
@@ -10622,13 +10957,14 @@ export class Checkmk implements INodeType {
 
 				// ==================== BI AGGREGATION OPERATIONS ====================
 				if (resource === 'biAggregation') {
-					if (operation === 'getState') { //CMK_GetBIAggregationState
+					if (operation === 'getState') {
+						//CMK_GetBIAggregationState
 						const additionalFields = this.getNodeParameter(
 							'additionalFields',
 							i,
 							{},
 						) as IDataObject;
-						
+
 						const qs: IDataObject = {};
 
 						if (additionalFields.filter_names) {
@@ -10648,7 +10984,8 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'delete') { //	CMK_DeleteBIAggregation
+					if (operation === 'delete') {
+						//	CMK_DeleteBIAggregation
 						const aggregationId = this.getNodeParameter('aggregation_id', i) as string;
 
 						// Faz a chamada HTTP DELETE para o endpoint correspondente
@@ -10657,30 +10994,36 @@ export class Checkmk implements INodeType {
 							'DELETE',
 							`/objects/bi_aggregation/${encodeURIComponent(aggregationId)}`,
 						);
-						
+
 						// Retorna sucesso para o n8n
-						returnData.push({ 
-							success: true, 
+						returnData.push({
+							success: true,
 							message: 'BI aggregation deleted successfully',
-							aggregation_id: aggregationId 
+							aggregation_id: aggregationId,
 						});
 					}
-					if (operation === 'create' || operation === 'update') { //CMK_CreateOrReplaceBIAggregation
+					if (operation === 'create' || operation === 'update') {
+						//CMK_CreateOrReplaceBIAggregation
 						const aggregationId = this.getNodeParameter('aggregation_id', i) as string;
 						const packId = this.getNodeParameter('pack_id', i) as string;
-						
+
 						const groupsUi = this.getNodeParameter('groupsUi', i, {}) as IDataObject;
 						const nodeUi = this.getNodeParameter('nodeUi', i, {}) as IDataObject;
 						const visualizationUi = this.getNodeParameter('visualizationUi', i, {}) as IDataObject;
 						const computationUi = this.getNodeParameter('computationUi', i, {}) as IDataObject;
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 
 						// Tratamento de Arrays/JSON dos Groups
 						const groupNames = (groupsUi.names as string[]) || [];
 						let groupPaths: any[] = [];
 						if (groupsUi.paths) {
 							try {
-								groupPaths = typeof groupsUi.paths === 'string' ? JSON.parse(groupsUi.paths) : groupsUi.paths;
+								groupPaths =
+									typeof groupsUi.paths === 'string' ? JSON.parse(groupsUi.paths) : groupsUi.paths;
 							} catch (e) {
 								throw new NodeOperationError(this.getNode(), 'Invalid JSON in Groups Paths');
 							}
@@ -10690,7 +11033,10 @@ export class Checkmk implements INodeType {
 						let actionParams: IDataObject = {};
 						if (nodeUi.action_params) {
 							try {
-								actionParams = typeof nodeUi.action_params === 'string' ? JSON.parse(nodeUi.action_params) : nodeUi.action_params;
+								actionParams =
+									typeof nodeUi.action_params === 'string'
+										? JSON.parse(nodeUi.action_params)
+										: nodeUi.action_params;
 							} catch (e) {
 								throw new NodeOperationError(this.getNode(), 'Invalid JSON in Action Params');
 							}
@@ -10711,7 +11057,7 @@ export class Checkmk implements INodeType {
 								action: {
 									type: nodeUi.action_type || 'call_a_rule',
 									...actionParams,
-								}
+								},
 							},
 							aggregation_visualization: {
 								ignore_rule_styles: visualizationUi.ignore_rule_styles ?? false,
@@ -10723,7 +11069,7 @@ export class Checkmk implements INodeType {
 								use_hard_states: computationUi.use_hard_states ?? false,
 								escalate_downtimes_as_warn: computationUi.escalate_downtimes_as_warn ?? false,
 								freeze_aggregations: computationUi.freeze_aggregations ?? false,
-							}
+							},
 						};
 
 						if (additionalFields.comment) body.comment = additionalFields.comment;
@@ -10751,10 +11097,10 @@ export class Checkmk implements INodeType {
 					}
 				}
 
-
 				// ==================== BI PACK OPERATIONS ====================
 				if (resource === 'biPack') {
-					if (operation === 'create' || operation === 'update') { //CMK_CreateOrReplaceBIPack
+					if (operation === 'create' || operation === 'update') {
+						//CMK_CreateOrReplaceBIPack
 						const packId = this.getNodeParameter('pack_id', i) as string;
 						const title = this.getNodeParameter('title', i) as string;
 						const contactGroups = this.getNodeParameter('contact_groups', i, []) as string[];
@@ -10779,12 +11125,12 @@ export class Checkmk implements INodeType {
 							const response = await checkmkApiRequestWithIfMatch.call(
 								this,
 								'PUT',
-								`/objects/bi_pack/${encodeURIComponent(packId)}`, 
+								`/objects/bi_pack/${encodeURIComponent(packId)}`,
 								body,
 							);
 							returnData.push(response);
 						}
-					}	
+					}
 					if (operation === 'getMany') {
 						const response = await checkmkApiRequest.call(
 							this,
@@ -10793,7 +11139,8 @@ export class Checkmk implements INodeType {
 						);
 						returnData.push(response);
 					}
-					if (operation === 'delete') { //CMK_DeleteBIPack
+					if (operation === 'delete') {
+						//CMK_DeleteBIPack
 						const packId = this.getNodeParameter('pack_id', i) as string;
 
 						await checkmkApiRequest.call(
@@ -10801,14 +11148,15 @@ export class Checkmk implements INodeType {
 							'DELETE',
 							`/objects/bi_pack/${encodeURIComponent(packId)}`,
 						);
-						
-						returnData.push({ 
-							success: true, 
+
+						returnData.push({
+							success: true,
 							message: 'BI pack deleted successfully',
-							pack_id: packId 
+							pack_id: packId,
 						});
 					}
-					if (operation === 'get') { //CMK_ShowBIPack
+					if (operation === 'get') {
+						//CMK_ShowBIPack
 						const packId = this.getNodeParameter('pack_id', i) as string;
 
 						const response = await checkmkApiRequest.call(
@@ -10816,15 +11164,15 @@ export class Checkmk implements INodeType {
 							'GET',
 							`/objects/bi_pack/${encodeURIComponent(packId)}`,
 						);
-						
+
 						returnData.push(response);
 					}
-
 				}
 
 				// ==================== BI RULE OPERATIONS ====================
 				if (resource === 'biRule') {
-					if (operation === 'getMany') { //CMK_GetAllBIRules
+					if (operation === 'getMany') {
+						//CMK_GetAllBIRules
 						const response = await checkmkApiRequest.call(
 							this,
 							'GET',
@@ -10833,7 +11181,8 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'delete') { //CMK_DeleteBIRule
+					if (operation === 'delete') {
+						//CMK_DeleteBIRule
 						const ruleId = this.getNodeParameter('rule_id', i) as string;
 
 						await checkmkApiRequest.call(
@@ -10841,15 +11190,16 @@ export class Checkmk implements INodeType {
 							'DELETE',
 							`/objects/bi_rule/${encodeURIComponent(ruleId)}`,
 						);
-						
-						returnData.push({ 
-							success: true, 
+
+						returnData.push({
+							success: true,
 							message: 'BI rule deleted successfully',
-							rule_id: ruleId 
+							rule_id: ruleId,
 						});
 					}
 
-					if (operation === 'get') { //CMK_ShowBIRule
+					if (operation === 'get') {
+						//CMK_ShowBIRule
 						const ruleId = this.getNodeParameter('rule_id', i) as string;
 
 						const response = await checkmkApiRequest.call(
@@ -10857,33 +11207,52 @@ export class Checkmk implements INodeType {
 							'GET',
 							`/objects/bi_rule/${encodeURIComponent(ruleId)}`,
 						);
-						
+
 						returnData.push(response);
 					}
 
-					if (operation === 'create' || operation === 'update') { //CMK_CreateOrReplaceBIRule
+					if (operation === 'create' || operation === 'update') {
+						//CMK_CreateOrReplaceBIRule
 						const ruleId = this.getNodeParameter('rule_id', i) as string;
 						const packId = this.getNodeParameter('pack_id', i) as string;
 						const argumentsList = this.getNodeParameter('rule_arguments', i, []) as string[];
-						
-						const aggregationFunctionUi = this.getNodeParameter('aggregationFunctionUi', i, {}) as IDataObject;
-						const computationOptionsUi = this.getNodeParameter('computationOptionsUi', i, {}) as IDataObject;
-						const nodeVisualizationUi = this.getNodeParameter('nodeVisualizationUi', i, {}) as IDataObject;
+
+						const aggregationFunctionUi = this.getNodeParameter(
+							'aggregationFunctionUi',
+							i,
+							{},
+						) as IDataObject;
+						const computationOptionsUi = this.getNodeParameter(
+							'computationOptionsUi',
+							i,
+							{},
+						) as IDataObject;
+						const nodeVisualizationUi = this.getNodeParameter(
+							'nodeVisualizationUi',
+							i,
+							{},
+						) as IDataObject;
 						const propertiesUi = this.getNodeParameter('propertiesUi', i, {}) as IDataObject;
 						const nodesUi = this.getNodeParameter('nodesUi', i, {}) as IDataObject;
 
 						const nodes: IDataObject[] = [];
 						if (nodesUi.node) {
-							for (const n of (nodesUi.node as IDataObject[])) {
+							for (const n of nodesUi.node as IDataObject[]) {
 								let actionParams: IDataObject = {};
 								if (n.action_params) {
 									try {
-										actionParams = typeof n.action_params === 'string' ? JSON.parse(n.action_params) : n.action_params;
+										actionParams =
+											typeof n.action_params === 'string'
+												? JSON.parse(n.action_params)
+												: n.action_params;
 									} catch (e) {
-										throw new NodeOperationError(this.getNode(), 'Invalid JSON in Node Action Params');
+										throw new NodeOperationError(
+											this.getNode(),
+											'Invalid JSON in Node Action Params',
+										);
 									}
 								}
-								
+
 								nodes.push({
 									search: {
 										type: n.search_type || 'empty',
@@ -10892,7 +11261,7 @@ export class Checkmk implements INodeType {
 										type: n.action_type || 'call_a_rule',
 										rule_id: n.rule_id || '',
 										params: actionParams,
-									}
+									},
 								});
 							}
 						}
@@ -10900,18 +11269,30 @@ export class Checkmk implements INodeType {
 						let styleConfig: IDataObject = {};
 						if (nodeVisualizationUi.style_config) {
 							try {
-								styleConfig = typeof nodeVisualizationUi.style_config === 'string' ? JSON.parse(nodeVisualizationUi.style_config) : nodeVisualizationUi.style_config;
+								styleConfig =
+									typeof nodeVisualizationUi.style_config === 'string'
+										? JSON.parse(nodeVisualizationUi.style_config)
+										: nodeVisualizationUi.style_config;
 							} catch (e) {
-								throw new NodeOperationError(this.getNode(), 'Invalid JSON in Visualization Style Config');
+								throw new NodeOperationError(
+									this.getNode(),
+									'Invalid JSON in Visualization Style Config',
+								);
 							}
 						}
 
 						let stateMessages: IDataObject = {};
 						if (propertiesUi.state_messages) {
 							try {
-								stateMessages = typeof propertiesUi.state_messages === 'string' ? JSON.parse(propertiesUi.state_messages) : propertiesUi.state_messages;
+								stateMessages =
+									typeof propertiesUi.state_messages === 'string'
+										? JSON.parse(propertiesUi.state_messages)
+										: propertiesUi.state_messages;
 							} catch (e) {
-								throw new NodeOperationError(this.getNode(), 'Invalid JSON in Properties State Messages');
+								throw new NodeOperationError(
+									this.getNode(),
+									'Invalid JSON in Properties State Messages',
+								);
 							}
 						}
 
@@ -10924,7 +11305,10 @@ export class Checkmk implements INodeType {
 							aggregation_function: {
 								type: aggregationFunctionUi.type || 'best',
 								count: aggregationFunctionUi.count !== undefined ? aggregationFunctionUi.count : 1,
-								restrict_state: aggregationFunctionUi.restrict_state !== undefined ? aggregationFunctionUi.restrict_state : 2,
+								restrict_state:
+									aggregationFunctionUi.restrict_state !== undefined
+										? aggregationFunctionUi.restrict_state
+										: 2,
 							},
 							computation_options: {
 								disabled: computationOptionsUi.disabled ?? false,
@@ -10965,27 +11349,26 @@ export class Checkmk implements INodeType {
 
 				// ==================== COMMENT OPERATIONS ====================
 				if (resource === 'comment') {
-					if (operation === 'create') { // CMK_AddComment
+					if (operation === 'create') {
+						// CMK_AddComment
 						const commentType = this.getNodeParameter('commentType', i) as string;
 						const commentText = this.getNodeParameter('comment', i) as string;
 						const persistent = this.getNodeParameter('persistent', i) as boolean;
 
 						const body: IDataObject = {
 							comment: commentText,
-							comment_type: commentType, 
+							comment_type: commentType,
 							persistent: persistent,
 						};
 
-						let endpoint = '/domain-types/comment/collections/host'; 
+						let endpoint = '/domain-types/comment/collections/host';
 
 						if (commentType === 'host') {
 							const hostName = this.getNodeParameter('host_name', i) as string;
 							body.host_name = hostName;
-
 						} else if (commentType === 'host_group') {
 							const hostGroup = this.getNodeParameter('host_group_name', i) as string;
 							body.host_group_name = hostGroup;
-
 						} else if (commentType === 'host_by_query') {
 							const queryInput = this.getNodeParameter('query', i);
 							if (typeof queryInput === 'string') {
@@ -10997,17 +11380,16 @@ export class Checkmk implements INodeType {
 							} else {
 								body.query = queryInput as IDataObject;
 							}
-						
-						} else if (commentType === 'service') { // CMK_AddServiceComment
-                            endpoint = '/domain-types/comment/collections/service';
+						} else if (commentType === 'service') {
+							// CMK_AddServiceComment
+							endpoint = '/domain-types/comment/collections/service';
 							const hostName = this.getNodeParameter('host_name', i) as string;
 							const serviceDesc = this.getNodeParameter('service_description', i) as string;
-							
-                            body.host_name = hostName;
-                            body.service_description = serviceDesc;
 
+							body.host_name = hostName;
+							body.service_description = serviceDesc;
 						} else if (commentType === 'service_by_query') {
-                            endpoint = '/domain-types/comment/collections/service';
+							endpoint = '/domain-types/comment/collections/service';
 							const queryInput = this.getNodeParameter('query', i);
 							if (typeof queryInput === 'string') {
 								try {
@@ -11020,12 +11402,7 @@ export class Checkmk implements INodeType {
 							}
 						}
 
-						const response = await checkmkApiRequest.call(
-							this,
-							'POST',
-							endpoint,
-							body,
-						);
+						const response = await checkmkApiRequest.call(this, 'POST', endpoint, body);
 						returnData.push(response);
 					}
 
@@ -11038,7 +11415,8 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'delete') { // CMK_DeleteComment
+					if (operation === 'delete') {
+						// CMK_DeleteComment
 						const commentIdStr = this.getNodeParameter('commentId', i) as string;
 						const siteId = this.getNodeParameter('siteId', i) as string;
 
@@ -11049,7 +11427,7 @@ export class Checkmk implements INodeType {
 						}
 
 						const body: IDataObject = {
-							delete_type: 'by_id', 
+							delete_type: 'by_id',
 							comment_id: commentId,
 							site_id: siteId,
 						};
@@ -11060,18 +11438,22 @@ export class Checkmk implements INodeType {
 							'/domain-types/comment/actions/delete/invoke',
 							body,
 						);
-						
-						if (response === undefined || (typeof response === 'object' && Object.keys(response).length === 0)) {
-							returnData.push({ 
-								success: true, 
+
+						if (
+							response === undefined ||
+							(typeof response === 'object' && Object.keys(response).length === 0)
+						) {
+							returnData.push({
+								success: true,
 								message: 'Comment deleted successfully',
-								comment_id: commentId 
+								comment_id: commentId,
 							});
 						} else {
 							returnData.push(response);
 						}
 					}
-					if (operation === 'get') { //CMK_ShowComment
+					if (operation === 'get') {
+						//CMK_ShowComment
 						const commentId = this.getNodeParameter('commentId', i) as string;
 						const siteId = this.getNodeParameter('siteId', i) as string;
 
@@ -11083,17 +11465,15 @@ export class Checkmk implements INodeType {
 							this,
 							'GET',
 							`/objects/comment/${commentId}`,
-							{}, 
-							qs 
+							{},
+							qs,
 						);
 						returnData.push(response);
 					}
-
 				}
 
 				// ==================== EVENT CONSOLE OPERATIONS ====================  FLAG EVENT
 				if (resource === 'eventConsole') {
-
 					if (operation === 'archive') {
 						const filter_type = this.getNodeParameter('filter_type_archive', i) as string;
 						const body: IDataObject = {};
@@ -11101,39 +11481,39 @@ export class Checkmk implements INodeType {
 						if (filter_type === 'by_id') {
 							const event_id = this.getNodeParameter('event_id', i) as string;
 							const site_id = this.getNodeParameter('site_id', i) as string;
-							body.filter_type = filter_type
+							body.filter_type = filter_type;
 							body.site_id = site_id;
 							body.event_id = event_id;
-							
+
 							const response = await checkmkApiRequest.call(
 								this,
 								'POST',
 								`/domain-types/event_console/actions/delete/invoke`,
-								body
+								body,
 							);
 							returnData.push(response);
 						} else if (filter_type === 'query') {
 							const query = this.getNodeParameter('query', i) as IDataObject;
 							body.query = query;
-							body.filter_type = filter_type
-							
+							body.filter_type = filter_type;
+
 							const response = await checkmkApiRequest.call(
 								this,
 								'POST',
 								'/domain-types/event_console/actions/delete/invoke',
-								body
+								body,
 							);
 							returnData.push(response);
 						} else if (filter_type === 'params') {
 							const filters = this.getNodeParameter('filters', i) as IDataObject;
 							body.filters = filters;
-							body.filter_type = filter_type
-							
+							body.filter_type = filter_type;
+
 							const response = await checkmkApiRequest.call(
 								this,
 								'POST',
 								'/domain-types/event_console/actions/delete/invoke',
-								body
+								body,
 							);
 							returnData.push(response);
 						}
@@ -11144,48 +11524,48 @@ export class Checkmk implements INodeType {
 						const new_state = this.getNodeParameter('new_state', i) as string;
 						const body: IDataObject = {
 							site_id: site_id,
-							new_state: new_state
-						}
+							new_state: new_state,
+						};
 						const response = await checkmkApiRequest.call(
 							this,
 							'POST',
 							`/objects/event_console/${event_id}/actions/change_state/invoke`,
-							body
+							body,
 						);
 						returnData.push(response);
 					}
 					if (operation === 'changeMultipleStates') {
 						const filter_type = this.getNodeParameter('filter_type_change', i) as string;
 						const site_id = this.getNodeParameter('site_id', i) as string;
-						const new_state = this.getNodeParameter('new_state', i) as string
+						const new_state = this.getNodeParameter('new_state', i) as string;
 						const body: IDataObject = {
 							filter_type: filter_type,
 							site_id: site_id,
-							new_state: new_state
+							new_state: new_state,
 						};
 
 						if (filter_type === 'query') {
 							const query = this.getNodeParameter('query', i) as IDataObject;
 							body.query = query;
-							body.filter_type = filter_type
-							
+							body.filter_type = filter_type;
+
 							const response = await checkmkApiRequest.call(
 								this,
 								'POST',
 								'/domain-types/event_console/actions/change_state/invoke',
-								body
+								body,
 							);
 							returnData.push(response);
 						} else if (filter_type === 'params') {
 							const filters = this.getNodeParameter('filters', i) as IDataObject;
 							body.filters = filters;
-							body.filter_type = filter_type
-							
+							body.filter_type = filter_type;
+
 							const response = await checkmkApiRequest.call(
 								this,
 								'POST',
 								'/domain-types/event_console/actions/change_state/invoke',
-								body
+								body,
 							);
 							returnData.push(response);
 						}
@@ -11194,24 +11574,24 @@ export class Checkmk implements INodeType {
 						const event_id = this.getNodeParameter('event_id', i) as string;
 						const site_id = this.getNodeParameter('site_id', i) as string;
 						const qs: IDataObject = {
-							site_id: site_id
-						}
+							site_id: site_id,
+						};
 						const response = await checkmkApiRequest.call(
 							this,
 							'GET',
 							`/objects/event_console/${event_id}`,
 							{},
-							qs
+							qs,
 						);
 						returnData.push(response);
 					}
 					if (operation === 'showEvents') {
-						const site_id 		= this.getNodeParameter('site_id', i) as string;
-						const host			= this.getNodeParameter('host', i) as string;
-						const application 	= this.getNodeParameter('application', i) as string;
-						const state			= this.getNodeParameter('state', i) as string;
-						const phase 		= this.getNodeParameter('phase', i) as string;
-						const queryInput	= this.getNodeParameter('query', i, {}) as IDataObject;
+						const site_id = this.getNodeParameter('site_id', i) as string;
+						const host = this.getNodeParameter('host', i) as string;
+						const application = this.getNodeParameter('application', i) as string;
+						const state = this.getNodeParameter('state', i) as string;
+						const phase = this.getNodeParameter('phase', i) as string;
+						const queryInput = this.getNodeParameter('query', i, {}) as IDataObject;
 						const qs: IDataObject = {};
 						// Apenas adicione se houver valor real
 						if (site_id) qs.site_id = site_id;
@@ -11246,7 +11626,7 @@ export class Checkmk implements INodeType {
 						// Objeto de Debug para visualização
 						const debugInfo = {
 							_debug_qs_enviada: qs,
-							_endpoint: '/domain-types/event_console/collections/all'
+							_endpoint: '/domain-types/event_console/collections/all',
 						};
 
 						try {
@@ -11255,7 +11635,7 @@ export class Checkmk implements INodeType {
 								'GET',
 								'/domain-types/event_console/collections/all',
 								{},
-								qs
+								qs,
 							);
 							// Se der certo, retorna a resposta + info de debug
 							returnData.push({ ...response, debug: debugInfo });
@@ -11265,19 +11645,19 @@ export class Checkmk implements INodeType {
 							returnData.push({
 								error_status: 'API falhou',
 								error_message: (error as Error).message,
-								...debugInfo // AQUI ESTÁ O QUE   VER
+								...debugInfo, // AQUI ESTÁ O QUE   VER
 							});
 						}
 					}
-					if (operation === 'updateEvent'){
-						const event_id 			= this.getNodeParameter('event_id', i) as string;
-						const site_id 			= this.getNodeParameter('site_id', i) as string;
-						const change_contact	= this.getNodeParameter('change_contact', i) as string;
-						const change_comment 	= this.getNodeParameter('change_comment', i) as string;
-						const phase 			= this.getNodeParameter('phase', i) as string;
+					if (operation === 'updateEvent') {
+						const event_id = this.getNodeParameter('event_id', i) as string;
+						const site_id = this.getNodeParameter('site_id', i) as string;
+						const change_contact = this.getNodeParameter('change_contact', i) as string;
+						const change_comment = this.getNodeParameter('change_comment', i) as string;
+						const phase = this.getNodeParameter('phase', i) as string;
 
 						const body: IDataObject = {
-							site_id: site_id
+							site_id: site_id,
 						};
 
 						if (phase) body.phase = phase;
@@ -11288,70 +11668,67 @@ export class Checkmk implements INodeType {
 							this,
 							'POST',
 							`/objects/event_console/${event_id}/actions/update_and_acknowledge/invoke`,
-							body
+							body,
 						);
 						returnData.push(response);
 					}
-					if (operation === 'updateEvents'){
-						const site_id 				= this.getNodeParameter('site_id', i) as string;
-						const change_contact		= this.getNodeParameter('change_contact', i) as string;
-						const change_comment 		= this.getNodeParameter('change_comment', i) as string;
-						const phase 				= this.getNodeParameter('phase', i) as string;
-						const filter_type_update	= this.getNodeParameter('filter_type_update', i) as string;
+					if (operation === 'updateEvents') {
+						const site_id = this.getNodeParameter('site_id', i) as string;
+						const change_contact = this.getNodeParameter('change_contact', i) as string;
+						const change_comment = this.getNodeParameter('change_comment', i) as string;
+						const phase = this.getNodeParameter('phase', i) as string;
+						const filter_type_update = this.getNodeParameter('filter_type_update', i) as string;
 
 						const body: IDataObject = {
-							site_id: site_id
+							site_id: site_id,
 						};
 
 						if (phase) body.phase = phase;
 						if (change_comment) body.change_comment = change_comment;
 						if (change_contact) body.change_contact = change_contact;
 
-
-
 						if (filter_type_update === 'query') {
 							const query = this.getNodeParameter('query', i) as IDataObject;
 							body.query = query;
-							body.filter_type = filter_type_update
-							
+							body.filter_type = filter_type_update;
+
 							const response = await checkmkApiRequest.call(
 								this,
 								'POST',
 								'/domain-types/event_console/actions/update_and_acknowledge/invoke',
-								body
+								body,
 							);
 							returnData.push(response);
 						} else if (filter_type_update === 'params') {
 							let params = this.getNodeParameter('params', i);
-							
+
 							// Parse if it's a string
 							if (typeof params === 'string') {
 								params = JSON.parse(params);
 							}
-							
+
 							body.filters = params as IDataObject;
-							body.filter_type = filter_type_update
-							
-							const response = await checkmkApiRequest.call(
-								this,
-								'POST',
-								'/domain-types/event_console/actions/update_and_acknowledge/invoke',
-								body
-							);
-							returnData.push(response);
-						} else {
-							body.filter_type = filter_type_update
+							body.filter_type = filter_type_update;
 
 							const response = await checkmkApiRequest.call(
 								this,
 								'POST',
 								'/domain-types/event_console/actions/update_and_acknowledge/invoke',
-								body
+								body,
+							);
+							returnData.push(response);
+						} else {
+							body.filter_type = filter_type_update;
+
+							const response = await checkmkApiRequest.call(
+								this,
+								'POST',
+								'/domain-types/event_console/actions/update_and_acknowledge/invoke',
+								body,
 							);
 							returnData.push(response);
 						}
 					}
-
 				}
 
 				// ==================== HOST STATUS OPERATIONS ====================
@@ -11391,7 +11768,8 @@ export class Checkmk implements INodeType {
 						}
 					}
 
-					if (operation === 'get') { //CMK_ShowHostStatus
+					if (operation === 'get') {
+						//CMK_ShowHostStatus
 						const hostName = this.getNodeParameter('hostName', i) as string;
 						const columnsInput = this.getNodeParameter('columns', i) as string;
 
@@ -11411,9 +11789,9 @@ export class Checkmk implements INodeType {
 							'GET',
 							`/objects/host/${encodeURIComponent(hostName)}`,
 							{}, // Body vazio
-							qs  // Query params (columns)
+							qs, // Query params (columns)
 						);
-						
+
 						returnData.push(response);
 					}
 					if (operation === 'getMany') {
@@ -11425,14 +11803,20 @@ export class Checkmk implements INodeType {
 
 						// 1. Tratar Colunas
 						if (columnsInput && columnsInput.trim() !== '') {
-							body.columns = columnsInput.split(',').map((c) => c.trim()).filter((c) => c !== '');
+							body.columns = columnsInput
+								.split(',')
+								.map((c) => c.trim())
+								.filter((c) => c !== '');
 						} else {
 							body.columns = ['name', 'state', 'last_check']; // Default útil
 						}
 
 						// 2. Tratar Sites
 						if (sitesInput && sitesInput.trim() !== '') {
-							body.sites = sitesInput.split(',').map((s) => s.trim()).filter((s) => s !== '');
+							body.sites = sitesInput
+								.split(',')
+								.map((s) => s.trim())
+								.filter((s) => s !== '');
 						}
 
 						// 3. Construir a Query
@@ -11441,12 +11825,13 @@ export class Checkmk implements INodeType {
 						if (queryMode === 'json') {
 							// Modo Avançado (Raw JSON)
 							const queryJson = this.getNodeParameter('queryJson', i);
-							finalQueryString = typeof queryJson === 'object' ? JSON.stringify(queryJson) : (queryJson as string);
+							finalQueryString =
+								typeof queryJson === 'object' ? JSON.stringify(queryJson) : (queryJson as string);
 						} else {
 							// Modo Visual (Builder)
 							const globalOp = this.getNodeParameter('globalOperator', i) as string;
 							const conditionsUi = this.getNodeParameter('conditionsUi', i) as IDataObject;
-							
+
 							const expressions: IDataObject[] = [];
 
 							if (conditionsUi && conditionsUi.rules) {
@@ -11465,7 +11850,7 @@ export class Checkmk implements INodeType {
 								op: globalOp,
 								expr: expressions,
 							};
-							
+
 							finalQueryString = JSON.stringify(queryObject);
 						}
 
@@ -11477,7 +11862,7 @@ export class Checkmk implements INodeType {
 							'/domain-types/host/collections/all',
 							body,
 						);
-						
+
 						returnData.push(response);
 					}
 				}
@@ -11492,7 +11877,8 @@ export class Checkmk implements INodeType {
 						);
 						returnData.push(response);
 					}
-					if (operation === 'getCustomGraph') { //CMK_GetCustomGraph
+					if (operation === 'getCustomGraph') {
+						//CMK_GetCustomGraph
 						const customGraphId = this.getNodeParameter('custom_graph_id', i) as string;
 						const startTime = this.getNodeParameter('start_time', i) as string;
 						const endTime = this.getNodeParameter('end_time', i) as string;
@@ -11519,7 +11905,8 @@ export class Checkmk implements INodeType {
 						//console.log('DEBUG get_custom_graph:', JSON.stringify(body, null, 2));
 						returnData.push(response);
 					}
-					if (operation === 'getMetrics') { //CMK_GetMetrics
+					if (operation === 'getMetrics') {
+						//CMK_GetMetrics
 						const hostName = this.getNodeParameter('hostName', i) as string;
 						const serviceDescription = this.getNodeParameter('service_description', i) as string;
 						const metricType = this.getNodeParameter('metric_type', i) as string;
@@ -11562,152 +11949,146 @@ export class Checkmk implements INodeType {
 						);
 						returnData.push(response);
 					}
-					
 				}
 
 				// ==================== SERVICE STATUS OPERATIONS ====================
 				if (resource === 'serviceStatus') {
- 
-                    // CMK_ShowAllServices
-                    if (operation === 'showAll') {
-                        const hostName = this.getNodeParameter('host_name', i) as string;
-                        const sitesStr = this.getNodeParameter('sites', i) as string;
-                        const columnsStr = this.getNodeParameter('columns', i) as string;
-                        const queryInput = this.getNodeParameter('query', i);
- 
-                        const body: IDataObject = {};
- 
-                        // 1. Host Name (String)
-                        if (hostName && hostName.trim() !== '') {
-                            body.host_name = hostName;
-                        }
- 
-                        // 2. Sites (String -> Array of Strings)
-                        if (sitesStr && sitesStr.trim() !== '') {
-                            body.sites = sitesStr.split(',').map((s) => s.trim());
-                        }
- 
-                        // 3. Columns (String -> Array of Strings)
-                        if (columnsStr && columnsStr.trim() !== '') {
-                            body.columns = columnsStr.split(',').map((c) => c.trim());
-                        }
- 
-                        // 4. Query (JSON Object)
-                        if (queryInput) {
-                            if (typeof queryInput === 'string') {
-                                try {
-                                    // Se o usuário passar JSON como string (comum em expressions)
-                                    const parsedQuery = JSON.parse(queryInput);
-                                    if (Object.keys(parsedQuery).length > 0) {
-                                        body.query = parsedQuery;
-                                    }
-                                } catch (error) {
-                                    throw new NodeOperationError(this.getNode(), 'Invalid JSON in Query field');
-                                }
-                            } else if (typeof queryInput === 'object' && Object.keys(queryInput).length > 0) {
-                                body.query = queryInput as IDataObject;
-                            }
-                        }
- 
-                        // Nota: O endpoint para listar com filtro complexo (POST) costuma ser o mesmo
-                        // da coleção base, mas usando o verbo POST.
-                        const response = await checkmkApiRequest.call(
-                            this,
-                            'POST',
-                            '/domain-types/service/collections/all',
-                            body
-                        );
-                        returnData.push(response);
-                    }
- 
-                    // CMK_ShowAllServicesFromHost
-                    if (operation === 'showHost') {
- 
-                        const host_name = this.getNodeParameter('host_name', i) as string;
-                        const sitesStr = this.getNodeParameter('sites', i) as string;
-                        const columnsStr = this.getNodeParameter('columns', i) as string;
-                        const queryInput = this.getNodeParameter('query', i);
- 
-                        const body: IDataObject = {};
- 
-                        // 2. Sites (String -> Array of Strings)
-                        if (sitesStr && sitesStr.trim() !== '') {
-                            body.sites = sitesStr.split(',').map((s) => s.trim());
-                        }
- 
-                        // 3. Columns (String -> Array of Strings)
-                        if (columnsStr && columnsStr.trim() !== '') {
-                            body.columns = columnsStr.split(',').map((c) => c.trim());
-                        }
- 
-                        // 4. Query (JSON Object)
-                        if (queryInput) {
-                            if (typeof queryInput === 'string') {
-                                try {
-                                    // Se o usuário passar JSON como string (comum em expressions)
-                                    const parsedQuery = JSON.parse(queryInput);
-                                    if (Object.keys(parsedQuery).length > 0) {
-                                        body.query = parsedQuery;
-                                    }
-                                } catch (error) {
-                                    throw new NodeOperationError(this.getNode(), 'Invalid JSON in Query field');
-                                }
-                            } else if (typeof queryInput === 'object' && Object.keys(queryInput).length > 0) {
-                                body.query = queryInput as IDataObject;
-                            }
-                        }
- 
-                        const response = await checkmkApiRequest.call(
-                            this,
-                            'POST',
-                            `/objects/host/${host_name}/collections/services`,
-                            body
-                        );
-                        returnData.push(response);
- 
-                    }
- 
-                    // CMK_ShowServiceFromHost
-                    if (operation === 'show') {
- 
-                        const host_name = this.getNodeParameter('host_name', i) as string;
-                        const columnsStr = this.getNodeParameter('columns', i) as string;
-                        const service_description = this.getNodeParameter('service_description', i) as string;
- 
-                        const qp: IDataObject = {};
- 
-                        if (columnsStr && columnsStr.trim() !== '') {
-                            qp.columns = columnsStr.split(',').map((c) => c.trim());
-                        }
- 
-                        qp.service_description = service_description;
- 
- 
-                        const response = await checkmkApiRequest.call(
-                            this,
-                            'GET',
-                            `/objects/host/${host_name}/actions/show_service/invoke`,
-                            {},
-                            qp
-                        );
-                        returnData.push(response);
- 
-                    }
-                }
+					// CMK_ShowAllServices
+					if (operation === 'showAll') {
+						const hostName = this.getNodeParameter('host_name', i) as string;
+						const sitesStr = this.getNodeParameter('sites', i) as string;
+						const columnsStr = this.getNodeParameter('columns', i) as string;
+						const queryInput = this.getNodeParameter('query', i);
+
+						const body: IDataObject = {};
+
+						// 1. Host Name (String)
+						if (hostName && hostName.trim() !== '') {
+							body.host_name = hostName;
+						}
+
+						// 2. Sites (String -> Array of Strings)
+						if (sitesStr && sitesStr.trim() !== '') {
+							body.sites = sitesStr.split(',').map((s) => s.trim());
+						}
+
+						// 3. Columns (String -> Array of Strings)
+						if (columnsStr && columnsStr.trim() !== '') {
+							body.columns = columnsStr.split(',').map((c) => c.trim());
+						}
+
+						// 4. Query (JSON Object)
+						if (queryInput) {
+							if (typeof queryInput === 'string') {
+								try {
+									// Se o usuário passar JSON como string (comum em expressions)
+									const parsedQuery = JSON.parse(queryInput);
+									if (Object.keys(parsedQuery).length > 0) {
+										body.query = parsedQuery;
+									}
+								} catch (error) {
+									throw new NodeOperationError(this.getNode(), 'Invalid JSON in Query field');
+								}
+							} else if (typeof queryInput === 'object' && Object.keys(queryInput).length > 0) {
+								body.query = queryInput as IDataObject;
+							}
+						}
+
+						// Nota: O endpoint para listar com filtro complexo (POST) costuma ser o mesmo
+						// da coleção base, mas usando o verbo POST.
+						const response = await checkmkApiRequest.call(
+							this,
+							'POST',
+							'/domain-types/service/collections/all',
+							body,
+						);
+						returnData.push(response);
+					}
+
+					// CMK_ShowAllServicesFromHost
+					if (operation === 'showHost') {
+						const host_name = this.getNodeParameter('host_name', i) as string;
+						const sitesStr = this.getNodeParameter('sites', i) as string;
+						const columnsStr = this.getNodeParameter('columns', i) as string;
+						const queryInput = this.getNodeParameter('query', i);
+
+						const body: IDataObject = {};
+
+						// 2. Sites (String -> Array of Strings)
+						if (sitesStr && sitesStr.trim() !== '') {
+							body.sites = sitesStr.split(',').map((s) => s.trim());
+						}
+
+						// 3. Columns (String -> Array of Strings)
+						if (columnsStr && columnsStr.trim() !== '') {
+							body.columns = columnsStr.split(',').map((c) => c.trim());
+						}
+
+						// 4. Query (JSON Object)
+						if (queryInput) {
+							if (typeof queryInput === 'string') {
+								try {
+									// Se o usuário passar JSON como string (comum em expressions)
+									const parsedQuery = JSON.parse(queryInput);
+									if (Object.keys(parsedQuery).length > 0) {
+										body.query = parsedQuery;
+									}
+								} catch (error) {
+									throw new NodeOperationError(this.getNode(), 'Invalid JSON in Query field');
+								}
+							} else if (typeof queryInput === 'object' && Object.keys(queryInput).length > 0) {
+								body.query = queryInput as IDataObject;
+							}
+						}
+
+						const response = await checkmkApiRequest.call(
+							this,
+							'POST',
+							`/objects/host/${host_name}/collections/services`,
+							body,
+						);
+						returnData.push(response);
+					}
+
+					// CMK_ShowServiceFromHost
+					if (operation === 'show') {
+						const host_name = this.getNodeParameter('host_name', i) as string;
+						const columnsStr = this.getNodeParameter('columns', i) as string;
+						const service_description = this.getNodeParameter('service_description', i) as string;
+
+						const qp: IDataObject = {};
+
+						if (columnsStr && columnsStr.trim() !== '') {
+							qp.columns = columnsStr.split(',').map((c) => c.trim());
+						}
+
+						qp.service_description = service_description;
+
+						const response = await checkmkApiRequest.call(
+							this,
+							'GET',
+							`/objects/host/${host_name}/actions/show_service/invoke`,
+							{},
+							qp,
+						);
+						returnData.push(response);
+					}
+				}
 
 				// ==================== SLA OPERATIONS ====================
 				if (resource === 'sla') {
-					if (operation === 'compute') { //	CMK_ComputeSLA
+					if (operation === 'compute') {
+						//	CMK_ComputeSLA
 						const inputMode = this.getNodeParameter('slaInputMode', i, 'ui') as string;
 						let computeTargets: IDataObject[] = [];
 
 						if (inputMode === 'ui') {
 							const slaIds = this.getNodeParameter('sla_ids', i, []) as string[];
-							
+
 							const servicesUi = this.getNodeParameter('sla_services_ui', i, {}) as IDataObject;
 							const services: IDataObject[] = [];
 							if (servicesUi.service) {
-								for (const s of (servicesUi.service as IDataObject[])) {
+								for (const s of servicesUi.service as IDataObject[]) {
 									services.push({
 										host_name: s.host_name,
 										service_description: s.service_description,
@@ -11715,10 +12096,14 @@ export class Checkmk implements INodeType {
 								}
 							}
 
-							const timeRangesUi = this.getNodeParameter('sla_time_ranges_ui', i, {}) as IDataObject;
+							const timeRangesUi = this.getNodeParameter(
+								'sla_time_ranges_ui',
+								i,
+								{},
+							) as IDataObject;
 							const timeRanges: IDataObject[] = [];
 							if (timeRangesUi.time_range) {
-								for (const tr of (timeRangesUi.time_range as IDataObject[])) {
+								for (const tr of timeRangesUi.time_range as IDataObject[]) {
 									if (tr.range_type === 'pre_defined') {
 										timeRanges.push({
 											range_type: 'pre_defined',
@@ -11728,9 +12113,15 @@ export class Checkmk implements INodeType {
 										let customConfig: IDataObject = {};
 										if (tr.custom_config) {
 											try {
-												customConfig = typeof tr.custom_config === 'string' ? JSON.parse(tr.custom_config) : tr.custom_config;
+												customConfig =
+													typeof tr.custom_config === 'string'
+														? JSON.parse(tr.custom_config)
+														: tr.custom_config;
 											} catch (e) {
-												throw new NodeOperationError(this.getNode(), 'Invalid JSON in Custom Range Configuration');
+												throw new NodeOperationError(
+													this.getNode(),
+													'Invalid JSON in Custom Range Configuration',
+												);
 											}
 										}
 										timeRanges.push({
@@ -11742,7 +12133,10 @@ export class Checkmk implements INodeType {
 							}
 
 							if (services.length === 0 || timeRanges.length === 0 || slaIds.length === 0) {
-								throw new NodeOperationError(this.getNode(), 'You must provide at least one SLA ID, one Service, and one Time Range.');
+								throw new NodeOperationError(
+									this.getNode(),
+									'You must provide at least one SLA ID, one Service, and one Time Range.',
+								);
 							}
 
 							computeTargets.push({
@@ -11750,14 +12144,16 @@ export class Checkmk implements INodeType {
 								services: services,
 								time_ranges: timeRanges,
 							});
-
 						} else {
 							const rawJson = this.getNodeParameter('slaComputeTargetsJson', i);
 							if (typeof rawJson === 'string') {
 								try {
 									computeTargets = JSON.parse(rawJson);
 								} catch (e) {
-									throw new NodeOperationError(this.getNode(), 'Invalid JSON in SLA Compute Targets field');
+									throw new NodeOperationError(
+										this.getNode(),
+										'Invalid JSON in SLA Compute Targets field',
+									);
 								}
 							} else if (Array.isArray(rawJson)) {
 								computeTargets = rawJson as IDataObject[];
@@ -11792,10 +12188,15 @@ export class Checkmk implements INodeType {
 
 				// ==================== AUDIT LOG OPERATIONS ====================
 				if (resource === 'auditLog') {
-					if (operation === 'getMany') { // CMK_GetAllAuditLogEntries
+					if (operation === 'getMany') {
+						// CMK_GetAllAuditLogEntries
 						const returnAll = this.getNodeParameter('returnAll', i);
 						const dateStr = this.getNodeParameter('date', i) as string;
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 
 						const formattedDate = dateStr.split('T')[0];
 						const qs: IDataObject = {
@@ -11828,36 +12229,40 @@ export class Checkmk implements INodeType {
 							returnData.push(...logs.slice(0, limit));
 						}
 					}
-					
-					if (operation === 'archive') { // CMK_ArchiveAuditLog
+
+					if (operation === 'archive') {
+						// CMK_ArchiveAuditLog
 						const response = await checkmkApiRequest.call(
 							this,
 							'POST',
 							'/domain-types/audit_log/actions/archive/invoke',
 						);
-						
-						if (response === undefined || (typeof response === 'object' && Object.keys(response).length === 0)) {
-							returnData.push({ 
-								success: true, 
-								message: 'Audit log entries moved to archive successfully' 
+
+						if (
+							response === undefined ||
+							(typeof response === 'object' && Object.keys(response).length === 0)
+						) {
+							returnData.push({
+								success: true,
+								message: 'Audit log entries moved to archive successfully',
 							});
 						} else {
 							returnData.push(response);
 						}
 					}
-
 				}
 
 				// ==================== AUX TAG OPERATIONS ====================
 				if (resource === 'auxTag') {
-					if (operation === 'create') { //CMK_CreateAuxTag
+					if (operation === 'create') {
+						//CMK_CreateAuxTag
 						const tagId = this.getNodeParameter('tagId', i) as string;
 						const title = this.getNodeParameter('title', i) as string;
 						const topic = this.getNodeParameter('topic', i) as string;
 						const help = this.getNodeParameter('help', i) as string;
 
 						const body: IDataObject = {
-							aux_tag_id: tagId, 
+							aux_tag_id: tagId,
 							title: title,
 							topic: topic,
 						};
@@ -11875,7 +12280,8 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'get') { // CMK_ShowAuxTag
+					if (operation === 'get') {
+						// CMK_ShowAuxTag
 						const tagId = this.getNodeParameter('tagId', i) as string;
 
 						const response = await checkmkApiRequest.call(
@@ -11886,7 +12292,8 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'getMany') { //CMK_ShowAllAuxTag
+					if (operation === 'getMany') {
+						//CMK_ShowAllAuxTag
 						const response = await checkmkApiRequest.call(
 							this,
 							'GET',
@@ -11895,7 +12302,8 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'update') {//CMK_UpdateAuxTag
+					if (operation === 'update') {
+						//CMK_UpdateAuxTag
 						const tagId = this.getNodeParameter('tagId', i) as string;
 						const title = this.getNodeParameter('title', i) as string;
 						const topic = this.getNodeParameter('topic', i) as string;
@@ -11916,7 +12324,8 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'delete') { //CMK_DeleteAuxTag
+					if (operation === 'delete') {
+						//CMK_DeleteAuxTag
 						const tagId = this.getNodeParameter('tagId', i) as string;
 
 						await checkmkApiRequest.call(
@@ -11925,26 +12334,25 @@ export class Checkmk implements INodeType {
 							`/objects/aux_tag/${encodeURIComponent(tagId)}/actions/delete/invoke`,
 						);
 
-						returnData.push({ 
-							success: true, 
+						returnData.push({
+							success: true,
 							message: 'Aux tag deleted successfully',
-							tag_id: tagId 
+							tag_id: tagId,
 						});
 					}
 				}
 
 				// ==================== HOST TAG GROUP OPERATIONS ====================
 				if (resource === 'hostTagGroup') {
-					
 					// Helper para processar tags (usado tanto no create quanto no update)
 					const getProcessedTags = (inputs: any): IDataObject[] => {
 						let apiTags: IDataObject[] = [];
 						// O n8n retorna fixedCollection como: { manual: [ {...}, {...} ], json: [ {...} ] }
 						// Precisamos iterar sobre o objeto 'tags' recebido
-						
+
 						// Tags manuais
 						if (inputs.manual) {
-							for (const entry of (inputs.manual as IDataObject[])) {
+							for (const entry of inputs.manual as IDataObject[]) {
 								if (!entry.title) continue; // Title é obrigatório
 
 								const tagObj: IDataObject = {
@@ -11958,7 +12366,7 @@ export class Checkmk implements INodeType {
 								if (entry.aux_tags && typeof entry.aux_tags === 'string') {
 									const aux = entry.aux_tags.trim();
 									if (aux !== '') {
-										tagObj.aux_tags = aux.split(',').map(t => t.trim());
+										tagObj.aux_tags = aux.split(',').map((t) => t.trim());
 									}
 								}
 								apiTags.push(tagObj);
@@ -11967,7 +12375,7 @@ export class Checkmk implements INodeType {
 
 						// Tags via JSON
 						if (inputs.json) {
-							for (const entry of (inputs.json as IDataObject[])) {
+							for (const entry of inputs.json as IDataObject[]) {
 								const rawInfo = entry.tagsJson;
 								if (rawInfo) {
 									let parsed: any;
@@ -11975,7 +12383,10 @@ export class Checkmk implements INodeType {
 										try {
 											parsed = JSON.parse(rawInfo);
 										} catch (e) {
-											throw new NodeOperationError(this.getNode(), `Invalid JSON in tags: ${rawInfo}`);
+											throw new NodeOperationError(
+												this.getNode(),
+												`Invalid JSON in tags: ${rawInfo}`,
+											);
 										}
 									} else {
 										parsed = rawInfo;
@@ -12003,7 +12414,10 @@ export class Checkmk implements INodeType {
 						const tags = getProcessedTags(tagsInput);
 
 						if (tags.length === 0) {
-							throw new NodeOperationError(this.getNode(), 'At least one tag is required to create a Host Tag Group.');
+							throw new NodeOperationError(
+								this.getNode(),
+								'At least one tag is required to create a Host Tag Group.',
+							);
 						}
 
 						const body: IDataObject = {
@@ -12036,7 +12450,6 @@ export class Checkmk implements INodeType {
 
 					// CMK_GetASingleHostTagGroup
 					if (operation === 'show') {
-						
 						const name = this.getNodeParameter('name', i) as string;
 
 						const response = await checkmkApiRequest.call(
@@ -12049,9 +12462,8 @@ export class Checkmk implements INodeType {
 
 					// CMK_UpdateHostTagGroup
 					if (operation === 'update') {
-
 						const name = this.getNodeParameter('name', i) as string;
-						
+
 						// Campos opcionais no update
 						const title = this.getNodeParameter('title', i, '') as string;
 						const topic = this.getNodeParameter('topic', i, '') as string;
@@ -12083,13 +12495,12 @@ export class Checkmk implements INodeType {
 
 					// CMK_DeleteHostTagGroup
 					if (operation === 'delete') {
-
 						const name = this.getNodeParameter('name', i) as string;
 						const deleteMode = this.getNodeParameter('deleteMode', i);
 						const repair = this.getNodeParameter('repair', i) as boolean;
 
 						const qs: IDataObject = {
-							repair: repair
+							repair: repair,
 						};
 
 						// Só adiciona 'mode' na query se o usuário escolheu algo diferente do padrão vazio
@@ -12102,13 +12513,13 @@ export class Checkmk implements INodeType {
 							'DELETE',
 							`/objects/host_tag_group/${encodeURIComponent(name)}`,
 							{},
-							qs
+							qs,
 						);
 						returnData.push({
 							success: true,
 							message: 'Host tag group deleted',
 							id: name,
-							mode: deleteMode || 'default'
+							mode: deleteMode || 'default',
 						});
 					}
 				}
@@ -12142,7 +12553,8 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'getMany') { //CMK_ShowAllLDAPConnections
+					if (operation === 'getMany') {
+						//CMK_ShowAllLDAPConnections
 						const response = await checkmkApiRequest.call(
 							this,
 							'GET',
@@ -12177,7 +12589,8 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'get') { //CMK_GetASingleLDAPConnection
+					if (operation === 'get') {
+						//CMK_GetASingleLDAPConnection
 						const ldapConnectionId = this.getNodeParameter('ldapConnectionId', i) as string;
 
 						const response = await checkmkApiRequest.call(
@@ -12188,7 +12601,8 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'delete') { //CMK_DeleteLDAPConnection
+					if (operation === 'delete') {
+						//CMK_DeleteLDAPConnection
 						const ldapConnectionId = this.getNodeParameter('ldapConnectionId', i) as string;
 
 						await checkmkApiRequestWithIfMatch.call(
@@ -12206,7 +12620,6 @@ export class Checkmk implements INodeType {
 
 				// ==================== NOTIFICATION RULE OPERATIONS ====================
 				if (resource === 'notificationRule') {
-
 					if (operation === 'showAll') {
 						const response = await checkmkApiRequest.call(
 							this,
@@ -12243,21 +12656,21 @@ export class Checkmk implements INodeType {
 						}
 
 						const body: IDataObject = {
-							rule_config: ruleConfig
+							rule_config: ruleConfig,
 						};
 
 						const response = await checkmkApiRequest.call(
 							this,
 							'POST',
 							'/domain-types/notification_rule/collections/all',
-							body
+							body,
 						);
 						returnData.push(response);
 					}
 
 					if (operation === 'update') {
 						const rule_id = this.getNodeParameter('rule_id', i) as string;
-						
+
 						// Mesma lógica de tratamento do JSON para o update
 						const ruleConfigInput = this.getNodeParameter('rule_config', i);
 						let ruleConfig: IDataObject;
@@ -12273,14 +12686,14 @@ export class Checkmk implements INodeType {
 						}
 
 						const body: IDataObject = {
-							rule_config: ruleConfig
+							rule_config: ruleConfig,
 						};
 
 						const response = await checkmkApiRequest.call(
 							this,
 							'PUT',
 							`/objects/notification_rule/${rule_id}`,
-							body
+							body,
 						);
 						returnData.push(response);
 					}
@@ -12294,7 +12707,6 @@ export class Checkmk implements INodeType {
 						);
 						returnData.push(response);
 					}
-
 				}
 
 				// ==================== OPENTELEMETRY OPERATIONS ====================
@@ -12378,25 +12790,26 @@ export class Checkmk implements INodeType {
 				}
 				// ==================== MISCELLANEOUS OPERATIONS ====================
 				if (resource === 'miscellaneous') {
-					if (operation === 'version') { //CMK_GetCheckmkVersion
-						const response = await checkmkApiRequest.call(
-							this,
-							'GET',
-							'/version',
-						);
+					if (operation === 'version') {
+						//CMK_GetCheckmkVersion
+						const response = await checkmkApiRequest.call(this, 'GET', '/version');
 						returnData.push(response);
 					}
 				}
 
 				// ==================== PARENT SCAN OPERATIONS ====================
 				if (resource === 'parentScan') {
-					if (operation === 'start') { // CMK_StartParentScan
+					if (operation === 'start') {
+						// CMK_StartParentScan
 						const hostNamesStr = this.getNodeParameter('hostNames', i) as string;
 						const gatewayOption = this.getNodeParameter('gatewayOption', i) as string;
 						const scanConfig = this.getNodeParameter('scanConfig', i, {}) as IDataObject;
 
-						const hostNames = hostNamesStr.split(',').map(h => h.trim()).filter(h => h !== '');
-						
+						const hostNames = hostNamesStr
+							.split(',')
+							.map((h) => h.trim())
+							.filter((h) => h !== '');
+
 						if (hostNames.length === 0) {
 							throw new NodeOperationError(this.getNode(), 'Please provide at least one hostname.');
 						}
@@ -12430,7 +12843,8 @@ export class Checkmk implements INodeType {
 
 				// ==================== PASSWORD OPERATIONS ====================
 				if (resource === 'password') {
-					if (operation === 'getMany') { //	CMK_GetAllPasswords
+					if (operation === 'getMany') {
+						//	CMK_GetAllPasswords
 						const response = await checkmkApiRequest.call(
 							this,
 							'GET',
@@ -12439,12 +12853,17 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'create') { // CMK_CreatePassword
+					if (operation === 'create') {
+						// CMK_CreatePassword
 						const ident = this.getNodeParameter('ident', i) as string;
 						const title = this.getNodeParameter('title', i) as string;
 						const password = this.getNodeParameter('password', i) as string;
 						const customer = this.getNodeParameter('customer', i) as string;
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 
 						const body: IDataObject = {
 							ident: ident,
@@ -12454,11 +12873,12 @@ export class Checkmk implements INodeType {
 						};
 
 						if (additionalFields.comment) body.comment = additionalFields.comment;
-						if (additionalFields.documentation_url) body.documentation_url = additionalFields.documentation_url;
+						if (additionalFields.documentation_url)
+							body.documentation_url = additionalFields.documentation_url;
 						if (additionalFields.editable_by) body.editable_by = additionalFields.editable_by;
-						
+
 						if (additionalFields.shared) {
-							body.shared = (additionalFields.shared as string).split(',').map(s => s.trim());
+							body.shared = (additionalFields.shared as string).split(',').map((s) => s.trim());
 						}
 
 						const response = await checkmkApiRequest.call(
@@ -12470,7 +12890,8 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'update') { // CMK_UpdatePassword
+					if (operation === 'update') {
+						// CMK_UpdatePassword
 						const ident = this.getNodeParameter('ident', i) as string;
 						const updateFields = this.getNodeParameter('updateFields', i, {}) as IDataObject;
 
@@ -12480,11 +12901,12 @@ export class Checkmk implements INodeType {
 						if (updateFields.password) body.password = updateFields.password;
 						if (updateFields.customer) body.customer = updateFields.customer;
 						if (updateFields.comment) body.comment = updateFields.comment;
-						if (updateFields.documentation_url) body.documentation_url = updateFields.documentation_url;
+						if (updateFields.documentation_url)
+							body.documentation_url = updateFields.documentation_url;
 						if (updateFields.editable_by) body.editable_by = updateFields.editable_by;
 
 						if (updateFields.shared) {
-							body.shared = (updateFields.shared as string).split(',').map(s => s.trim());
+							body.shared = (updateFields.shared as string).split(',').map((s) => s.trim());
 						}
 
 						// Usa If-Match (ETag) automaticamente para garantir integridade
@@ -12496,9 +12918,10 @@ export class Checkmk implements INodeType {
 						);
 						returnData.push(response);
 					}
-					if (operation === 'delete') { // CMK_DeletePassword
+					if (operation === 'delete') {
+						// CMK_DeletePassword
 						const ident = this.getNodeParameter('ident', i) as string;
-						
+
 						await checkmkApiRequestWithIfMatch.call(
 							this,
 							'DELETE',
@@ -12507,9 +12930,10 @@ export class Checkmk implements INodeType {
 						returnData.push({ success: true, ident });
 					}
 
-					if (operation === 'get') { // CMK_GetASinglePassword
+					if (operation === 'get') {
+						// CMK_GetASinglePassword
 						const ident = this.getNodeParameter('ident', i) as string;
-						
+
 						const response = await checkmkApiRequest.call(
 							this,
 							'GET',
@@ -12521,7 +12945,6 @@ export class Checkmk implements INodeType {
 
 				// ==================== RULESET OPERATIONS ====================
 				if (resource === 'ruleset') {
-
 					//CMK_ShowRuleset
 					if (operation === 'get') {
 						const rulesetName = this.getNodeParameter('rulesetName', i) as string;
@@ -12533,7 +12956,7 @@ export class Checkmk implements INodeType {
 						);
 						returnData.push(response);
 					}
-					
+
 					//CMK_SearchRulesets
 					if (operation === 'search') {
 						const fulltext = this.getNodeParameter('fulltext', i) as string;
@@ -12563,7 +12986,8 @@ export class Checkmk implements INodeType {
 
 				// ==================== SAML CONNECTION OPERATIONS ====================
 				if (resource === 'samlConnection') {
-					if (operation === 'create') { //CMK_CreateSAMLConnection
+					if (operation === 'create') {
+						//CMK_CreateSAMLConnection
 						const samlId = this.getNodeParameter('connectionId', i) as string;
 						const samlName = this.getNodeParameter('samlName', i) as string;
 						const serverUrl = this.getNodeParameter('serverUrl', i) as string;
@@ -12572,63 +12996,66 @@ export class Checkmk implements INodeType {
 						const cgType = this.getNodeParameter('cgType', i) as string;
 
 						const body: IDataObject = {
-						general_properties: {
-							id: samlId,
-							name: samlName,
-							rule_activation: 'activated',
-						},
-						connection_config: {
-							checkmk_server_url: serverUrl,
-							identity_provider_metadata: {
-								type: metadataType,
-								[metadataType]: this.getNodeParameter(metadataType === 'url' ? 'metadataUrl' : 'metadataXml', i),
+							general_properties: {
+								id: samlId,
+								name: samlName,
+								rule_activation: 'activated',
 							},
-						},
-						security: {
-							signing_certificate: {
-								type: signingType,
+							connection_config: {
+								checkmk_server_url: serverUrl,
+								identity_provider_metadata: {
+									type: metadataType,
+									[metadataType]: this.getNodeParameter(
+										metadataType === 'url' ? 'metadataUrl' : 'metadataXml',
+										i,
+									),
+								},
 							},
-							decrypt_auth_certificate: {
-								type: 'builtin',
+							security: {
+								signing_certificate: {
+									type: signingType,
+								},
+								decrypt_auth_certificate: {
+									type: 'builtin',
+								},
 							},
-						},
-						users: {
-							id_attribute: 'uid',
-							contact_groups: {
-								type: cgType,
-								attribute: 'contact_groups',
+							users: {
+								id_attribute: 'uid',
+								contact_groups: {
+									type: cgType,
+									attribute: 'contact_groups',
+								},
+								roles: {
+									type: 'map',
+									attribute: 'roles',
+									roles: { admin: ['admin'], user: ['user'], guest: ['guest'] },
+								},
 							},
-							roles: {
-								type: 'map',
-								attribute: 'roles',
-								roles: { admin: ['admin'], user: ['user'], guest: ['guest'] },
-							},
-						},
-					};
+						};
 
-					// CORREÇÃO DO ERRO TS(2339):
-					if (signingType === 'custom') {
-						// Forçamos o TypeScript a tratar 'security' e 'signing_certificate' como objetos
-						const security = body.security as IDataObject;
-						const signingCert = security.signing_certificate as IDataObject;
-						
-						signingCert.private_key = this.getNodeParameter('signingKey', i);
-						signingCert.certificate = this.getNodeParameter('signingCert', i);
-					}
+						// CORREÇÃO DO ERRO TS(2339):
+						if (signingType === 'custom') {
+							// Forçamos o TypeScript a tratar 'security' e 'signing_certificate' como objetos
+							const security = body.security as IDataObject;
+							const signingCert = security.signing_certificate as IDataObject;
 
-					// Lógica de Contact Groups (também prevenida contra erros de tipo)
-					if (cgType === 'map') {
-						const mappingData = this.getNodeParameter('cgMappingUi', i) as IDataObject;
-						if (mappingData.mapping) {
-							const users = body.users as IDataObject;
-							const cg = users.contact_groups as IDataObject;
-							
-							cg.mapping = (mappingData.mapping as IDataObject[]).map((m) => ({
-								attribute_value: m.value,
-								contact_groups: (m.groups as string).split(',').map((g) => g.trim()),
-							}));
+							signingCert.private_key = this.getNodeParameter('signingKey', i);
+							signingCert.certificate = this.getNodeParameter('signingCert', i);
 						}
-					}
+
+						// Lógica de Contact Groups (também prevenida contra erros de tipo)
+						if (cgType === 'map') {
+							const mappingData = this.getNodeParameter('cgMappingUi', i) as IDataObject;
+							if (mappingData.mapping) {
+								const users = body.users as IDataObject;
+								const cg = users.contact_groups as IDataObject;
+
+								cg.mapping = (mappingData.mapping as IDataObject[]).map((m) => ({
+									attribute_value: m.value,
+									contact_groups: (m.groups as string).split(',').map((g) => g.trim()),
+								}));
+							}
+						}
 
 						const response = await checkmkApiRequest.call(
 							this,
@@ -12639,7 +13066,8 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'getMany') { //CMK_GetAllSAMLConnections
+					if (operation === 'getMany') {
+						//CMK_GetAllSAMLConnections
 						const response = await checkmkApiRequest.call(
 							this,
 							'GET',
@@ -12648,7 +13076,8 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'delete') { //CMK_DeleteSAMLConnection
+					if (operation === 'delete') {
+						//CMK_DeleteSAMLConnection
 						const connectionId = this.getNodeParameter('connectionId', i) as string;
 
 						await checkmkApiRequestWithIfMatch.call(
@@ -12657,14 +13086,15 @@ export class Checkmk implements INodeType {
 							`/objects/saml_connection/${encodeURIComponent(connectionId)}`,
 						);
 
-						returnData.push({ 
-							success: true, 
+						returnData.push({
+							success: true,
 							message: `SAML connection ${connectionId} deleted successfully`,
-							id: connectionId 
+							id: connectionId,
 						});
 					}
 
-					if (operation === 'get') { //CMK_GetASingleSAMLConnection
+					if (operation === 'get') {
+						//CMK_GetASingleSAMLConnection
 						const connectionId = this.getNodeParameter('connectionId', i) as string;
 
 						const response = await checkmkApiRequest.call(
@@ -12703,7 +13133,8 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'getMany') { //CMK_GetAllUserRoles
+					if (operation === 'getMany') {
+						//CMK_GetAllUserRoles
 						const response = await checkmkApiRequest.call(
 							this,
 							'GET',
@@ -12711,7 +13142,8 @@ export class Checkmk implements INodeType {
 						);
 						returnData.push(response);
 					}
-					if (operation === 'get') { //CMK_GetUserRole
+					if (operation === 'get') {
+						//CMK_GetUserRole
 						const roleIdRaw = this.getNodeParameter('roleId', i) as string;
 						// Sanitização para garantir que o ID é válido (minúsculas)
 						const roleId = roleIdRaw.trim().toLowerCase();
@@ -12724,12 +13156,13 @@ export class Checkmk implements INodeType {
 						returnData.push(response);
 					}
 
-					if (operation === 'update') { //CMK_UpdateUserRole
+					if (operation === 'update') {
+						//CMK_UpdateUserRole
 						const roleIdRaw = this.getNodeParameter('roleId', i) as string;
 						const roleId = roleIdRaw.trim().toLowerCase();
 
 						const updateFields = this.getNodeParameter('updateFields', i) as IDataObject;
-						
+
 						const body: IDataObject = {};
 
 						if (updateFields.new_role_id) body.new_role_id = updateFields.new_role_id;
@@ -12739,15 +13172,15 @@ export class Checkmk implements INodeType {
 						if (updateFields.new_permissions_ui) {
 							const permissionsUi = updateFields.new_permissions_ui as IDataObject;
 							const permissionsList = permissionsUi.permissionsValues as IDataObject[];
-							
+
 							const permissionsObj: IDataObject = {};
-							
+
 							for (const perm of permissionsList) {
 								if (perm.name) {
 									permissionsObj[perm.name as string] = perm.state;
 								}
 							}
-							
+
 							body.new_permissions = permissionsObj;
 						}
 						const response = await checkmkApiRequestWithIfMatch.call(
@@ -12756,11 +13189,12 @@ export class Checkmk implements INodeType {
 							`/objects/user_role/${encodeURIComponent(roleId)}`,
 							body,
 						);
-						
+
 						returnData.push(response);
 					}
 
-					if (operation === 'delete') { //CMK_DeleteUserRole
+					if (operation === 'delete') {
+						//CMK_DeleteUserRole
 						const roleId = this.getNodeParameter('roleId', i) as string;
 
 						// Usamos WithIfMatch para garantir que temos o ETag necessário para apagar objetos
@@ -12769,18 +13203,19 @@ export class Checkmk implements INodeType {
 							'DELETE',
 							`/objects/user_role/${encodeURIComponent(roleId)}`,
 						);
-						
+
 						returnData.push({ success: true, roleId, message: 'Role deleted successfully' });
 					}
-					if (operation === 'clone') { //CMK_CloneCreateUserRole
+					if (operation === 'clone') {
+						//CMK_CloneCreateUserRole
 						const sourceRoleId = this.getNodeParameter('roleId', i) as string;
 						const newRoleId = this.getNodeParameter('newRoleId', i) as string;
 						const newAlias = this.getNodeParameter('newAlias', i) as string;
 
 						const body: IDataObject = {
-							role_id: sourceRoleId,    
-							new_role_id: newRoleId,   
-							new_alias: newAlias,      
+							role_id: sourceRoleId,
+							new_role_id: newRoleId,
+							new_alias: newAlias,
 						};
 
 						const response = await checkmkApiRequest.call(
@@ -12843,12 +13278,15 @@ export class Checkmk implements INodeType {
 
 				// ==================== DCD OPERATIONS ====================
 				if (resource === 'dcd') {
-
 					if (operation === 'create') {
 						const title = this.getNodeParameter('title', i) as string;
 						const dcdId = this.getNodeParameter('dcd_id', i) as string;
 						const site = this.getNodeParameter('site', i) as string;
-						const additionalFields = this.getNodeParameter('additionalFields', i, {}) as IDataObject;
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const connectorUi = this.getNodeParameter('connectorUi', i, {}) as IDataObject;
 
 						// 1. Processar Restrict Source Hosts (String -> Array)
@@ -12861,12 +13299,15 @@ export class Checkmk implements INodeType {
 						}
 
 						// 2. Processar Creation Rules (Fixed Collection -> Array of Objects)
-						const creationRulesUi = this.getNodeParameter('creation_rules_ui', i, {}) as IDataObject;
+						const creationRulesUi = this.getNodeParameter(
+							'creation_rules_ui',
+							i,
+							{},
+						) as IDataObject;
 						const creationRules: IDataObject[] = [];
 
 						if (creationRulesUi.rule) {
-							for (const rule of (creationRulesUi.rule as IDataObject[])) {
-								
+							for (const rule of creationRulesUi.rule as IDataObject[]) {
 								// 2a. Processar Matching Hosts (String -> Array)
 								let matchingHosts: string[] = [];
 								if (rule.matching_hosts && (rule.matching_hosts as string).trim() !== '') {
@@ -12883,7 +13324,10 @@ export class Checkmk implements INodeType {
 										try {
 											hostAttributes = JSON.parse(rule.host_attributes);
 										} catch (e) {
-											throw new NodeOperationError(this.getNode(), `Invalid JSON in Host Attributes for rule with folder path: ${rule.folder_path}`);
+											throw new NodeOperationError(
+												this.getNode(),
+												`Invalid JSON in Host Attributes for rule with folder path: ${rule.folder_path}`,
+											);
 										}
 									} else {
 										hostAttributes = rule.host_attributes as IDataObject;
@@ -12922,7 +13366,7 @@ export class Checkmk implements INodeType {
 								creation_rules: creationRules,
 							},
 						};
-						
+
 						// Campos opcionais do conector que têm defaults na API
 						if (connectorUi.max_cache_age !== undefined) {
 							(body.connector as IDataObject).max_cache_age = connectorUi.max_cache_age;
@@ -12931,7 +13375,8 @@ export class Checkmk implements INodeType {
 							(body.connector as IDataObject).validity_period = connectorUi.validity_period;
 						}
 						if (connectorUi.no_deletion_time_after_init !== undefined) {
-							(body.connector as IDataObject).no_deletion_time_after_init = connectorUi.no_deletion_time_after_init;
+							(body.connector as IDataObject).no_deletion_time_after_init =
+								connectorUi.no_deletion_time_after_init;
 						}
 
 						const response = await checkmkApiRequest.call(

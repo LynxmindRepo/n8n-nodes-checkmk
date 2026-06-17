@@ -33,11 +33,7 @@ export async function checkmkApiRequest(
 	};
 
 	try {
-		return await this.helpers.httpRequestWithAuthentication.call(
-			this,
-			'checkmkApi',
-			options,
-		);
+		return await this.helpers.httpRequestWithAuthentication.call(this, 'checkmkApi', options);
 	} catch (error) {
 		throw new NodeApiError(this.getNode(), error as JsonObject);
 	}
@@ -99,11 +95,11 @@ export async function checkmkApiRequestWithETag(
 			'checkmkApi',
 			options,
 		);
-		
+
 		// Try different possible header names for ETag (case-insensitive search)
 		const headers = response.headers || {};
 		let etag: string | undefined;
-		
+
 		// Check all possible variations
 		for (const key in headers) {
 			if (key.toLowerCase() === 'etag') {
@@ -111,15 +107,12 @@ export async function checkmkApiRequestWithETag(
 				break;
 			}
 		}
-		
+
 		// If still not found, try direct access
 		if (!etag) {
-			etag = headers.etag || 
-			       headers['etag'] || 
-			       headers['ETag'] ||
-			       headers['Etag'];
+			etag = headers.etag || headers['etag'] || headers['ETag'] || headers['Etag'];
 		}
-		
+
 		// Clean up ETag: remove quotes and whitespace
 		// Store the raw value for If-Match (needs quotes)
 		let cleanedEtag = '';
@@ -133,7 +126,7 @@ export async function checkmkApiRequestWithETag(
 				.trim()
 				.replace(/\s+/g, ''); // Remove any whitespace
 		}
-		
+
 		return {
 			data: response.body,
 			etag: cleanedEtag,
@@ -231,7 +224,7 @@ export async function searchDestinationFolders(
 	let sourceFolderId: string | null = null;
 	try {
 		const folderParam = this.getNodeParameter('folder') as any;
-		
+
 		// Reutilizamos sua função de extração, passando o contexto 'this'
 		if (folderParam) {
 			sourceFolderId = await extractFolderIdFromLocator.call(this, folderParam);
@@ -276,12 +269,12 @@ export async function checkmkApiRequestWithIfMatch(
 ): Promise<any> {
 	// Normalize folder endpoints to ensure folder IDs are in correct format
 	endpoint = normalizeFolderEndpoint(endpoint);
-	
+
 	// Determine the correct endpoint to get ETag from
 	// For PUT/DELETE on /objects/host_config/name, get ETag from /objects/host_config/name
 	// For actions like /objects/host_config/name/actions/move/invoke, get ETag from /objects/host_config/name
 	let etagEndpoint = endpoint;
-	
+
 	// For actions/invoke endpoints, extract the base object path
 	if (endpoint.includes('/actions/')) {
 		// Extract the base object path (e.g., /objects/host_config/name from /objects/host_config/name/actions/rename/invoke)
@@ -299,7 +292,7 @@ export async function checkmkApiRequestWithIfMatch(
 	try {
 		const result = await checkmkApiRequestWithETag.call(this, 'GET', etagEndpoint, {}, qs);
 		etag = result.etag || '';
-		
+
 		if (!etag || etag === '') {
 			throw new NodeApiError(this.getNode(), {
 				message: `ETag not found in response headers for ${etagEndpoint}. The API may not support ETags for this resource.`,
@@ -330,15 +323,17 @@ export async function checkmkApiRequestWithIfMatch(
 			}
 			// Check error message for common 404 indicators
 			const errorMessage = String(err.message || '').toLowerCase();
-			if (errorMessage.includes('not found') || 
-			    errorMessage.includes('404') ||
-			    errorMessage.includes('could not be found') ||
-			    errorMessage.includes('resource you are requesting')) {
+			if (
+				errorMessage.includes('not found') ||
+				errorMessage.includes('404') ||
+				errorMessage.includes('could not be found') ||
+				errorMessage.includes('resource you are requesting')
+			) {
 				return true;
 			}
 			return false;
 		};
-		
+
 		// Check if it's a 404 error first
 		if (is404Error(error)) {
 			// Provide a more helpful error message
@@ -349,7 +344,7 @@ export async function checkmkApiRequestWithIfMatch(
 				description: `Endpoint: ${etagEndpoint}. Make sure the folder ID is correct (Checkmk uses ~ prefix for folder IDs, e.g., ~hahaha instead of /hahaha).`,
 			} as JsonObject);
 		}
-		
+
 		// If GET on base object fails, try to get ETag from the original endpoint
 		if (etagEndpoint !== endpoint) {
 			try {
@@ -377,10 +372,11 @@ export async function checkmkApiRequestWithIfMatch(
 			} as JsonObject);
 		}
 	}
-	
+
 	if (!etag || etag === '') {
 		throw new NodeApiError(this.getNode(), {
-			message: 'ETag not found in response headers. The API may not support ETags for this resource.',
+			message:
+				'ETag not found in response headers. The API may not support ETags for this resource.',
 		} as JsonObject);
 	}
 
@@ -389,44 +385,36 @@ export async function checkmkApiRequestWithIfMatch(
 	// Format: If-Match: "etag-value" (without quotes in the value itself)
 	// The ETag should be a clean hash string, then we wrap it in quotes for the header
 	const ifMatchValue = `"${etag}"`;
-	
+
 	// Try the operation with retry mechanism for 412 errors
 	// If we get a 412 (ETag mismatch), retry once with a fresh ETag
 	const maxRetries = 2;
 	for (let attempt = 0; attempt < maxRetries; attempt++) {
 		try {
-			return await checkmkApiRequest.call(
-				this,
-				method,
-				endpoint,
-				body,
-				qs,
-				{
-					'If-Match': ifMatchValue,
-				},
-			);
+			return await checkmkApiRequest.call(this, method, endpoint, body, qs, {
+				'If-Match': ifMatchValue,
+			});
 		} catch (error: any) {
 			// If we get a 412 (Precondition Failed) and haven't exhausted retries, get fresh ETag and retry
 			if (error.statusCode === 412 || error.response?.status === 412) {
 				if (attempt < maxRetries - 1) {
 					// Get a fresh ETag and try again
 					try {
-						const freshResult = await checkmkApiRequestWithETag.call(this, 'GET', etagEndpoint, {}, qs);
+						const freshResult = await checkmkApiRequestWithETag.call(
+							this,
+							'GET',
+							etagEndpoint,
+							{},
+							qs,
+						);
 						const freshEtag = freshResult.etag || '';
 						if (freshEtag && freshEtag !== '') {
 							// Use the fresh ETag for the next attempt
 							const freshIfMatchValue = `"${freshEtag}"`;
 							try {
-								return await checkmkApiRequest.call(
-									this,
-									method,
-									endpoint,
-									body,
-									qs,
-									{
-										'If-Match': freshIfMatchValue,
-									},
-								);
+								return await checkmkApiRequest.call(this, method, endpoint, body, qs, {
+									'If-Match': freshIfMatchValue,
+								});
 							} catch (retryError: any) {
 								// If retry also fails with 412, throw the original error
 								if (retryError.statusCode === 412 || retryError.response?.status === 412) {
@@ -445,7 +433,7 @@ export async function checkmkApiRequestWithIfMatch(
 			throw error;
 		}
 	}
-	
+
 	// This should never be reached, but TypeScript needs it
 	throw new NodeOperationError(this.getNode(), 'Unexpected error in checkmkApiRequestWithIfMatch');
 }
@@ -459,22 +447,23 @@ export async function getFoldersList(
 	this: IExecuteFunctions | ILoadOptionsFunctions | IHookFunctions,
 ): Promise<Array<{ name: string; value: string; description: string }>> {
 	try {
-        // CORREÇÃO: Adicionamos o 4º argumento (body vazio) e o 5º argumento (qs)
-        // recursive: true -> Traz subpastas
-        // parent: '~' -> Garante que começa da raiz
-        // show_hosts: false -> Otimiza a busca trazendo apenas pastas
+		// CORREÇÃO: Adicionamos o 4º argumento (body vazio) e o 5º argumento (qs)
+		// recursive: true -> Traz subpastas
+		// parent: '~' -> Garante que começa da raiz
+		// show_hosts: false -> Otimiza a busca trazendo apenas pastas
 		const folders = await checkmkApiRequestAllItems.call(
-            this, 
-            'GET', 
-            '/domain-types/folder_config/collections/all',
-            {}, // body vazio
-            {   // Query Parameters
-                parent: '~', 
-                recursive: true, 
-                show_hosts: false 
-            } 
-        );
-		
+			this,
+			'GET',
+			'/domain-types/folder_config/collections/all',
+			{}, // body vazio
+			{
+				// Query Parameters
+				parent: '~',
+				recursive: true,
+				show_hosts: false,
+			},
+		);
+
 		if (!Array.isArray(folders)) {
 			return [];
 		}
@@ -483,10 +472,10 @@ export async function getFoldersList(
 			const id = folder.id || '';
 			const path = folderIdToPath(id);
 			const title = folder.title || path;
-			
+
 			// Format: "path (id)"
 			const name = `${path} (${id})`;
-			
+
 			return {
 				name,
 				value: id, // Store the ID as the value
@@ -512,17 +501,18 @@ export async function searchFolders(
 	query: string,
 ): Promise<Array<{ name: string; value: string; description: string }>> {
 	const allFolders = await getFoldersList.call(this);
-	
+
 	if (!query || query.trim() === '') {
 		return allFolders;
 	}
 
 	const lowerQuery = query.toLowerCase();
-	
-	return allFolders.filter(folder => 
-		folder.name.toLowerCase().includes(lowerQuery) ||
-		folder.description.toLowerCase().includes(lowerQuery) ||
-		folder.value.toLowerCase().includes(lowerQuery)
+
+	return allFolders.filter(
+		(folder) =>
+			folder.name.toLowerCase().includes(lowerQuery) ||
+			folder.description.toLowerCase().includes(lowerQuery) ||
+			folder.value.toLowerCase().includes(lowerQuery),
 	);
 }
 
@@ -534,40 +524,40 @@ export async function searchFolders(
  *   - Checkmk URL with encoded start_url: https://checkmk.example.com/...?start_url=%2F...%3Ffolder%3Drock_and_roll...
  *   - Direct folder param: https://checkmk.example.com/...?folder=rock_and_roll
  * - List value: folder ID from list (from 'list' mode)
- * 
+ *
  * Returns normalized folder ID
  */
 export async function extractFolderIdFromLocator(
-    this: IExecuteFunctions | ILoadOptionsFunctions | IHookFunctions,
-    locatorValue: any,
+	this: IExecuteFunctions | ILoadOptionsFunctions | IHookFunctions,
+	locatorValue: any,
 ): Promise<string> {
-    // Se estiver vazio, retorna Root
-    if (!locatorValue) {
-        return normalizeFolderId('/');
-    }
+	// Se estiver vazio, retorna Root
+	if (!locatorValue) {
+		return normalizeFolderId('/');
+	}
 
-    // Se for um objeto vindo do Resource Locator do n8n
-    if (typeof locatorValue === 'object' && locatorValue !== null) {
-        // CORREÇÃO CRÍTICA AQUI: A propriedade correta é 'mode', não 'modeName'
-        const mode = locatorValue.mode;
-        const value = locatorValue.value;
+	// Se for um objeto vindo do Resource Locator do n8n
+	if (typeof locatorValue === 'object' && locatorValue !== null) {
+		// CORREÇÃO CRÍTICA AQUI: A propriedade correta é 'mode', não 'modeName'
+		const mode = locatorValue.mode;
+		const value = locatorValue.value;
 
-        // Aceitamos 'id' ou 'list'. Removemos a lógica de 'url'.
-        if (mode === 'id' || mode === 'list') {
-            return normalizeFolderId(value || '');
-        }
-        
-        // Se por acaso vier algo diferente, tentamos usar o value diretamente
-        if (value) {
-            return normalizeFolderId(value);
-        }
-    }
+		// Aceitamos 'id' ou 'list'. Removemos a lógica de 'url'.
+		if (mode === 'id' || mode === 'list') {
+			return normalizeFolderId(value || '');
+		}
 
-    // Fallback: se o usuário passou uma string direta (ex: expressão)
-    if (typeof locatorValue === 'string') {
-        return normalizeFolderId(locatorValue);
-    }
+		// Se por acaso vier algo diferente, tentamos usar o value diretamente
+		if (value) {
+			return normalizeFolderId(value);
+		}
+	}
 
-    // Se nada funcionar, manda para a pasta raiz
-    return normalizeFolderId('/');
+	// Fallback: se o usuário passou uma string direta (ex: expressão)
+	if (typeof locatorValue === 'string') {
+		return normalizeFolderId(locatorValue);
+	}
+
+	// Se nada funcionar, manda para a pasta raiz
+	return normalizeFolderId('/');
 }

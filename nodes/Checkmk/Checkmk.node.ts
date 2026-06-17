@@ -6,6 +6,7 @@ import {
 	IDataObject,
 	NodeOperationError,
 	ILoadOptionsFunctions,
+	NodeConnectionTypes,
 } from 'n8n-workflow';
 
 import {
@@ -33,8 +34,8 @@ export class Checkmk implements INodeType {
 		defaults: {
 			name: 'Checkmk',
 		},
-		inputs: ['main'],
-		outputs: ['main'],
+		inputs: [NodeConnectionTypes.Main],
+		outputs: [NodeConnectionTypes.Main],
 		credentials: [
 			{
 				name: 'checkmkApi',
@@ -268,14 +269,14 @@ export class Checkmk implements INodeType {
 				},
 				options: [
 					{
-						name: 'Manual Entries (UI)',
-						value: 'ui',
-						description: 'Update host groups manually using the interface',
-					},
-					{
 						name: 'JSON (Dynamic)',
 						value: 'json',
 						description: 'Pass a raw JSON array of entries',
+					},
+					{
+						name: 'Manual Entries (UI)',
+						value: 'ui',
+						description: 'Update host groups manually using the interface',
 					},
 				],
 				default: 'ui',
@@ -7903,6 +7904,7 @@ export class Checkmk implements INodeType {
 				],
 			},
 		],
+		usableAsTool: true,
 	};
 
 	methods = {
@@ -8073,6 +8075,7 @@ export class Checkmk implements INodeType {
 								throw new NodeOperationError(
 									this.getNode(),
 									`Invalid JSON in customAttributes field: ${error}`,
+									{ itemIndex: i },
 								);
 							}
 						}
@@ -8118,6 +8121,7 @@ export class Checkmk implements INodeType {
 							throw new NodeOperationError(
 								this.getNode(),
 								'A cluster must have at least one node.',
+								{ itemIndex: i },
 							);
 						}
 
@@ -8155,6 +8159,7 @@ export class Checkmk implements INodeType {
 							throw new NodeOperationError(
 								this.getNode(),
 								'A cluster must have at least one node.',
+								{ itemIndex: i },
 							);
 						}
 
@@ -8235,6 +8240,7 @@ export class Checkmk implements INodeType {
 								throw new NodeOperationError(
 									this.getNode(),
 									`Invalid JSON in attributes field: ${error}`,
+									{ itemIndex: i },
 								);
 							}
 						} else if (additionalFields.update_attributes) {
@@ -8250,6 +8256,7 @@ export class Checkmk implements INodeType {
 								throw new NodeOperationError(
 									this.getNode(),
 									`Invalid JSON in update_attributes field: ${error}`,
+									{ itemIndex: i },
 								);
 							}
 						} else if (additionalFields.remove_attributes) {
@@ -8288,7 +8295,11 @@ export class Checkmk implements INodeType {
 							.filter((h) => h !== '');
 
 						if (entries.length === 0) {
-							throw new NodeOperationError(this.getNode(), 'Please provide at least one hostname.');
+							throw new NodeOperationError(
+								this.getNode(),
+								'Please provide at least one hostname.',
+								{ itemIndex: i },
+							);
 						}
 
 						const body: IDataObject = {
@@ -8462,10 +8473,11 @@ export class Checkmk implements INodeType {
 							if (typeof jsonInput === 'string') {
 								try {
 									entries = JSON.parse(jsonInput);
-								} catch (e) {
+								} catch {
 									throw new NodeOperationError(
 										this.getNode(),
 										'Invalid JSON in Entries JSON field',
+										{ itemIndex: i },
 									);
 								}
 							} else if (Array.isArray(jsonInput)) {
@@ -8477,6 +8489,7 @@ export class Checkmk implements INodeType {
 							throw new NodeOperationError(
 								this.getNode(),
 								'No valid entries provided for bulk update',
+								{ itemIndex: i },
 							);
 						}
 
@@ -8506,6 +8519,7 @@ export class Checkmk implements INodeType {
 							throw new NodeOperationError(
 								this.getNode(),
 								'Please provide at least one host group name.',
+								{ itemIndex: i },
 							);
 						}
 
@@ -8550,10 +8564,11 @@ export class Checkmk implements INodeType {
 							if (typeof jsonInput === 'string') {
 								try {
 									entries = JSON.parse(jsonInput);
-								} catch (e) {
+								} catch {
 									throw new NodeOperationError(
 										this.getNode(),
 										'Invalid JSON in Entries JSON field',
+										{ itemIndex: i },
 									);
 								}
 							} else if (Array.isArray(jsonInput)) {
@@ -8562,7 +8577,11 @@ export class Checkmk implements INodeType {
 						}
 
 						if (entries.length === 0) {
-							throw new NodeOperationError(this.getNode(), 'No entries provided for bulk creation');
+							throw new NodeOperationError(
+								this.getNode(),
+								'No entries provided for bulk creation',
+								{ itemIndex: i },
+							);
 						}
 
 						const body = {
@@ -8692,10 +8711,11 @@ export class Checkmk implements INodeType {
 							if (typeof rawJson === 'string') {
 								try {
 									apiEntries = JSON.parse(rawJson);
-								} catch (error) {
+								} catch {
 									throw new NodeOperationError(
 										this.getNode(),
 										'Invalid JSON format in Entries JSON field.',
+										{ itemIndex: i },
 									);
 								}
 							} else if (Array.isArray(rawJson)) {
@@ -8704,6 +8724,7 @@ export class Checkmk implements INodeType {
 								throw new NodeOperationError(
 									this.getNode(),
 									'Entries JSON must be an array of objects.',
+									{ itemIndex: i },
 								);
 							}
 
@@ -8711,6 +8732,7 @@ export class Checkmk implements INodeType {
 								throw new NodeOperationError(
 									this.getNode(),
 									'All entries in JSON mode must contain the "name", "alias", and "customer" properties.',
+									{ itemIndex: i },
 								);
 							}
 						}
@@ -8811,10 +8833,11 @@ export class Checkmk implements INodeType {
 							if (typeof rawJson === 'string') {
 								try {
 									apiEntries = JSON.parse(rawJson);
-								} catch (error) {
+								} catch {
 									throw new NodeOperationError(
 										this.getNode(),
 										'Invalid JSON format in Update Entries JSON field.',
+										{ itemIndex: i },
 									);
 								}
 							} else if (Array.isArray(rawJson)) {
@@ -8823,6 +8846,7 @@ export class Checkmk implements INodeType {
 								throw new NodeOperationError(
 									this.getNode(),
 									'Update Entries JSON must be an array of objects.',
+									{ itemIndex: i },
 								);
 							}
 
@@ -8830,6 +8854,7 @@ export class Checkmk implements INodeType {
 								throw new NodeOperationError(
 									this.getNode(),
 									'All entries in JSON mode must contain the "name" and "attributes" properties.',
+									{ itemIndex: i },
 								);
 							}
 						}
@@ -8865,10 +8890,11 @@ export class Checkmk implements INodeType {
 							if (typeof rawJson === 'string') {
 								try {
 									entries = JSON.parse(rawJson);
-								} catch (error) {
+								} catch {
 									throw new NodeOperationError(
 										this.getNode(),
 										'Invalid JSON format in Delete Entries JSON field.',
+										{ itemIndex: i },
 									);
 								}
 							} else if (Array.isArray(rawJson)) {
@@ -8877,6 +8903,7 @@ export class Checkmk implements INodeType {
 								throw new NodeOperationError(
 									this.getNode(),
 									'Delete Entries JSON must be an array of strings.',
+									{ itemIndex: i },
 								);
 							}
 
@@ -8884,6 +8911,7 @@ export class Checkmk implements INodeType {
 								throw new NodeOperationError(
 									this.getNode(),
 									'All entries in JSON mode must be strings (service group names).',
+									{ itemIndex: i },
 								);
 							}
 						}
@@ -8937,6 +8965,7 @@ export class Checkmk implements INodeType {
 								throw new NodeOperationError(
 									this.getNode(),
 									`Invalid JSON in attributes field: ${error}`,
+									{ itemIndex: i },
 								);
 							}
 						}
@@ -9130,6 +9159,7 @@ export class Checkmk implements INodeType {
 								throw new NodeOperationError(
 									this.getNode(),
 									`Invalid attributes format for ${attributeChoice}: ${error}`,
+									{ itemIndex: i },
 								);
 							}
 						}
@@ -9233,10 +9263,11 @@ export class Checkmk implements INodeType {
 									if (typeof jsonInput === 'string') {
 										try {
 											parsedAttrs = JSON.parse(jsonInput);
-										} catch (e) {
+										} catch {
 											throw new NodeOperationError(
 												this.getNode(),
 												`Invalid JSON in attributes for folder ${folderId}`,
+												{ itemIndex: i },
 											);
 										}
 									} else {
@@ -9260,10 +9291,11 @@ export class Checkmk implements INodeType {
 							if (typeof rawJson === 'string') {
 								try {
 									apiEntries = JSON.parse(rawJson);
-								} catch (error) {
+								} catch {
 									throw new NodeOperationError(
 										this.getNode(),
 										'Invalid JSON format in Entries JSON field.',
+										{ itemIndex: i },
 									);
 								}
 							} else if (Array.isArray(rawJson)) {
@@ -9272,6 +9304,7 @@ export class Checkmk implements INodeType {
 								throw new NodeOperationError(
 									this.getNode(),
 									'Entries JSON must be an array of objects.',
+									{ itemIndex: i },
 								);
 							}
 
@@ -9281,6 +9314,7 @@ export class Checkmk implements INodeType {
 								throw new NodeOperationError(
 									this.getNode(),
 									'All entries in JSON mode must contain the "folder" property.',
+									{ itemIndex: i },
 								);
 							}
 						}
@@ -9316,11 +9350,8 @@ export class Checkmk implements INodeType {
 						const authorizedSites = this.getNodeParameter('authorizedSites', i, 'all') as string;
 
 						// DEBUG 1: Ver o que o n8n está a ler dos inputs
-						// @ts-ignore
 						//console.log('--- INPUTS LIDOS ---');
-						// @ts-ignore
 						//console.log('Roles selecionadas:', roles);
-						// @ts-ignore
 						//console.log('Sites autorizados:', authorizedSites);
 
 						const body: IDataObject = {
@@ -9341,7 +9372,9 @@ export class Checkmk implements INodeType {
 									password: password.trim(),
 								};
 							} else {
-								throw new NodeOperationError(this.getNode(), 'Password must be provided');
+								throw new NodeOperationError(this.getNode(), 'Password must be provided', {
+									itemIndex: i,
+								});
 							}
 						} else if (authType === 'automation') {
 							const secret = this.getNodeParameter('automation', i, '') as string;
@@ -9351,16 +9384,15 @@ export class Checkmk implements INodeType {
 									secret: secret.trim(),
 								};
 							} else {
-								throw new NodeOperationError(this.getNode(), 'Secret must be provided');
+								throw new NodeOperationError(this.getNode(), 'Secret must be provided', {
+									itemIndex: i,
+								});
 							}
 						}
 
 						// DEBUG 2: Ver o JSON final
-						// @ts-ignore
 						//console.log('--- JSON PAYLOAD FINAL ---');
-						// @ts-ignore
 						//console.log(JSON.stringify(body, null, 2));
-						// @ts-ignore
 						//console.log('--------------------------');
 
 						const response = await checkmkApiRequest.call(
@@ -9478,7 +9510,6 @@ export class Checkmk implements INodeType {
 
 						body.inventory_paths = inventoryPathsObj;
 						// Debug Log
-						// @ts-ignore
 						//console.log('DEBUG:', JSON.stringify(body, null, 2));
 						const response = await checkmkApiRequest.call(
 							this,
@@ -9615,10 +9646,11 @@ export class Checkmk implements INodeType {
 							if (typeof jsonInput === 'string') {
 								try {
 									entries = JSON.parse(jsonInput);
-								} catch (e) {
+								} catch {
 									throw new NodeOperationError(
 										this.getNode(),
 										'Invalid JSON in Entries JSON field',
+										{ itemIndex: i },
 									);
 								}
 							} else if (Array.isArray(jsonInput)) {
@@ -9627,7 +9659,11 @@ export class Checkmk implements INodeType {
 						}
 
 						if (entries.length === 0) {
-							throw new NodeOperationError(this.getNode(), 'No entries provided for bulk creation');
+							throw new NodeOperationError(
+								this.getNode(),
+								'No entries provided for bulk creation',
+								{ itemIndex: i },
+							);
 						}
 
 						const body = {
@@ -9656,6 +9692,7 @@ export class Checkmk implements INodeType {
 							throw new NodeOperationError(
 								this.getNode(),
 								'Please provide at least one contact group name.',
+								{ itemIndex: i },
 							);
 						}
 
@@ -9777,10 +9814,11 @@ export class Checkmk implements INodeType {
 							if (typeof jsonInput === 'string') {
 								try {
 									entries = JSON.parse(jsonInput);
-								} catch (e) {
+								} catch {
 									throw new NodeOperationError(
 										this.getNode(),
 										'Invalid JSON in Entries JSON field',
+										{ itemIndex: i },
 									);
 								}
 							} else if (Array.isArray(jsonInput)) {
@@ -9792,6 +9830,7 @@ export class Checkmk implements INodeType {
 							throw new NodeOperationError(
 								this.getNode(),
 								'No valid entries provided for bulk update',
+								{ itemIndex: i },
 							);
 						}
 
@@ -9800,7 +9839,6 @@ export class Checkmk implements INodeType {
 						};
 
 						// Debug Log para validar o Body enviado
-						// @ts-ignore
 						//console.log('DEBUG Bulk Update:', JSON.stringify(body, null, 2));
 
 						const response = await checkmkApiRequest.call(
@@ -10036,7 +10074,7 @@ export class Checkmk implements INodeType {
 						const folderID = await extractFolderIdFromLocator.call(this, folderLocator);
 						const value_raw = this.getNodeParameter('value_raw', i) as string;
 						let properties = this.getNodeParameter('properties', i) as IDataObject | string;
-						let conditions = this.getNodeParameter('conditions', i) as IDataObject | string;
+						const conditions = this.getNodeParameter('conditions', i) as IDataObject | string;
 
 						const additionalFields = this.getNodeParameter(
 							'additionalFields',
@@ -10054,6 +10092,7 @@ export class Checkmk implements INodeType {
 									throw new NodeOperationError(
 										this.getNode(),
 										`Invalid JSON in properties field: ${error}`,
+										{ itemIndex: i },
 									);
 								}
 							}
@@ -10092,6 +10131,7 @@ export class Checkmk implements INodeType {
 									throw new NodeOperationError(
 										this.getNode(),
 										`Invalid JSON in conditions field: ${error}`,
+										{ itemIndex: i },
 									);
 								}
 							} else {
@@ -10164,7 +10204,7 @@ export class Checkmk implements INodeType {
 						const rule_id = this.getNodeParameter('rule_id', i) as string;
 						const value_raw = this.getNodeParameter('value_raw', i) as string;
 						let properties = this.getNodeParameter('properties', i) as IDataObject | string;
-						let conditions = this.getNodeParameter('conditions', i) as IDataObject | string;
+						const conditions = this.getNodeParameter('conditions', i) as IDataObject | string;
 
 						if (typeof properties === 'string') {
 							if (properties.trim() === '') {
@@ -10176,6 +10216,7 @@ export class Checkmk implements INodeType {
 									throw new NodeOperationError(
 										this.getNode(),
 										`Invalid JSON in properties field: ${error}`,
+										{ itemIndex: i },
 									);
 								}
 							}
@@ -10195,6 +10236,7 @@ export class Checkmk implements INodeType {
 									throw new NodeOperationError(
 										this.getNode(),
 										`Invalid JSON in conditions field: ${error}`,
+										{ itemIndex: i },
 									);
 								}
 							} else {
@@ -10352,7 +10394,11 @@ export class Checkmk implements INodeType {
 							.filter((h) => h !== '');
 
 						if (hostnames.length === 0) {
-							throw new NodeOperationError(this.getNode(), 'Please provide at least one hostname.');
+							throw new NodeOperationError(
+								this.getNode(),
+								'Please provide at least one hostname.',
+								{ itemIndex: i },
+							);
 						}
 
 						// 2. Construir o objeto 'options' (nested)
@@ -10410,8 +10456,10 @@ export class Checkmk implements INodeType {
 							if (typeof queryInput === 'string') {
 								try {
 									body.query = JSON.parse(queryInput);
-								} catch (e) {
-									throw new NodeOperationError(this.getNode(), 'Invalid JSON in Query field');
+								} catch {
+									throw new NodeOperationError(this.getNode(), 'Invalid JSON in Query field', {
+										itemIndex: i,
+									});
 								}
 							} else {
 								body.query = queryInput as IDataObject;
@@ -10419,9 +10467,7 @@ export class Checkmk implements INodeType {
 						}
 
 						// --- DEBUG CONSOLE ---
-						//@ts-ignore
 						//console.log('--- DEBUG ACKNOWLEDGE CREATE BODY ---');
-						//@ts-ignore
 						//console.log(JSON.stringify(body, null, 2));
 						// ---------------------
 
@@ -10478,8 +10524,10 @@ export class Checkmk implements INodeType {
 							if (typeof queryInput === 'string') {
 								try {
 									body.query = JSON.parse(queryInput);
-								} catch (e) {
-									throw new NodeOperationError(this.getNode(), 'Invalid JSON in Query field');
+								} catch {
+									throw new NodeOperationError(this.getNode(), 'Invalid JSON in Query field', {
+										itemIndex: i,
+									});
 								}
 							} else {
 								body.query = queryInput as IDataObject;
@@ -10487,7 +10535,6 @@ export class Checkmk implements INodeType {
 						}
 
 						// --- DEBUG ---
-						//@ts-ignore
 						//console.log(`Sending to ${endpoint}:`, JSON.stringify(body, null, 2));
 						const response = await checkmkApiRequest.call(this, 'POST', endpoint, body);
 						returnData.push(response);
@@ -10520,7 +10567,7 @@ export class Checkmk implements INodeType {
 								'/domain-types/activation_run/collections/pending_changes',
 							);
 							etag = pendingResult.etag || '';
-						} catch (error: any) {
+						} catch {
 							// If we can't get ETag from pending changes, try to use "*" as fallback
 							etag = '*';
 						}
@@ -10785,8 +10832,10 @@ export class Checkmk implements INodeType {
 							if (typeof queryInput === 'string') {
 								try {
 									body.query = JSON.parse(queryInput);
-								} catch (e) {
-									throw new NodeOperationError(this.getNode(), 'Invalid JSON in Query field');
+								} catch {
+									throw new NodeOperationError(this.getNode(), 'Invalid JSON in Query field', {
+										itemIndex: i,
+									});
 								}
 							} else {
 								body.query = queryInput;
@@ -11024,8 +11073,10 @@ export class Checkmk implements INodeType {
 							try {
 								groupPaths =
 									typeof groupsUi.paths === 'string' ? JSON.parse(groupsUi.paths) : groupsUi.paths;
-							} catch (e) {
-								throw new NodeOperationError(this.getNode(), 'Invalid JSON in Groups Paths');
+							} catch {
+								throw new NodeOperationError(this.getNode(), 'Invalid JSON in Groups Paths', {
+									itemIndex: i,
+								});
 							}
 						}
 
@@ -11037,8 +11088,10 @@ export class Checkmk implements INodeType {
 									typeof nodeUi.action_params === 'string'
 										? JSON.parse(nodeUi.action_params)
 										: nodeUi.action_params;
-							} catch (e) {
-								throw new NodeOperationError(this.getNode(), 'Invalid JSON in Action Params');
+							} catch {
+								throw new NodeOperationError(this.getNode(), 'Invalid JSON in Action Params', {
+									itemIndex: i,
+								});
 							}
 						}
 
@@ -11245,10 +11298,11 @@ export class Checkmk implements INodeType {
 											typeof n.action_params === 'string'
 												? JSON.parse(n.action_params)
 												: n.action_params;
-									} catch (e) {
+									} catch {
 										throw new NodeOperationError(
 											this.getNode(),
 											'Invalid JSON in Node Action Params',
+											{ itemIndex: i },
 										);
 									}
 								}
@@ -11273,10 +11327,11 @@ export class Checkmk implements INodeType {
 									typeof nodeVisualizationUi.style_config === 'string'
 										? JSON.parse(nodeVisualizationUi.style_config)
 										: nodeVisualizationUi.style_config;
-							} catch (e) {
+							} catch {
 								throw new NodeOperationError(
 									this.getNode(),
 									'Invalid JSON in Visualization Style Config',
+									{ itemIndex: i },
 								);
 							}
 						}
@@ -11288,10 +11343,11 @@ export class Checkmk implements INodeType {
 									typeof propertiesUi.state_messages === 'string'
 										? JSON.parse(propertiesUi.state_messages)
 										: propertiesUi.state_messages;
-							} catch (e) {
+							} catch {
 								throw new NodeOperationError(
 									this.getNode(),
 									'Invalid JSON in Properties State Messages',
+									{ itemIndex: i },
 								);
 							}
 						}
@@ -11374,8 +11430,10 @@ export class Checkmk implements INodeType {
 							if (typeof queryInput === 'string') {
 								try {
 									body.query = JSON.parse(queryInput);
-								} catch (e) {
-									throw new NodeOperationError(this.getNode(), 'Invalid JSON in Query field');
+								} catch {
+									throw new NodeOperationError(this.getNode(), 'Invalid JSON in Query field', {
+										itemIndex: i,
+									});
 								}
 							} else {
 								body.query = queryInput as IDataObject;
@@ -11394,8 +11452,10 @@ export class Checkmk implements INodeType {
 							if (typeof queryInput === 'string') {
 								try {
 									body.query = JSON.parse(queryInput);
-								} catch (e) {
-									throw new NodeOperationError(this.getNode(), 'Invalid JSON in Query field');
+								} catch {
+									throw new NodeOperationError(this.getNode(), 'Invalid JSON in Query field', {
+										itemIndex: i,
+									});
 								}
 							} else {
 								body.query = queryInput as IDataObject;
@@ -11423,7 +11483,9 @@ export class Checkmk implements INodeType {
 						const commentId = parseInt(commentIdStr, 10);
 
 						if (isNaN(commentId)) {
-							throw new NodeOperationError(this.getNode(), 'Comment ID must be a valid number.');
+							throw new NodeOperationError(this.getNode(), 'Comment ID must be a valid number.', {
+								itemIndex: i,
+							});
 						}
 
 						const body: IDataObject = {
@@ -11609,7 +11671,7 @@ export class Checkmk implements INodeType {
 									const parsed = JSON.parse(queryInput);
 									// 2. Serializamos de volta para remover espaços e \n (minificação)
 									queryToSend = JSON.stringify(parsed);
-								} catch (e) {
+								} catch {
 									// Se falhar o parse, enviamos como está (mas logamos erro se quiser)
 									queryToSend = queryInput;
 								}
@@ -11901,7 +11963,6 @@ export class Checkmk implements INodeType {
 							body,
 						);
 						// Debug Log
-						// @ts-ignore
 						//console.log('DEBUG get_custom_graph:', JSON.stringify(body, null, 2));
 						returnData.push(response);
 					}
@@ -11938,7 +11999,6 @@ export class Checkmk implements INodeType {
 						}
 
 						// Debug Log
-						// @ts-ignore
 						//console.log('DEBUG get metrics:', JSON.stringify(body, null, 2));
 
 						const response = await checkmkApiRequest.call(
@@ -11986,8 +12046,10 @@ export class Checkmk implements INodeType {
 									if (Object.keys(parsedQuery).length > 0) {
 										body.query = parsedQuery;
 									}
-								} catch (error) {
-									throw new NodeOperationError(this.getNode(), 'Invalid JSON in Query field');
+								} catch {
+									throw new NodeOperationError(this.getNode(), 'Invalid JSON in Query field', {
+										itemIndex: i,
+									});
 								}
 							} else if (typeof queryInput === 'object' && Object.keys(queryInput).length > 0) {
 								body.query = queryInput as IDataObject;
@@ -12033,8 +12095,10 @@ export class Checkmk implements INodeType {
 									if (Object.keys(parsedQuery).length > 0) {
 										body.query = parsedQuery;
 									}
-								} catch (error) {
-									throw new NodeOperationError(this.getNode(), 'Invalid JSON in Query field');
+								} catch {
+									throw new NodeOperationError(this.getNode(), 'Invalid JSON in Query field', {
+										itemIndex: i,
+									});
 								}
 							} else if (typeof queryInput === 'object' && Object.keys(queryInput).length > 0) {
 								body.query = queryInput as IDataObject;
@@ -12117,7 +12181,7 @@ export class Checkmk implements INodeType {
 													typeof tr.custom_config === 'string'
 														? JSON.parse(tr.custom_config)
 														: tr.custom_config;
-											} catch (e) {
+											} catch {
 												throw new NodeOperationError(
 													this.getNode(),
 													'Invalid JSON in Custom Range Configuration',
@@ -12136,6 +12200,7 @@ export class Checkmk implements INodeType {
 								throw new NodeOperationError(
 									this.getNode(),
 									'You must provide at least one SLA ID, one Service, and one Time Range.',
+									{ itemIndex: i },
 								);
 							}
 
@@ -12149,10 +12214,11 @@ export class Checkmk implements INodeType {
 							if (typeof rawJson === 'string') {
 								try {
 									computeTargets = JSON.parse(rawJson);
-								} catch (e) {
+								} catch {
 									throw new NodeOperationError(
 										this.getNode(),
 										'Invalid JSON in SLA Compute Targets field',
+										{ itemIndex: i },
 									);
 								}
 							} else if (Array.isArray(rawJson)) {
@@ -12382,10 +12448,11 @@ export class Checkmk implements INodeType {
 									if (typeof rawInfo === 'string') {
 										try {
 											parsed = JSON.parse(rawInfo);
-										} catch (e) {
+										} catch {
 											throw new NodeOperationError(
 												this.getNode(),
 												`Invalid JSON in tags: ${rawInfo}`,
+												{ itemIndex: i },
 											);
 										}
 									} else {
@@ -12417,6 +12484,7 @@ export class Checkmk implements INodeType {
 							throw new NodeOperationError(
 								this.getNode(),
 								'At least one tag is required to create a Host Tag Group.',
+								{ itemIndex: i },
 							);
 						}
 
@@ -12648,8 +12716,10 @@ export class Checkmk implements INodeType {
 						if (typeof ruleConfigInput === 'string') {
 							try {
 								ruleConfig = JSON.parse(ruleConfigInput);
-							} catch (error) {
-								throw new NodeOperationError(this.getNode(), 'Invalid JSON in Rule Config');
+							} catch {
+								throw new NodeOperationError(this.getNode(), 'Invalid JSON in Rule Config', {
+									itemIndex: i,
+								});
 							}
 						} else {
 							ruleConfig = ruleConfigInput as IDataObject;
@@ -12678,8 +12748,10 @@ export class Checkmk implements INodeType {
 						if (typeof ruleConfigInput === 'string') {
 							try {
 								ruleConfig = JSON.parse(ruleConfigInput);
-							} catch (error) {
-								throw new NodeOperationError(this.getNode(), 'Invalid JSON in Rule Config');
+							} catch {
+								throw new NodeOperationError(this.getNode(), 'Invalid JSON in Rule Config', {
+									itemIndex: i,
+								});
 							}
 						} else {
 							ruleConfig = ruleConfigInput as IDataObject;
@@ -12811,7 +12883,11 @@ export class Checkmk implements INodeType {
 							.filter((h) => h !== '');
 
 						if (hostNames.length === 0) {
-							throw new NodeOperationError(this.getNode(), 'Please provide at least one hostname.');
+							throw new NodeOperationError(
+								this.getNode(),
+								'Please provide at least one hostname.',
+								{ itemIndex: i },
+							);
 						}
 
 						// Constroi o body complexo conforme schema
@@ -13323,10 +13399,11 @@ export class Checkmk implements INodeType {
 									if (typeof rule.host_attributes === 'string') {
 										try {
 											hostAttributes = JSON.parse(rule.host_attributes);
-										} catch (e) {
+										} catch {
 											throw new NodeOperationError(
 												this.getNode(),
 												`Invalid JSON in Host Attributes for rule with folder path: ${rule.folder_path}`,
+												{ itemIndex: i },
 											);
 										}
 									} else {

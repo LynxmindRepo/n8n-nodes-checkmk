@@ -7,6 +7,7 @@ import {
 	NodeApiError,
 	NodeOperationError,
 	IHttpRequestOptions,
+	IDataObject,
 } from 'n8n-workflow';
 
 export async function checkmkApiRequest(
@@ -14,7 +15,7 @@ export async function checkmkApiRequest(
 	method: IHttpRequestMethods,
 	endpoint: string,
 	body: Record<string, unknown> = {},
-	qs: any = {},
+	qs: IDataObject = {},
 	customHeaders?: any,
 ): Promise<any> {
 	const credentials = await this.getCredentials('checkmkApi');
@@ -44,7 +45,7 @@ export async function checkmkApiRequestAllItems(
 	method: IHttpRequestMethods,
 	endpoint: string,
 	body: Record<string, unknown> = {},
-	qs: any = {},
+	qs: IDataObject = {},
 ): Promise<any> {
 	const returnData: any[] = [];
 	let nextCall: string | undefined = endpoint;
@@ -72,7 +73,7 @@ export async function checkmkApiRequestWithETag(
 	method: IHttpRequestMethods,
 	endpoint: string,
 	body: Record<string, unknown> = {},
-	qs: any = {},
+	qs: IDataObject = {},
 ): Promise<{ data: any; etag: string }> {
 	const credentials = await this.getCredentials('checkmkApi');
 
@@ -229,7 +230,7 @@ export async function searchDestinationFolders(
 		if (folderParam) {
 			sourceFolderId = await extractFolderIdFromLocator.call(this, folderParam);
 		}
-	} catch (error) {
+	} catch {
 		// Se der erro (ex: campo vazio ou expression), ignoramos e retornamos tudo
 		// Isso evita que a UI quebre se o usuário ainda não escolheu a origem
 	}
@@ -265,7 +266,7 @@ export async function checkmkApiRequestWithIfMatch(
 	method: IHttpRequestMethods,
 	endpoint: string,
 	body: Record<string, unknown> = {},
-	qs: any = {},
+	qs: IDataObject = {},
 ): Promise<any> {
 	// Normalize folder endpoints to ensure folder IDs are in correct format
 	endpoint = normalizeFolderEndpoint(endpoint);

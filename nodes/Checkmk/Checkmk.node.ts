@@ -4,9 +4,12 @@ import {
 	INodeType,
 	INodeTypeDescription,
 	IDataObject,
+	NodeApiError,
 	NodeOperationError,
 	ILoadOptionsFunctions,
+	INodeListSearchResult,
 	NodeConnectionTypes,
+	JsonObject,
 } from 'n8n-workflow';
 
 import {
@@ -26,7 +29,7 @@ export class Checkmk implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Checkmk',
 		name: 'checkmk',
-		icon: 'file:svg-icons/cmk.svg',
+		icon: 'file:checkmk.svg',
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
@@ -361,14 +364,14 @@ export class Checkmk implements INodeType {
 				},
 				options: [
 					{
-						name: 'Manual Entries (UI)',
-						value: 'ui',
-						description: 'Add host groups manually using the interface',
-					},
-					{
 						name: 'JSON (Dynamic)',
 						value: 'json',
 						description: 'Pass a raw JSON array of entries',
+					},
+					{
+						name: 'Manual Entries (UI)',
+						value: 'ui',
+						description: 'Add host groups manually using the interface',
 					},
 				],
 				default: 'ui',
@@ -979,16 +982,16 @@ export class Checkmk implements INodeType {
 						action: 'Get an activation run',
 					},
 					{
-						name: 'Get Pending',
-						value: 'getPending',
-						description: 'Get pending changes',
-						action: 'Get pending changes',
-					},
-					{
 						name: 'Get All Currently Running Activations',
 						value: 'getRunning',
 						description: 'Show all currently running activations',
 						action: 'Show all currently running activations',
+					},
+					{
+						name: 'Get Pending',
+						value: 'getPending',
+						description: 'Get pending changes',
+						action: 'Get pending changes',
 					},
 				],
 				default: 'activate',
@@ -1065,6 +1068,12 @@ export class Checkmk implements INodeType {
 				},
 				options: [
 					{
+						name: 'Acknowledge Problem',
+						value: 'acknowledge',
+						description: 'Acknowledge a service problem',
+						action: 'Acknowledge a service problem',
+					},
+					{
 						name: 'Get',
 						value: 'get',
 						description: 'Get a service',
@@ -1075,12 +1084,6 @@ export class Checkmk implements INodeType {
 						value: 'getMany',
 						description: 'Get many services',
 						action: 'Get many services',
-					},
-					{
-						name: 'Acknowledge Problem',
-						value: 'acknowledge',
-						description: 'Acknowledge a service problem',
-						action: 'Acknowledge a service problem',
 					},
 				],
 				default: 'get',
@@ -1264,6 +1267,12 @@ export class Checkmk implements INodeType {
 						action: 'Create a comment',
 					},
 					{
+						name: 'Delete',
+						value: 'delete',
+						description: 'Delete a comment',
+						action: 'Delete a comment',
+					},
+					{
 						name: 'Get', // Nova operação
 						value: 'get',
 						description: 'Show a specific comment',
@@ -1274,12 +1283,6 @@ export class Checkmk implements INodeType {
 						value: 'getMany',
 						description: 'Get many comments',
 						action: 'Get many comments',
-					},
-					{
-						name: 'Delete',
-						value: 'delete',
-						description: 'Delete a comment',
-						action: 'Delete a comment',
 					},
 				],
 				default: 'getMany',
@@ -1356,16 +1359,16 @@ export class Checkmk implements INodeType {
 				},
 				options: [
 					{
-						name: 'Get Many',
-						value: 'getMany',
-						description: 'Get hosts based on a specific query condition',
-						action: 'Get many hosts status',
-					},
-					{
 						name: 'Get',
 						value: 'get',
 						description: 'Get the live status of a host',
 						action: 'Get a host status',
+					},
+					{
+						name: 'Get Many',
+						value: 'getMany',
+						description: 'Get hosts based on a specific query condition',
+						action: 'Get many hosts status',
 					},
 				],
 				default: 'get',
@@ -1384,16 +1387,16 @@ export class Checkmk implements INodeType {
 				},
 				options: [
 					{
-						name: 'Get Many',
-						value: 'getMany',
-						description: 'Get many metrics',
-						action: 'Get many metrics',
-					},
-					{
 						name: 'Get Custom Graph',
 						value: 'getCustomGraph',
 						description: 'Get data for a custom graph',
 						action: 'Get a custom graph',
+					},
+					{
+						name: 'Get Many',
+						value: 'getMany',
+						description: 'Get many metrics',
+						action: 'Get many metrics',
 					},
 					{
 						name: 'Get Metrics',
@@ -1617,6 +1620,12 @@ export class Checkmk implements INodeType {
 				},
 				options: [
 					{
+						name: 'Show a Single Service of a Specific Host',
+						value: 'show',
+						description: 'Get a single service with advanced filtering (POST)',
+						action: 'Show a single service of a specific host',
+					},
+					{
 						name: 'Show All Monitored Services',
 						value: 'showAll',
 						description: 'Get monitored services with advanced filtering (POST)',
@@ -1627,12 +1636,6 @@ export class Checkmk implements INodeType {
 						value: 'showHost',
 						description: 'Get monitored services with advanced filtering (POST)',
 						action: 'Show all monitored services of a host',
-					},
-					{
-						name: 'Show a Single Service of a Specific Host',
-						value: 'show',
-						description: 'Get a single service with advanced filtering (POST)',
-						action: 'Show a single service of a specific host',
 					},
 				],
 				default: 'showAll',
@@ -1672,14 +1675,14 @@ export class Checkmk implements INodeType {
 				},
 				options: [
 					{
-						name: 'Manual Entry (UI)',
-						value: 'ui',
-						description: 'Compute a single SLA target via interface',
-					},
-					{
 						name: 'JSON (Multiple Targets)',
 						value: 'json',
 						description: 'Pass a raw JSON array of SLA targets',
+					},
+					{
+						name: 'Manual Entry (UI)',
+						value: 'ui',
+						description: 'Compute a single SLA target via interface',
 					},
 				],
 				default: 'ui',
@@ -1860,16 +1863,16 @@ export class Checkmk implements INodeType {
 				},
 				options: [
 					{
-						name: 'Get Many',
-						value: 'getMany',
-						description: 'Get many audit logs',
-						action: 'Get many audit logs',
-					},
-					{
 						name: 'Archive',
 						value: 'archive',
 						description: 'Move audit log entries to archive',
 						action: 'Move audit log entries to archive',
+					},
+					{
+						name: 'Get Many',
+						value: 'getMany',
+						description: 'Get many audit logs',
+						action: 'Get many audit logs',
 					},
 				],
 				default: 'getMany',
@@ -2095,6 +2098,12 @@ export class Checkmk implements INodeType {
 						action: 'Create an open telemetry collector',
 					},
 					{
+						name: 'Delete',
+						value: 'delete',
+						description: 'Delete an OpenTelemetry collector',
+						action: 'Delete an open telemetry collector',
+					},
+					{
 						name: 'Get Many',
 						value: 'getMany',
 						description: 'Get many OpenTelemetry collectors',
@@ -2105,12 +2114,6 @@ export class Checkmk implements INodeType {
 						value: 'update',
 						description: 'Update an OpenTelemetry collector',
 						action: 'Update an open telemetry collector',
-					},
-					{
-						name: 'Delete',
-						value: 'delete',
-						description: 'Delete an OpenTelemetry collector',
-						action: 'Delete an open telemetry collector',
 					},
 				],
 				default: 'getMany',
@@ -2804,9 +2807,9 @@ export class Checkmk implements INodeType {
 					},
 				},
 				options: [
-					{ name: 'No Gateway Hosts', value: 'no_gateway_hosts' },
 					{ name: 'Create in Folder', value: 'create_in_folder' },
 					{ name: 'Create in Host Location', value: 'create_in_host_location' },
+					{ name: 'No Gateway Hosts', value: 'no_gateway_hosts' },
 				],
 				default: 'no_gateway_hosts',
 				description: 'How to handle gateway hosts creation',
@@ -2977,12 +2980,6 @@ export class Checkmk implements INodeType {
 						action: 'Create a SAML connection',
 					},
 					{
-						name: 'Get Many',
-						value: 'getMany',
-						description: 'Get many SAML connections',
-						action: 'Get many SAML connections',
-					},
-					{
 						name: 'Delete',
 						value: 'delete',
 						description: 'Delete a SAML connection',
@@ -2993,6 +2990,12 @@ export class Checkmk implements INodeType {
 						value: 'get',
 						description: 'Show a SAML connection',
 						action: 'Get a SAML connection',
+					},
+					{
+						name: 'Get Many',
+						value: 'getMany',
+						description: 'Get many SAML connections',
+						action: 'Get many SAML connections',
 					},
 				],
 				default: 'getMany',
@@ -3537,20 +3540,20 @@ export class Checkmk implements INodeType {
 				required: true,
 				options: [
 					{
-						name: 'OK',
-						value: 'ok',
-					},
-					{
-						name: 'WARNING',
-						value: 'warning',
-					},
-					{
 						name: 'CRITICAL',
 						value: 'critical',
 					},
 					{
+						name: 'OK',
+						value: 'ok',
+					},
+					{
 						name: 'UNKNOWN',
 						value: 'unknown',
+					},
+					{
+						name: 'WARNING',
+						value: 'warning',
 					},
 				],
 				displayOptions: {
@@ -3583,20 +3586,20 @@ export class Checkmk implements INodeType {
 				required: true,
 				options: [
 					{
-						name: 'OK',
-						value: 'ok',
-					},
-					{
-						name: 'WARNING',
-						value: 'warning',
-					},
-					{
 						name: 'CRITICAL',
 						value: 'critical',
 					},
 					{
+						name: 'OK',
+						value: 'ok',
+					},
+					{
 						name: 'UNKNOWN',
 						value: 'unknown',
+					},
+					{
+						name: 'WARNING',
+						value: 'warning',
 					},
 				],
 				displayOptions: {
@@ -3741,20 +3744,20 @@ export class Checkmk implements INodeType {
 				},
 				options: [
 					{
-						name: 'OK',
-						value: 'ok',
-					},
-					{
-						name: 'WARNING',
-						value: 'warning',
-					},
-					{
 						name: 'CRITICAL',
 						value: 'critical',
 					},
 					{
+						name: 'OK',
+						value: 'ok',
+					},
+					{
 						name: 'UNKNOWN',
 						value: 'unknown',
+					},
+					{
+						name: 'WARNING',
+						value: 'warning',
 					},
 				],
 				default: 'ok',
@@ -3939,6 +3942,7 @@ export class Checkmk implements INodeType {
 				name: 'filter_type_update', // MESMO NOME!
 				type: 'options',
 				options: [
+					{ name: 'All', value: 'all', description: 'Update all events' },
 					{
 						name: 'Parameters',
 						value: 'params',
@@ -3949,7 +3953,6 @@ export class Checkmk implements INodeType {
 						value: 'query',
 						description: 'Filter events using a raw Livestatus query',
 					},
-					{ name: 'All', value: 'all', description: 'Update all events' },
 				],
 				default: 'all', // Default diferente
 				displayOptions: {
@@ -4253,14 +4256,14 @@ export class Checkmk implements INodeType {
 				},
 				options: [
 					{
-						name: 'Manual Entries (UI)',
-						value: 'ui',
-						description: 'Add contact groups manually using the interface',
-					},
-					{
 						name: 'JSON (Dynamic)',
 						value: 'json',
 						description: 'Pass a raw JSON array of entries',
+					},
+					{
+						name: 'Manual Entries (UI)',
+						value: 'ui',
+						description: 'Add contact groups manually using the interface',
 					},
 				],
 				default: 'ui',
@@ -4340,14 +4343,14 @@ export class Checkmk implements INodeType {
 				},
 				options: [
 					{
-						name: 'Manual Entries (UI)',
-						value: 'ui',
-						description: 'Update contact groups manually using the interface',
-					},
-					{
 						name: 'JSON (Dynamic)',
 						value: 'json',
 						description: 'Pass a raw JSON array of entries',
+					},
+					{
+						name: 'Manual Entries (UI)',
+						value: 'ui',
+						description: 'Update contact groups manually using the interface',
 					},
 				],
 				default: 'ui',
@@ -4571,8 +4574,8 @@ export class Checkmk implements INodeType {
 				name: 'queryMode',
 				type: 'options',
 				options: [
-					{ name: 'Simple Builder', value: 'builder' },
 					{ name: 'Raw JSON', value: 'json' },
+					{ name: 'Simple Builder', value: 'builder' },
 				],
 				default: 'builder',
 				displayOptions: {
@@ -5253,14 +5256,14 @@ export class Checkmk implements INodeType {
 				},
 				options: [
 					{
-						name: 'Manual Entries (UI)',
-						value: 'ui',
-						description: 'Add service groups manually using the interface',
-					},
-					{
 						name: 'JSON (Dynamic)',
 						value: 'json',
 						description: 'Pass a raw JSON array of service groups (good for large batches)',
+					},
+					{
+						name: 'Manual Entries (UI)',
+						value: 'ui',
+						description: 'Add service groups manually using the interface',
 					},
 				],
 				default: 'ui',
@@ -6010,9 +6013,9 @@ export class Checkmk implements INodeType {
 				type: 'options',
 				displayOptions: { show: { resource: ['samlConnection'], operation: ['create'] } },
 				options: [
-					{ name: 'Map', value: 'map' },
 					{ name: 'CN From LDAP DN', value: 'cn_from_ldap_dn' },
 					{ name: 'From Attribute Value', value: 'from_attribute_value' },
+					{ name: 'Map', value: 'map' },
 				],
 				default: 'map',
 			},
@@ -6089,14 +6092,9 @@ export class Checkmk implements INodeType {
 				},
 				options: [
 					{
-						name: 'Top of Folder',
-						value: 'top_of_folder',
-						description: 'Move rule to the top of a specific folder',
-					},
-					{
-						name: 'Bottom of Folder',
-						value: 'bottom_of_folder',
-						description: 'Move rule to the bottom of a specific folder',
+						name: 'After Specific Rule',
+						value: 'after_specific_rule',
+						description: 'Move rule to immediately after another rule',
 					},
 					{
 						name: 'Before Specific Rule',
@@ -6104,9 +6102,14 @@ export class Checkmk implements INodeType {
 						description: 'Move rule to immediately before another rule',
 					},
 					{
-						name: 'After Specific Rule',
-						value: 'after_specific_rule',
-						description: 'Move rule to immediately after another rule',
+						name: 'Bottom of Folder',
+						value: 'bottom_of_folder',
+						description: 'Move rule to the bottom of a specific folder',
+					},
+					{
+						name: 'Top of Folder',
+						value: 'top_of_folder',
+						description: 'Move rule to the top of a specific folder',
 					},
 				],
 				default: 'top_of_folder',
@@ -6640,14 +6643,14 @@ export class Checkmk implements INodeType {
 				},
 				options: [
 					{
-						name: 'Manual Entries (UI)',
-						value: 'ui',
-						description: 'Add folder updates manually using the interface',
-					},
-					{
 						name: 'JSON (Dynamic)',
 						value: 'json',
 						description: 'Pass a raw JSON array of updates (good for large batches)',
+					},
+					{
+						name: 'Manual Entries (UI)',
+						value: 'ui',
+						description: 'Add folder updates manually using the interface',
 					},
 				],
 				default: 'ui',
@@ -6886,14 +6889,14 @@ export class Checkmk implements INodeType {
 				type: 'options',
 				options: [
 					{
-						name: 'Recursive',
-						value: 'recursive',
-						description: 'Deletes the folder and all the elements it contains',
-					},
-					{
 						name: 'Abort on Nonempty',
 						value: 'abort_on_nonempty',
 						description: 'Deletes the folder only if it is empty',
+					},
+					{
+						name: 'Recursive',
+						value: 'recursive',
+						description: 'Deletes the folder and all the elements it contains',
 					},
 				],
 				default: 'recursive',
@@ -6916,14 +6919,14 @@ export class Checkmk implements INodeType {
 						description: 'Replace all attributes with the ones given in this field',
 					},
 					{
-						name: 'Update Attributes',
-						value: 'update_attributes',
-						description: 'Just update the folder attributes with these attributes',
-					},
-					{
 						name: 'Remove Attributes',
 						value: 'remove_attributes',
 						description: 'A list of attributes which should be removed',
+					},
+					{
+						name: 'Update Attributes',
+						value: 'update_attributes',
+						description: 'Just update the folder attributes with these attributes',
 					},
 				],
 				default: 'attributes',
@@ -7437,15 +7440,15 @@ export class Checkmk implements INodeType {
 						value: '',
 					},
 					{
-						name: 'Password',
-						value: 'password',
-						description: 'The password for login',
-					},
-					{
 						name: 'Automation',
 						value: 'automation',
 						description:
 							'For accounts used by automation processes (such as fetching data from views for further procession). This is the automation secret.',
+					},
+					{
+						name: 'Password',
+						value: 'password',
+						description: 'The password for login',
 					},
 				],
 				default: '',
@@ -7769,14 +7772,14 @@ export class Checkmk implements INodeType {
 						description: 'Schedule downtimes for a host identified by host name or IP address',
 					},
 					{
-						name: 'Hostgroup',
-						value: 'hostgroup',
-						description: 'Schedule downtimes for all hosts belonging to the specified hostgroup',
-					},
-					{
 						name: 'Host by Query',
 						value: 'hostByQuery',
 						description: 'Schedule based on a Livestatus query expression',
+					},
+					{
+						name: 'Hostgroup',
+						value: 'hostgroup',
+						description: 'Schedule downtimes for all hosts belonging to the specified hostgroup',
 					},
 				],
 				default: 'host',
@@ -7909,7 +7912,10 @@ export class Checkmk implements INodeType {
 
 	methods = {
 		listSearch: {
-			searchFolders: async function (this: ILoadOptionsFunctions, filter?: string): Promise<any> {
+			searchFolders: async function (
+				this: ILoadOptionsFunctions,
+				filter?: string,
+			): Promise<INodeListSearchResult> {
 				if (filter && filter.trim() !== '') {
 					return {
 						results: await searchFolders.call(this, filter),
@@ -7922,7 +7928,7 @@ export class Checkmk implements INodeType {
 			searchDestinationFolders: async function (
 				this: ILoadOptionsFunctions,
 				filter?: string,
-			): Promise<any> {
+			): Promise<INodeListSearchResult> {
 				return {
 					results: await searchDestinationFolders.call(this, filter),
 				};
@@ -8935,7 +8941,7 @@ export class Checkmk implements INodeType {
 					// CMK_CreateFolder
 					if (operation === 'create') {
 						const title = this.getNodeParameter('title', i) as string;
-						const parentLocator = this.getNodeParameter('parent', i) as any;
+						const parentLocator = this.getNodeParameter('parent', i);
 						const attributes = this.getNodeParameter('attributes', i, {}) as IDataObject;
 
 						// Extract parent folder ID from resource locator
@@ -8986,7 +8992,7 @@ export class Checkmk implements INodeType {
 
 					// CMK_GetFolder
 					if (operation === 'get') {
-						const folderLocator = this.getNodeParameter('folder', i) as any;
+						const folderLocator = this.getNodeParameter('folder', i);
 						const folderId = await extractFolderIdFromLocator.call(this, folderLocator);
 						const qs: IDataObject = {};
 						const show_hosts = this.getNodeParameter('show_hosts', i, false) as boolean;
@@ -9012,7 +9018,7 @@ export class Checkmk implements INodeType {
 
 					//CMK_HostsInFolder
 					if (operation === 'getHosts') {
-						const folderLocator = this.getNodeParameter('folder', i) as any;
+						const folderLocator = this.getNodeParameter('folder', i);
 						const folderId = await extractFolderIdFromLocator.call(this, folderLocator);
 						const returnAll = this.getNodeParameter('returnAll', i) as boolean;
 						const additionalFields = this.getNodeParameter(
@@ -9042,7 +9048,7 @@ export class Checkmk implements INodeType {
 							// Push only new hosts (dedupe by id)
 							if (Array.isArray(response)) {
 								for (const h of response) {
-									const id = h.id || h.name || h.title || JSON.stringify(h);
+									const id = String(h.id || h.name || h.title || JSON.stringify(h));
 									if (!seenHostIds.has(id)) {
 										seenHostIds.add(id);
 										returnData.push(h as IDataObject);
@@ -9054,7 +9060,7 @@ export class Checkmk implements INodeType {
 							const response = await checkmkApiRequest.call(this, 'GET', endpoint, {}, qs);
 							const hosts = response.value || [];
 							for (const h of hosts.slice(0, limit)) {
-								const id = h.id || h.name || h.title || JSON.stringify(h);
+								const id = String(h.id || h.name || h.title || JSON.stringify(h));
 								if (!seenHostIds.has(id)) {
 									seenHostIds.add(id);
 									returnData.push(h as IDataObject);
@@ -9065,7 +9071,7 @@ export class Checkmk implements INodeType {
 
 					// CMK_GetManyFolders
 					if (operation === 'getMany') {
-						const parentLocator = this.getNodeParameter('parent', i) as any;
+						const parentLocator = this.getNodeParameter('parent', i);
 						const parent = await extractFolderIdFromLocator.call(this, parentLocator);
 						const recursive = this.getNodeParameter('recursive', i, false) as boolean;
 						const show_hosts = this.getNodeParameter('show_hosts', i, false) as boolean;
@@ -9083,7 +9089,7 @@ export class Checkmk implements INodeType {
 							qs,
 						);
 						const enhanced = Array.isArray(response)
-							? response.map((r: any) =>
+							? response.map((r: IDataObject) =>
 									r && r.id
 										? {
 												...r,
@@ -9097,7 +9103,7 @@ export class Checkmk implements INodeType {
 					}
 					// CMK_UpdateFolder
 					if (operation === 'update') {
-						const folderLocator = this.getNodeParameter('folder', i) as any;
+						const folderLocator = this.getNodeParameter('folder', i);
 						const folderId = await extractFolderIdFromLocator.call(this, folderLocator);
 
 						const title = this.getNodeParameter('title', i, '') as string;
@@ -9179,7 +9185,7 @@ export class Checkmk implements INodeType {
 					}
 					// CMK_DeleteFolder
 					if (operation === 'delete') {
-						const folderLocator = this.getNodeParameter('folder', i) as any;
+						const folderLocator = this.getNodeParameter('folder', i);
 						const folderId = await extractFolderIdFromLocator.call(this, folderLocator);
 						const deleteMode = this.getNodeParameter('delete_mode', i) as string;
 
@@ -9206,9 +9212,9 @@ export class Checkmk implements INodeType {
 
 					if (operation === 'move') {
 						// CMK_MoveFolder
-						const folderLocator = this.getNodeParameter('folder', i) as any;
+						const folderLocator = this.getNodeParameter('folder', i);
 						const folderId = await extractFolderIdFromLocator.call(this, folderLocator);
-						const destinationLocator = this.getNodeParameter('destination', i) as any;
+						const destinationLocator = this.getNodeParameter('destination', i);
 						const destinationId = await extractFolderIdFromLocator.call(this, destinationLocator);
 
 						const body: IDataObject = {
@@ -10070,7 +10076,7 @@ export class Checkmk implements INodeType {
 					// CMK_CreateRule
 					if (operation === 'create') {
 						const ruleset = this.getNodeParameter('ruleset', i) as string;
-						const folderLocator = this.getNodeParameter('folder', i) as any;
+						const folderLocator = this.getNodeParameter('folder', i);
 						const folderID = await extractFolderIdFromLocator.call(this, folderLocator);
 						const value_raw = this.getNodeParameter('value_raw', i) as string;
 						let properties = this.getNodeParameter('properties', i) as IDataObject | string;
@@ -10275,7 +10281,7 @@ export class Checkmk implements INodeType {
 
 						// Lógica Condicional: Se for folder, pega o ID da pasta. Se for regra, pega o ID da regra.
 						if (position === 'top_of_folder' || position === 'bottom_of_folder') {
-							const folderLocator = this.getNodeParameter('targetFolder', i) as any;
+							const folderLocator = this.getNodeParameter('targetFolder', i);
 							const folderId = await extractFolderIdFromLocator.call(this, folderLocator);
 							body.folder = folderId;
 						} else if (position === 'before_specific_rule' || position === 'after_specific_rule') {
@@ -10302,7 +10308,7 @@ export class Checkmk implements INodeType {
 					// CMK_RunServiceDiscovery
 					if (operation === 'run') {
 						const hostName = this.getNodeParameter('hostName', i) as string;
-						const mode = this.getNodeParameter('mode', i) as any;
+						const mode = this.getNodeParameter('mode', i) as string;
 						const body: IDataObject = {
 							host_name: hostName,
 							mode,
@@ -10358,7 +10364,7 @@ export class Checkmk implements INodeType {
 						const hostName = this.getNodeParameter('hostName', i) as string;
 						const check_type = this.getNodeParameter('check_type', i) as string;
 						const service_item = this.getNodeParameter('service_item', i) as string;
-						const target_phase = this.getNodeParameter('target_phase', i) as any;
+						const target_phase = this.getNodeParameter('target_phase', i) as string;
 
 						const body: IDataObject = {
 							check_type: check_type,
@@ -11068,11 +11074,14 @@ export class Checkmk implements INodeType {
 
 						// Tratamento de Arrays/JSON dos Groups
 						const groupNames = (groupsUi.names as string[]) || [];
-						let groupPaths: any[] = [];
+						let groupPaths: string[] = [];
 						if (groupsUi.paths) {
 							try {
-								groupPaths =
-									typeof groupsUi.paths === 'string' ? JSON.parse(groupsUi.paths) : groupsUi.paths;
+								groupPaths = (
+									typeof groupsUi.paths === 'string'
+										? JSON.parse(groupsUi.paths)
+										: groupsUi.paths
+								) as string[];
 							} catch {
 								throw new NodeOperationError(this.getNode(), 'Invalid JSON in Groups Paths', {
 									itemIndex: i,
@@ -12185,6 +12194,7 @@ export class Checkmk implements INodeType {
 												throw new NodeOperationError(
 													this.getNode(),
 													'Invalid JSON in Custom Range Configuration',
+													{ itemIndex: i },
 												);
 											}
 										}
@@ -12411,7 +12421,7 @@ export class Checkmk implements INodeType {
 				// ==================== HOST TAG GROUP OPERATIONS ====================
 				if (resource === 'hostTagGroup') {
 					// Helper para processar tags (usado tanto no create quanto no update)
-					const getProcessedTags = (inputs: any): IDataObject[] => {
+					const getProcessedTags = (inputs: IDataObject): IDataObject[] => {
 						let apiTags: IDataObject[] = [];
 						// O n8n retorna fixedCollection como: { manual: [ {...}, {...} ], json: [ {...} ] }
 						// Precisamos iterar sobre o objeto 'tags' recebido
@@ -12444,10 +12454,10 @@ export class Checkmk implements INodeType {
 							for (const entry of inputs.json as IDataObject[]) {
 								const rawInfo = entry.tagsJson;
 								if (rawInfo) {
-									let parsed: any;
+									let parsed: IDataObject | IDataObject[];
 									if (typeof rawInfo === 'string') {
 										try {
-											parsed = JSON.parse(rawInfo);
+											parsed = JSON.parse(rawInfo) as IDataObject | IDataObject[];
 										} catch {
 											throw new NodeOperationError(
 												this.getNode(),
@@ -12456,7 +12466,7 @@ export class Checkmk implements INodeType {
 											);
 										}
 									} else {
-										parsed = rawInfo;
+										parsed = rawInfo as IDataObject;
 									}
 
 									if (Array.isArray(parsed)) {
@@ -13503,7 +13513,9 @@ export class Checkmk implements INodeType {
 					returnData.push({ error: (error as Error).message });
 					continue;
 				}
-				throw error;
+				throw error instanceof NodeOperationError || error instanceof NodeApiError
+					? error
+					: new NodeApiError(this.getNode(), error as JsonObject, { itemIndex: i });
 			}
 		}
 

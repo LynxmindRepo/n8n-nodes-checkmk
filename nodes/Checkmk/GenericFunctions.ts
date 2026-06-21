@@ -10,14 +10,46 @@ import {
 	IDataObject,
 } from 'n8n-workflow';
 
+// Shape of the HTTP-ish errors thrown by n8n request helpers / Checkmk API.
+interface CheckmkHttpError {
+	statusCode?: number;
+	httpCode?: number;
+	code?: number;
+	message?: string;
+	response?: {
+		status?: number;
+		statusCode?: number;
+		data?: IDataObject;
+	};
+}
+
+// Generic shape of a Checkmk REST API JSON response. Collection endpoints
+// expose results under `value`, and paginated ones under `links.next`.
+export interface CheckmkApiResponse extends IDataObject {
+	value?: IDataObject[];
+	links?: { next?: string };
+}
+
+// Ensures any caught error is surfaced as a NodeApiError without double-wrapping
+// one that was already produced by checkmkApiRequest.
+function toNodeApiError(
+	this: IExecuteFunctions | ILoadOptionsFunctions | IHookFunctions,
+	error: unknown,
+): NodeApiError {
+	if (error instanceof NodeApiError) {
+		return error;
+	}
+	return new NodeApiError(this.getNode(), error as JsonObject);
+}
+
 export async function checkmkApiRequest(
 	this: IExecuteFunctions | ILoadOptionsFunctions | IHookFunctions,
 	method: IHttpRequestMethods,
 	endpoint: string,
 	body: Record<string, unknown> = {},
 	qs: IDataObject = {},
-	customHeaders?: any,
-): Promise<any> {
+	customHeaders?: IDataObject,
+): Promise<CheckmkApiResponse> {
 	const credentials = await this.getCredentials('checkmkApi');
 
 	const options: IHttpRequestOptions = {
@@ -46,23 +78,28 @@ export async function checkmkApiRequestAllItems(
 	endpoint: string,
 	body: Record<string, unknown> = {},
 	qs: IDataObject = {},
-): Promise<any> {
-	const returnData: any[] = [];
+): Promise<IDataObject[]> {
+	const returnData: IDataObject[] = [];
 	let nextCall: string | undefined = endpoint;
 
 	while (nextCall) {
-		const responseData: { value?: any; links: { next: string | undefined } } =
-			await checkmkApiRequest.call(this, method, nextCall, body, qs);
+		const responseData = (await checkmkApiRequest.call(
+			this,
+			method,
+			nextCall,
+			body,
+			qs,
+		)) as IDataObject & { value?: IDataObject[]; links?: { next?: string } };
 
 		if (responseData.value) {
 			returnData.push(...responseData.value);
 		} else if (Array.isArray(responseData)) {
-			returnData.push(...responseData);
+			returnData.push(...(responseData as IDataObject[]));
 		} else {
 			returnData.push(responseData);
 		}
 
-		nextCall = responseData.links.next ?? undefined;
+		nextCall = responseData.links?.next ?? undefined;
 	}
 
 	return returnData;
@@ -74,7 +111,7 @@ export async function checkmkApiRequestWithETag(
 	endpoint: string,
 	body: Record<string, unknown> = {},
 	qs: IDataObject = {},
-): Promise<{ data: any; etag: string }> {
+): Promise<{ data: IDataObject; etag: string }> {
 	const credentials = await this.getCredentials('checkmkApi');
 
 	const options: IHttpRequestOptions = {
@@ -91,14 +128,14 @@ export async function checkmkApiRequestWithETag(
 	};
 
 	try {
-		const response = await this.helpers.httpRequestWithAuthentication.call(
+		const response = (await this.helpers.httpRequestWithAuthentication.call(
 			this,
 			'checkmkApi',
 			options,
-		);
+		)) as { headers?: Record<string, string>; body?: IDataObject };
 
 		// Try different possible header names for ETag (case-insensitive search)
-		const headers = response.headers || {};
+		const headers: Record<string, string> = response.headers || {};
 		let etag: string | undefined;
 
 		// Check all possible variations
@@ -129,7 +166,7 @@ export async function checkmkApiRequestWithETag(
 		}
 
 		return {
-			data: response.body,
+			data: response.body ?? {},
 			etag: cleanedEtag,
 		};
 	} catch (error) {
@@ -224,7 +261,7 @@ export async function searchDestinationFolders(
 	// Como estamos no loadOptions, precisamos ser defensivos pois o campo pode não estar pronto
 	let sourceFolderId: string | null = null;
 	try {
-		const folderParam = this.getNodeParameter('folder') as any;
+		const folderParam = this.getNodeParameter('folder');
 
 		// Reutilizamos sua função de extração, passando o contexto 'this'
 		if (folderParam) {
@@ -267,7 +304,7 @@ export async function checkmkApiRequestWithIfMatch(
 	endpoint: string,
 	body: Record<string, unknown> = {},
 	qs: IDataObject = {},
-): Promise<any> {
+): Promise<CheckmkApiResponse> {
 	// Normalize folder endpoints to ensure folder IDs are in correct format
 	endpoint = normalizeFolderEndpoint(endpoint);
 
@@ -299,9 +336,9 @@ export async function checkmkApiRequestWithIfMatch(
 				message: `ETag not found in response headers for ${etagEndpoint}. The API may not support ETags for this resource.`,
 			} as JsonObject);
 		}
-	} catch (error: any) {
+	} catch (error) {
 		// Helper function to check if error is a 404
-		const is404Error = (err: any): boolean => {
+		const is404Error = (err: CheckmkHttpError): boolean => {
 			// Check status code in various possible locations
 			if (err.statusCode === 404 || err.httpCode === 404 || err.code === 404) {
 				return true;
@@ -336,7 +373,7 @@ export async function checkmkApiRequestWithIfMatch(
 		};
 
 		// Check if it's a 404 error first
-		if (is404Error(error)) {
+		if (is404Error(error as CheckmkHttpError)) {
 			// Provide a more helpful error message
 			const resourceName = etagEndpoint.split('/').pop() || etagEndpoint;
 			const decodedResourceName = decodeURIComponent(resourceName);
@@ -351,9 +388,9 @@ export async function checkmkApiRequestWithIfMatch(
 			try {
 				const result = await checkmkApiRequestWithETag.call(this, 'GET', endpoint, {}, qs);
 				etag = result.etag || '';
-			} catch (error2: any) {
+			} catch (error2) {
 				// If both fail, check if it's a 404 - maybe the resource doesn't exist
-				if (is404Error(error2)) {
+				if (is404Error(error2 as CheckmkHttpError)) {
 					const resourceName = endpoint.split('/').pop() || endpoint;
 					const decodedResourceName = decodeURIComponent(resourceName);
 					throw new NodeApiError(this.getNode(), {
@@ -362,13 +399,13 @@ export async function checkmkApiRequestWithIfMatch(
 					} as JsonObject);
 				}
 				throw new NodeApiError(this.getNode(), {
-					message: `Could not retrieve ETag for If-Match header: ${error2.message || error.message || 'Unknown error'}`,
+					message: `Could not retrieve ETag for If-Match header: ${(error2 as CheckmkHttpError).message || (error as CheckmkHttpError).message || 'Unknown error'}`,
 				} as JsonObject);
 			}
 		} else {
 			// If it's not a 404, throw the original error with more context
 			throw new NodeApiError(this.getNode(), {
-				message: `Could not retrieve ETag for If-Match header: ${error.message || 'Unknown error'}`,
+				message: `Could not retrieve ETag for If-Match header: ${(error as CheckmkHttpError).message || 'Unknown error'}`,
 				description: `Endpoint: ${etagEndpoint}`,
 			} as JsonObject);
 		}
@@ -395,9 +432,10 @@ export async function checkmkApiRequestWithIfMatch(
 			return await checkmkApiRequest.call(this, method, endpoint, body, qs, {
 				'If-Match': ifMatchValue,
 			});
-		} catch (error: any) {
+		} catch (error) {
+			const httpError = error as CheckmkHttpError;
 			// If we get a 412 (Precondition Failed) and haven't exhausted retries, get fresh ETag and retry
-			if (error.statusCode === 412 || error.response?.status === 412) {
+			if (httpError.statusCode === 412 || httpError.response?.status === 412) {
 				if (attempt < maxRetries - 1) {
 					// Get a fresh ETag and try again
 					try {
@@ -416,22 +454,26 @@ export async function checkmkApiRequestWithIfMatch(
 								return await checkmkApiRequest.call(this, method, endpoint, body, qs, {
 									'If-Match': freshIfMatchValue,
 								});
-							} catch (retryError: any) {
+							} catch (retryError) {
+								const retryHttpError = retryError as CheckmkHttpError;
 								// If retry also fails with 412, throw the original error
-								if (retryError.statusCode === 412 || retryError.response?.status === 412) {
-									throw error; // Throw original error
+								if (
+									retryHttpError.statusCode === 412 ||
+									retryHttpError.response?.status === 412
+								) {
+									throw toNodeApiError.call(this, error); // Throw original error
 								}
-								throw retryError;
+								throw toNodeApiError.call(this, retryError);
 							}
 						}
 					} catch {
 						// If we can't get fresh ETag, throw original error
-						throw error;
+						throw toNodeApiError.call(this, error);
 					}
 				}
 			}
 			// If it's not a 412 or we've exhausted retries, throw the error
-			throw error;
+			throw toNodeApiError.call(this, error);
 		}
 	}
 
@@ -469,10 +511,10 @@ export async function getFoldersList(
 			return [];
 		}
 
-		const choices = folders.map((folder: any) => {
-			const id = folder.id || '';
+		const choices = folders.map((folder: IDataObject) => {
+			const id = (folder.id as string) || '';
 			const path = folderIdToPath(id);
-			const title = folder.title || path;
+			const title = (folder.title as string) || path;
 
 			// Format: "path (id)"
 			const name = `${path} (${id})`;
@@ -488,7 +530,7 @@ export async function getFoldersList(
 		return choices.sort((a, b) => a.name.localeCompare(b.name));
 	} catch (error) {
 		throw new NodeApiError(this.getNode(), {
-			message: `Could not fetch folder list: ${(error as any).message || 'Unknown error'}`,
+			message: `Could not fetch folder list: ${(error as CheckmkHttpError).message || 'Unknown error'}`,
 		} as JsonObject);
 	}
 }
@@ -530,7 +572,7 @@ export async function searchFolders(
  */
 export async function extractFolderIdFromLocator(
 	this: IExecuteFunctions | ILoadOptionsFunctions | IHookFunctions,
-	locatorValue: any,
+	locatorValue: unknown,
 ): Promise<string> {
 	// Se estiver vazio, retorna Root
 	if (!locatorValue) {
@@ -540,8 +582,9 @@ export async function extractFolderIdFromLocator(
 	// Se for um objeto vindo do Resource Locator do n8n
 	if (typeof locatorValue === 'object' && locatorValue !== null) {
 		// CORREÇÃO CRÍTICA AQUI: A propriedade correta é 'mode', não 'modeName'
-		const mode = locatorValue.mode;
-		const value = locatorValue.value;
+		const locator = locatorValue as { mode?: string; value?: string };
+		const mode = locator.mode;
+		const value = locator.value;
 
 		// Aceitamos 'id' ou 'list'. Removemos a lógica de 'url'.
 		if (mode === 'id' || mode === 'list') {

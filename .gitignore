@@ -1,9 +1,32 @@
-node_modules
+# Dependencies
 node_modules/
-.DS_Store
-.tmp
-tmp
-dist
-npm-debug.log*
+package-lock.json
 yarn.lock
-.vscode/launch.json
+
+# Build outputs
+dist/
+
+# VS Code settings
+.vscode/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+*.swp
+*.swo
+*~
+.idea/
+
+# Test files
+teste.json
+
+# Logs
+*.log
+npm-debug.log*

@@ -3,11 +3,13 @@ import {
 	ICredentialTestRequest,
 	ICredentialType,
 	INodeProperties,
+	Icon,
 } from 'n8n-workflow';
 
 export class CheckmkApi implements ICredentialType {
 	name = 'checkmkApi';
 	displayName = 'Checkmk API';
+	icon: Icon = 'file:checkmk.svg';
 	documentationUrl = 'https://docs.checkmk.com/latest/en/rest_api.html';
 	properties: INodeProperties[] = [
 		{

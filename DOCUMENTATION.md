@@ -325,7 +325,7 @@ The node maps to Checkmk REST API v1.0 endpoints. All endpoints follow the patte
 | **Host** | `rename` | POST | `/objects/host_config/{host_name}/actions/rename/invoke` |
 | **Service** | `get` | GET | `/objects/service/{host_name}/{service_name}` |
 | **Service** | `getMany` | GET | `/domain-types/service/collections/all` |
-| **Service** | `acknowledgeProblem` | POST | `/objects/service/{host_name}/{service_name}/actions/acknowledge/invoke` |
+| **Service** | `acknowledge` | POST | `/objects/service/{host_name}/{service_name}/actions/acknowledge/invoke` |
 | **Folder** | `create` | POST | `/domain-types/folder_config/collections/all` |
 | **Folder** | `get` | GET | `/objects/folder_config/{folder_id}` |
 | **Folder** | `getMany` | GET | `/domain-types/folder_config/collections/all` |
@@ -393,9 +393,7 @@ The node maps to Checkmk REST API v1.0 endpoints. All endpoints follow the patte
 | **Problem** | `getMany` | GET | `/domain-types/problem/collections/all` |
 | **Problem** | `acknowledge` | POST | `/objects/problem/{problem_id}/actions/acknowledge/invoke` |
 | **Problem** | `delete` | DELETE | `/objects/problem/{problem_id}` |
-| **Host Status** | `get` | GET | `/objects/host/{host_name}` |
 | **Host Status** | `getMany` | GET | `/domain-types/host/collections/all` |
-| **Service Status** | `get` | GET | `/objects/service/{host_name}/{service_name}` |
 | **Service Status** | `getMany` | GET | `/domain-types/service/collections/all` |
 | **Comment** | `create` | POST | `/domain-types/comment/collections/all` |
 | **Comment** | `get` | GET | `/objects/comment/{comment_id}` |
@@ -711,8 +709,8 @@ The node converts these to n8n `NodeApiError` exceptions with descriptive messag
 | **Site** | Get, Get Many, Login, Logout |
 | **Downtime** | Create, Get, Get Many, Delete |
 | **Problem** | Get, Get Many, Acknowledge, Delete |
-| **Host Status** | Get, Get Many |
-| **Service Status** | Get, Get Many |
+| **Host Status** | Get Many |
+| **Service Status** | Get Many |
 | **Comment** | Create, Get, Get Many, Delete |
 | **Metric** | Get, Get Many |
 | **SLA** | Compute |
@@ -806,10 +804,13 @@ The node converts these to n8n `NodeApiError` exceptions with descriptive messag
   "additionalFields": {
     "hostnames": "server-01,server-02",
     "effective_attributes": true,
-    "site": "mysite"
+    "site": "mysite",
+    "columns": "name,state,plugin_output,address,alias,last_check"
   }
 }
 ```
+
+Each returned host also contains `host_status` (live monitoring state, or `null` when unavailable), fetched with one bulk status request.
 
 #### Create Folder
 ```json
@@ -889,9 +890,13 @@ The node converts these to n8n `NodeApiError` exceptions with descriptive messag
 ```json
 {
   "resource": "serviceStatus",
-  "operation": "get",
-  "hostName": "server-01",
-  "serviceName": "CPU utilization"
+  "operation": "getMany",
+  "returnAll": false,
+  "limit": 100,
+  "additionalFields": {
+    "hostName": "server-01",
+    "columns": "host_name,description,state,state_type,last_check"
+  }
 }
 ```
 
@@ -1029,19 +1034,22 @@ The node converts these to n8n `NodeApiError` exceptions with descriptive messag
   "operation": "get",
   "hostName": "server-01",
   "additionalFields": {
-    "effective_attributes": true
+    "effective_attributes": true,
+    "columns": "name,state,plugin_output,last_check"
   }
 }
 ```
+
+The host configuration is returned unchanged and the live monitoring state is attached as `host_status` (or `null` when Checkmk has no live state for the host). `name` and `state` are always requested; use `columns` to add more Livestatus host columns.
 
 #### Acknowledge Service Problem
 ```json
 {
   "resource": "service",
-  "operation": "acknowledgeProblem",
+  "operation": "acknowledge",
   "hostName": "server-01",
-  "serviceName": "CPU utilization",
   "additionalFields": {
+    "serviceDescription": "CPU utilization",
     "sticky": true,
     "notify": true,
     "comment": "Acknowledged - investigating"
@@ -1054,11 +1062,11 @@ The node converts these to n8n `NodeApiError` exceptions with descriptive messag
 {
   "resource": "service",
   "operation": "getMany",
+  "hostName": "server-01",
   "returnAll": false,
   "limit": 100,
   "additionalFields": {
-    "hostName": "server-01",
-    "effective_attributes": true
+    "columns": "host_name,description,state,state_type,last_check"
   }
 }
 ```

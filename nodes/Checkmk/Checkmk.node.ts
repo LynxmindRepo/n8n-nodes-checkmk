@@ -14,6 +14,59 @@ import {
 	checkmkApiRequestWithETag,
 } from './GenericFunctions';
 
+// Checkmk Livestatus host states:
+// https://github.com/Checkmk/checkmk/blob/2.4.0/cmk/utils/livestatus_helpers/tables/hosts.py
+const HOST_STATE_LABELS: Record<number, string> = {
+	0: 'UP',
+	1: 'DOWN',
+	2: 'UNREACHABLE',
+};
+
+// "name" is always included by the host status endpoint; these columns add live state details.
+const HOST_STATUS_COLUMNS = [
+	'name',
+	'state',
+	'plugin_output',
+	'address',
+	'alias',
+	'last_check',
+];
+
+// "host_name" and "description" are mandatory for the service status endpoints.
+const SERVICE_STATUS_COLUMNS = [
+	'host_name',
+	'description',
+	'state',
+	'state_type',
+	'last_check',
+];
+
+function parseColumns(
+	value: unknown,
+	defaults: readonly string[],
+	mandatory: readonly string[],
+): string[] {
+	const requested =
+		typeof value === 'string'
+			? value
+					.split(',')
+					.map((column) => column.trim())
+					.filter((column) => column !== '')
+			: defaults;
+	return Array.from(new Set([...mandatory, ...requested]));
+}
+
+function withHostStateLabel(hostStatus: IDataObject): IDataObject {
+	const extensions = hostStatus.extensions as IDataObject;
+	return {
+		...hostStatus,
+		extensions: {
+			...extensions,
+			state_label: HOST_STATE_LABELS[extensions.state as number] ?? 'UNKNOWN',
+		},
+	};
+}
+
 export class Checkmk implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Checkmk',
@@ -115,13 +168,15 @@ export class Checkmk implements INodeType {
 					{
 						name: 'Get',
 						value: 'get',
-						description: 'Get a host',
+						description:
+							'Get a host configuration together with its live monitoring status in "host_status"',
 						action: 'Get a host',
 					},
 					{
 						name: 'Get Many',
 						value: 'getMany',
-						description: 'Get many hosts',
+						description:
+							'Get many host configurations, each with its live monitoring status in "host_status"',
 						action: 'Get many hosts',
 					},
 					{
@@ -785,7 +840,8 @@ export class Checkmk implements INodeType {
 					{
 						name: 'Get Many',
 						value: 'getMany',
-						description: 'Get many host statuses',
+						description:
+							'Get many live host monitoring statuses. Each item contains the host name, state (0 = UP, 1 = DOWN, 2 = UNREACHABLE), state label and check output.',
 						action: 'Get many host statuses',
 					},
 				],
@@ -1753,6 +1809,15 @@ export class Checkmk implements INodeType {
 				},
 				options: [
 					{
+						displayName: 'Columns',
+						name: 'columns',
+						type: 'string',
+						default: HOST_STATUS_COLUMNS.join(','),
+						placeholder: 'name,state,plugin_output',
+						description:
+							'Comma-separated Livestatus host status columns to include in "host_status". "name" and "state" are always included.',
+					},
+					{
 						displayName: 'Effective Attributes',
 						name: 'effective_attributes',
 						type: 'boolean',
@@ -1776,6 +1841,15 @@ export class Checkmk implements INodeType {
 				},
 							options: [
 								{
+									displayName: 'Columns',
+									name: 'columns',
+									type: 'string',
+									default: HOST_STATUS_COLUMNS.join(','),
+									placeholder: 'name,state,plugin_output',
+									description:
+										'Comma-separated Livestatus host status columns to include in "host_status". "name" and "state" are always included.',
+								},
+								{
 									displayName: 'Effective Attributes',
 									name: 'effective_attributes',
 									type: 'boolean',
@@ -1788,7 +1862,8 @@ export class Checkmk implements INodeType {
 									type: 'string',
 									default: '',
 									placeholder: '!(links)',
-									description: 'The fields to include/exclude (e.g., !(links) or (ipaddress,ipv6address))',
+									description:
+										'Host configuration fields to include or exclude (e.g., !(links) or (ipaddress,ipv6address)). Use Columns for live monitoring status.',
 								},
 								{
 									displayName: 'Hostnames',
@@ -1813,6 +1888,72 @@ export class Checkmk implements INodeType {
 									description: 'Filter the result by a specific site',
 								},
 							],
+			},
+			// Additional Fields for Host Status Get Many
+			{
+				displayName: 'Additional Fields',
+				name: 'additionalFields',
+				type: 'collection',
+				placeholder: 'Add Field',
+				default: {},
+				displayOptions: {
+					show: {
+						resource: ['hostStatus'],
+						operation: ['getMany'],
+					},
+				},
+				options: [
+					{
+						displayName: 'Columns',
+						name: 'columns',
+						type: 'string',
+						default: HOST_STATUS_COLUMNS.join(','),
+						placeholder: 'name,state,plugin_output',
+						description:
+							'Comma-separated Livestatus host columns to return. "name" and "state" are always included.',
+					},
+					{
+						displayName: 'Host Name',
+						name: 'hostName',
+						type: 'string',
+						default: '',
+						description:
+							'Only return the status of this host (exact match). Leave empty to return all hosts.',
+					},
+				],
+			},
+			// Additional Fields for Service Status Get Many
+			{
+				displayName: 'Additional Fields',
+				name: 'additionalFields',
+				type: 'collection',
+				placeholder: 'Add Field',
+				default: {},
+				displayOptions: {
+					show: {
+						resource: ['serviceStatus'],
+						operation: ['getMany'],
+					},
+				},
+				options: [
+					{
+						displayName: 'Columns',
+						name: 'columns',
+						type: 'string',
+						default: SERVICE_STATUS_COLUMNS.join(','),
+						placeholder: 'host_name,description,state',
+						description:
+							'Comma-separated Livestatus service columns to return. "host_name" and "description" are always included.',
+					},
+					{
+						displayName: 'Host Name',
+						name: 'hostName',
+						type: 'string',
+						default: '',
+						description:
+							'Only return services of this host (exact match). Leave empty to return all hosts.',
+					},
+				],
 			},
 			// Additional Fields for Host Update
 			{
@@ -1852,7 +1993,7 @@ export class Checkmk implements INodeType {
 					},
 				],
 			},
-			// Additional Fields for Service and Discovery
+			// Additional Fields for Service Get
 			{
 				displayName: 'Additional Fields',
 				name: 'additionalFields',
@@ -1861,7 +2002,88 @@ export class Checkmk implements INodeType {
 				default: {},
 				displayOptions: {
 					show: {
-						resource: ['service', 'discovery'],
+						resource: ['service'],
+						operation: ['get'],
+					},
+				},
+				options: [
+					{
+						displayName: 'Columns',
+						name: 'columns',
+						type: 'string',
+						default: SERVICE_STATUS_COLUMNS.join(','),
+						placeholder: 'host_name,description,state',
+						description:
+							'Comma-separated Livestatus service columns to return. "host_name" and "description" are always included.',
+					},
+					{
+						displayName: 'Service Description',
+						name: 'serviceDescription',
+						type: 'string',
+						default: '',
+						description: 'The service description to get',
+					},
+				],
+			},
+			// Additional Fields for Service Get Many
+			{
+				displayName: 'Additional Fields',
+				name: 'additionalFields',
+				type: 'collection',
+				placeholder: 'Add Field',
+				default: {},
+				displayOptions: {
+					show: {
+						resource: ['service'],
+						operation: ['getMany'],
+					},
+				},
+				options: [
+					{
+						displayName: 'Columns',
+						name: 'columns',
+						type: 'string',
+						default: SERVICE_STATUS_COLUMNS.join(','),
+						placeholder: 'host_name,description,state',
+						description:
+							'Comma-separated Livestatus service columns to return. "host_name" and "description" are always included.',
+					},
+				],
+			},
+			// Additional Fields for Service Acknowledge
+			{
+				displayName: 'Additional Fields',
+				name: 'additionalFields',
+				type: 'collection',
+				placeholder: 'Add Field',
+				default: {},
+				displayOptions: {
+					show: {
+						resource: ['service'],
+						operation: ['acknowledge'],
+					},
+				},
+				options: [
+					{
+						displayName: 'Service Description',
+						name: 'serviceDescription',
+						type: 'string',
+						default: '',
+						description: 'The service description to acknowledge',
+					},
+				],
+			},
+			// Additional Fields for Discovery Run
+			{
+				displayName: 'Additional Fields',
+				name: 'additionalFields',
+				type: 'collection',
+				placeholder: 'Add Field',
+				default: {},
+				displayOptions: {
+					show: {
+						resource: ['discovery'],
+						operation: ['run'],
 					},
 				},
 				options: [
@@ -1907,7 +2129,7 @@ export class Checkmk implements INodeType {
 							},
 						],
 						default: 'new',
-						description: 'The mode of the discovery action (only used for Run operation)',
+						description: 'The mode of the discovery action',
 					},
 				],
 			},
@@ -2200,7 +2422,49 @@ export class Checkmk implements INodeType {
 							{},
 							qs,
 						);
-						returnData.push(response);
+
+						// The configuration object has no monitoring state, so fetch it from the
+						// status endpoint and attach it as "host_status".
+						const statusColumns = parseColumns(
+							additionalFields.columns,
+							HOST_STATUS_COLUMNS,
+							['name', 'state'],
+						);
+						const statusResponse = await checkmkApiRequest.call(
+							this,
+							'GET',
+							'/domain-types/host/collections/all',
+							{},
+							{
+								columns: statusColumns,
+								query: JSON.stringify({
+									op: '=',
+									left: 'name',
+									right: hostName,
+								}),
+							},
+						);
+						if (!statusResponse || !Array.isArray(statusResponse.value)) {
+							throw new NodeOperationError(
+								this.getNode(),
+								'Unexpected response from the Checkmk host status endpoint: expected a "value" array.',
+							);
+						}
+
+						let hostStatus: IDataObject | null = null;
+						const statusItem = statusResponse.value[0] as IDataObject | undefined;
+						if (statusItem) {
+							const extensions = statusItem.extensions as IDataObject | undefined;
+							if (!extensions || typeof extensions.name !== 'string') {
+								throw new NodeOperationError(
+									this.getNode(),
+									'Unexpected response from the Checkmk host status endpoint: a host is missing extensions.name.',
+								);
+							}
+							hostStatus = withHostStateLabel(statusItem);
+						}
+
+						returnData.push({ ...response, host_status: hostStatus });
 					}
 
 					if (operation === 'getMany') {
@@ -2232,15 +2496,15 @@ export class Checkmk implements INodeType {
 							qs.site = additionalFields.site;
 						}
 
+						let hosts: IDataObject[];
 						if (returnAll) {
-							const response = await checkmkApiRequestAllItems.call(
+							hosts = await checkmkApiRequestAllItems.call(
 								this,
 								'GET',
 								'/domain-types/host_config/collections/all',
 								{},
 								qs,
 							);
-							returnData.push(...response);
 						} else {
 							const limit = this.getNodeParameter('limit', i);
 							const response = await checkmkApiRequest.call(
@@ -2250,9 +2514,61 @@ export class Checkmk implements INodeType {
 								{},
 								qs,
 							);
-							const hosts = response.value || [];
-							returnData.push(...hosts.slice(0, limit));
+							hosts = (response.value || []).slice(0, limit);
 						}
+
+						// Attach live status to every returned configuration host. One bulk call
+						// avoids a request per host.
+						if (hosts.length > 0) {
+							const statusColumns = parseColumns(
+								additionalFields.columns,
+								HOST_STATUS_COLUMNS,
+								['name', 'state'],
+							);
+							const statusResponse = await checkmkApiRequest.call(
+								this,
+								'GET',
+								'/domain-types/host/collections/all',
+								{},
+								{ columns: statusColumns },
+							);
+							if (!statusResponse || !Array.isArray(statusResponse.value)) {
+								throw new NodeOperationError(
+									this.getNode(),
+									'Unexpected response from the Checkmk host status endpoint: expected a "value" array.',
+								);
+							}
+
+							const statusByName = new Map<string, IDataObject>();
+							for (const statusItem of statusResponse.value as IDataObject[]) {
+								const extensions = statusItem.extensions as IDataObject | undefined;
+								if (!extensions || typeof extensions.name !== 'string') {
+									throw new NodeOperationError(
+										this.getNode(),
+										'Unexpected response from the Checkmk host status endpoint: a host is missing extensions.name.',
+									);
+								}
+								statusByName.set(extensions.name, withHostStateLabel(statusItem));
+							}
+
+							hosts = hosts.map((host) => {
+								const extensions = host.extensions as IDataObject | undefined;
+								// The host configuration collection exposes the host name as "id";
+								// the status collection exposes it in extensions.name.
+								const hostName =
+									typeof host.id === 'string'
+										? host.id
+										: typeof extensions?.name === 'string'
+											? extensions.name
+											: undefined;
+								return {
+									...host,
+									host_status: hostName ? (statusByName.get(hostName) ?? null) : null,
+								};
+							});
+						}
+
+						returnData.push(...hosts);
 					}
 
 					if (operation === 'update') {
@@ -3108,19 +3424,38 @@ export class Checkmk implements INodeType {
 							{},
 						) as IDataObject;
 						const serviceDescription = additionalFields.serviceDescription as string;
+						const qs: IDataObject = {
+							columns: parseColumns(
+								additionalFields.columns,
+								SERVICE_STATUS_COLUMNS,
+								['host_name', 'description'],
+							),
+						};
 
 						const response = await checkmkApiRequest.call(
 							this,
 							'GET',
 							`/objects/service/${hostName}/${encodeURIComponent(serviceDescription)}`,
+							{},
+							qs,
 						);
 						returnData.push(response);
 					}
 
 					if (operation === 'getMany') {
 						const returnAll = this.getNodeParameter('returnAll', i);
+						const additionalFields = this.getNodeParameter(
+							'additionalFields',
+							i,
+							{},
+						) as IDataObject;
 						const qs: IDataObject = {
 							host_name: hostName,
+							columns: parseColumns(
+								additionalFields.columns,
+								SERVICE_STATUS_COLUMNS,
+								['host_name', 'description'],
+							),
 						};
 
 						if (returnAll) {
@@ -3424,18 +3759,32 @@ export class Checkmk implements INodeType {
 						) as IDataObject;
 						const hostName = additionalFields.hostName as string;
 
-						const qs: IDataObject = {};
-						if (hostName) qs.host_name = hostName;
+						// The host collection returns Livestatus status columns, not host configuration.
+						// "name" and "state" are always included so every item exposes the host state.
+						const qs: IDataObject = {
+							columns: parseColumns(
+								additionalFields.columns,
+								HOST_STATUS_COLUMNS,
+								['name', 'state'],
+							),
+						};
+						if (hostName) {
+							qs.query = JSON.stringify({
+								op: '=',
+								left: 'name',
+								right: hostName,
+							});
+						}
 
+						let hosts: IDataObject[];
 						if (returnAll) {
-							const response = await checkmkApiRequestAllItems.call(
+							hosts = await checkmkApiRequestAllItems.call(
 								this,
 								'GET',
 								'/domain-types/host/collections/all',
 								{},
 								qs,
 							);
-							returnData.push(...response);
 						} else {
 							const limit = this.getNodeParameter('limit', i);
 							const response = await checkmkApiRequest.call(
@@ -3445,8 +3794,24 @@ export class Checkmk implements INodeType {
 								{},
 								qs,
 							);
-							const hosts = response.value || [];
-							returnData.push(...hosts.slice(0, limit));
+							if (!response || !Array.isArray(response.value)) {
+								throw new NodeOperationError(
+									this.getNode(),
+									'Unexpected response from the Checkmk host status endpoint: expected a "value" array.',
+								);
+							}
+							hosts = response.value.slice(0, limit);
+						}
+
+						for (const host of hosts) {
+							const extensions = host?.extensions as IDataObject | undefined;
+							if (!extensions || typeof extensions.name !== 'string') {
+								throw new NodeOperationError(
+									this.getNode(),
+									'Unexpected response from the Checkmk host status endpoint: a host is missing extensions.name.',
+								);
+							}
+							returnData.push(withHostStateLabel(host));
 						}
 					}
 				}
@@ -3474,7 +3839,13 @@ export class Checkmk implements INodeType {
 						) as IDataObject;
 						const hostName = additionalFields.hostName as string;
 
-						const qs: IDataObject = {};
+						const qs: IDataObject = {
+							columns: parseColumns(
+								additionalFields.columns,
+								SERVICE_STATUS_COLUMNS,
+								['host_name', 'description'],
+							),
+						};
 						if (hostName) qs.host_name = hostName;
 
 						if (returnAll) {

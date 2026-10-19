@@ -23,6 +23,9 @@ export async function checkmkApiRequest(
 		method,
 		body,
 		qs,
+		// Checkmk's OpenAPI query arrays use "form/explode", i.e. repeated keys:
+		// columns=name&columns=state. The n8n default would produce columns[0]=...
+		arrayFormat: 'repeat',
 		url: `${credentials.host}/${credentials.site}/check_mk/api/1.0${endpoint}`,
 		headers: {
 			'Content-Type': 'application/json',
@@ -57,15 +60,15 @@ export async function checkmkApiRequestAllItems(
 		const responseData: { value?: any; links: { next: string | undefined } } =
 			await checkmkApiRequest.call(this, method, nextCall, body, qs);
 
-		if (responseData.value) {
+		if (responseData?.value) {
 			returnData.push(...responseData.value);
 		} else if (Array.isArray(responseData)) {
 			returnData.push(...responseData);
-		} else {
+		} else if (responseData !== undefined && responseData !== null) {
 			returnData.push(responseData);
 		}
 
-		nextCall = responseData.links.next ?? undefined;
+		nextCall = responseData?.links?.next ?? undefined;
 	}
 
 	return returnData;
@@ -84,6 +87,7 @@ export async function checkmkApiRequestWithETag(
 		method,
 		body,
 		qs,
+		arrayFormat: 'repeat',
 		url: `${credentials.host}/${credentials.site}/check_mk/api/1.0${endpoint}`,
 		headers: {
 			'Content-Type': 'application/json',
